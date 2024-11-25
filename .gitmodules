@@ -1,0 +1,3 @@
+[submodule "third-party/clang-format-all"]
+	path = third-party/clang-format-all
+	url = https://github.com/eklitzke/clang-format-all.git
