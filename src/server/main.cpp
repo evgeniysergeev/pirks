@@ -5,13 +5,7 @@
 
 int main() {
     std::cout << PROJECT_NAME << " v"sv << PROJECT_FULL_VERSION << std::endl;
-#if defined(WINDOWS)
-    std::cout << "Platform: Windows" << std::endl;
-#elif defined(LINUX)
-    std::cout << "Platform: Linux" << std::endl;
-#elif defined(MACOS)
-    std::cout << "Platform: MacOS" << std::endl;
-#endif
+    std::cout << "Platform: " << PROJECT_PLATFORM << std::endl;
 
     return 0;
 }
