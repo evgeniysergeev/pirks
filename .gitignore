@@ -31,5 +31,11 @@
 build
 cmake-build-debug
 
+# cppcheck build directory
+cppcheck-build
+
 # CLion directories
 .idea
+
+# VS Code directories
+.vscode
