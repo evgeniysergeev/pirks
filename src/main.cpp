@@ -5,7 +5,13 @@
 
 int main()
 {
-    std::cout << PROJECT_NAME << " v"sv << PROJECT_VERSION << std::endl;
+    std::cout
+        << PROJECT_NAME
+        << " v"sv << PROJECT_VERSION
+#ifdef DEBUG
+        << " (Debug build)"
+#endif
+        << std::endl;
 
     return 0;
 }
