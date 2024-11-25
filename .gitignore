@@ -29,13 +29,13 @@
 
 # Build directories
 build
-cmake-build-debug
 
 # cppcheck build directory
 cppcheck-build
 
 # CLion directories
 .idea
+cmake-build-*/
 
 # VS Code directories
 .vscode
