@@ -6,8 +6,10 @@ set(COMMON_SRC
 add_library(common STATIC ${COMMON_SRC})
 
 # add to include directories
-target_include_directories(pirks
-    INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}
+# ${PROJECT_BINARY_DIR} added for include version.h which generated here
+target_include_directories(common INTERFACE
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${PROJECT_BINARY_DIR}
 )
 
 # use requrements from interface library with compiler flags

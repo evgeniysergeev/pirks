@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
 
 # set the project name
-project(Pirks VERSION 0.0.1.0)
+project(Pirks VERSION 1.0.0.0)
 
 set(PROJECT_LICENSE "AGPL-3")
 
@@ -31,36 +31,15 @@ target_compile_options(default_compiler_flags INTERFACE
 # generate config header file
 configure_file(src/version.h.in version.h)
 
-set(PIRKS_SRC
-    "src/main.cpp"
-)
-
-# add the executable
-add_executable(
-    pirks
-    ${PIRKS_SRC}
-)
-
 # definitions
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    target_compile_definitions(pirks PRIVATE DEBUG=1)
+    target_compile_definitions(default_compiler_flags INTERFACE DEBUG=1)
 else()
-    target_compile_definitions(pirks PRIVATE RELEASE=1)
+    target_compile_definitions(default_compiler_flags INTERFACE RELEASE=1)
 endif()
 
-# configure include directories
-target_include_directories(pirks PUBLIC
-    ${PROJECT_BINARY_DIR}
-    "src"
-)
-
-# add subdirectories
+# add common static library subdirectories
 add_subdirectory(src/common)
-add_subdirectory(src/server)
 
-# link libraries
-target_link_libraries(pirks PUBLIC
-    common
-    server
-    default_compiler_flags
-)
+# add server subdirectory
+add_subdirectory(src/server)

@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "common/str_utils.h"
+#include "str_utils.h"
 #include "version.h"
 
 int main() {
