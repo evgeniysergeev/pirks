@@ -7,6 +7,10 @@ set(PROJECT_LICENSE "AGPL-3")
 
 set(PROJECT_LONG_DESCRIPTION "Pirks is a video streaming applcation")
 
+# Build and run tests
+option(BUILD_TESTS "Build tests" ON)
+
+# Enable Release build, if not specified
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
     message(STATUS "Setting build type to 'Release' as none was specified.")
     set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose the type of build." FORCE)
@@ -39,3 +43,9 @@ add_subdirectory(src/common)
 
 # add server subdirectory
 add_subdirectory(src/server)
+
+# Tests
+if(BUILD_TESTS)
+    include("cmake/fetch_googletest.cmake")
+    add_subdirectory(tests)
+endif()

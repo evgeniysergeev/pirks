@@ -12,7 +12,7 @@ Commits can have this tags:
 | [feature]  | New feature for the user, not a new feature for build scripts
 | [fix]       | Bug fix for the user, not a fix to a build script
 | [docs]     | Changes to the documentation
-| [test]     | Adding missing tests, refactoring tests; not a production code change
+| [tests]    | Adding missing tests, refactoring tests; not a production code change
 | [style]    | Formatting, missing semi colons, etc; not a production code change
 | [refactor] | Refactoring production code, eg. renaming a variable
 | [internal] | Changes in sources, utilities, devops or something not visible to use

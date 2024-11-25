@@ -44,11 +44,9 @@ private:
 };
 
 template<class T>
-CircularBuffer<T>::CircularBuffer(int maxElements)
+CircularBuffer<T>::CircularBuffer(int maxElements) //
         : m_active(true)
-        , m_maxElements(maxElements)
-        , m_startIndex(0)
-        , m_currentIndex(0) {
+        , m_maxElements(maxElements) {
 }
 
 template<class T>
