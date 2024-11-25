@@ -10,7 +10,9 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
         DEBUG=1
     )
 else()
+    # if NDEBUG is defined, all asserts is disabled
     target_compile_definitions(default_compiler_flags INTERFACE
         RELEASE=1
+        NDEBUG
     )
 endif()

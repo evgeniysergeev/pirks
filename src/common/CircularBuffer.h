@@ -1,7 +1,9 @@
 #pragma once
 
+#include <cassert>
 #include <condition_variable>
 #include <deque>
+#include <optional>
 
 template<class T>
 class CircularBuffer {
@@ -42,9 +44,11 @@ private:
 };
 
 template<class T>
-CircularBuffer<T>::CircularBuffer(int maxElements) //
+CircularBuffer<T>::CircularBuffer(int maxElements)
         : m_active(true)
-        , m_maxElements(maxElements) {
+        , m_maxElements(maxElements)
+        , m_startIndex(0)
+        , m_currentIndex(0) {
 }
 
 template<class T>
@@ -60,9 +64,7 @@ bool CircularBuffer<T>::isActive() const {
 template<class T>
 void CircularBuffer<T>::stop() {
     std::lock_guard lock {m_mutex};
-
     m_active = false;
-
     m_cv.notify_all();
 }
 
@@ -74,12 +76,13 @@ void CircularBuffer<T>::push(const T &element) {
         return;
     }
 
+    assert(m_buffer.size() <= m_maxElements);
+
     if (m_buffer.size() == m_maxElements) {
         m_buffer.pop_front();
     }
 
     m_buffer.emplace_back(std::move(element));
-
     m_cv.notify_all();
 }
 
@@ -87,11 +90,7 @@ template<class T>
 std::optional<T> CircularBuffer<T>::peek() {
     std::unique_lock lock {m_mutex};
 
-    if (!m_active) {
-        return std::nullopt;
-    }
-
-    if (m_buffer.empty()) {
+    if (!m_active || m_buffer.empty()) {
         return std::nullopt;
     }
 
