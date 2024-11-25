@@ -56,9 +56,11 @@ target_include_directories(pirks PUBLIC
 
 # add subdirectories
 add_subdirectory(src/common)
+add_subdirectory(src/server)
 
 # link libraries
 target_link_libraries(pirks PUBLIC
     common
+    server
     default_compiler_flags
 )
