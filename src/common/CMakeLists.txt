@@ -1,4 +1,5 @@
 set(COMMON_SRC
+    "CircularBuffer.h"
     "str_utils.h"
     "str_utils.cpp"
 )
