@@ -20,6 +20,12 @@ public:
     void push(const T &element);
 
     [[nodiscard]]
+    bool empty();
+
+    [[nodiscard]]
+    bool full();
+
+    [[nodiscard]]
     std::optional<T> peek();
 
     template<class Rep, class Period>
@@ -33,12 +39,16 @@ public:
     [[nodiscard]]
     std::optional<T> pop(std::chrono::duration<Rep, Period> delay);
 
-private:
-    volatile bool m_active;
-    size_t        m_maxElements;
+    std::mutex& mutex();
 
-    std::mutex    m_mutex;
-    std::deque<T> m_buffer;
+    std::vector<T>& unsafe();
+
+private:
+    volatile bool   m_active;
+    std::mutex      m_mutex;
+    std::vector<T>  m_buffer;
+    size_t          m_startIndex;
+    size_t          m_endIndex;
 
     std::condition_variable m_cv;
 };
@@ -46,7 +56,10 @@ private:
 template<class T>
 CircularBuffer<T>::CircularBuffer(int maxElements) //
         : m_active(true)
-        , m_maxElements(maxElements) {
+        , m_startIndex(0)
+        , m_endIndex(0) {
+
+    m_buffer.resize(maxElements);
 }
 
 template<class T>
@@ -74,25 +87,54 @@ void CircularBuffer<T>::push(const T &element) {
         return;
     }
 
-    assert(m_buffer.size() <= m_maxElements);
+    const auto maxElements = m_buffer.size();
 
-    if (m_buffer.size() == m_maxElements) {
-        m_buffer.pop_front();
+    m_buffer.at(m_endIndex) = std::move(element);
+    m_endIndex = (m_endIndex + 1) % maxElements;
+    if (m_endIndex == m_startIndex) {
+        m_startIndex = (m_startIndex + 1) % maxElements;
     }
 
-    m_buffer.emplace_back(std::move(element));
     m_cv.notify_all();
+}
+
+template<class T>
+bool CircularBuffer<T>::empty() {
+    std::unique_lock lock {m_mutex};
+
+    if (!m_active) {
+        return true;
+    }
+
+    return m_startIndex == m_endIndex;
+}
+
+template<class T>
+bool CircularBuffer<T>::full() {
+    std::unique_lock lock {m_mutex};
+
+    if (!m_active) {
+        return false;
+    }
+
+    const auto maxElements = m_buffer.size();
+
+    return m_endIndex == ((m_startIndex + 1) % maxElements);
 }
 
 template<class T>
 std::optional<T> CircularBuffer<T>::peek() {
     std::unique_lock lock {m_mutex};
 
-    if (!m_active || m_buffer.empty()) {
+    if (!m_active) {
         return std::nullopt;
     }
 
-    return m_buffer.front();
+    if (m_startIndex == m_endIndex) {
+        return std::nullopt;
+    }
+
+    return std::move(m_buffer.at(m_startIndex));
 }
 
 template<class T>
@@ -114,7 +156,7 @@ std::optional<T> CircularBuffer<T>::peek(std::chrono::duration<Rep, Period> dela
         }
     }
 
-    return m_buffer.front();
+    return std::move(m_buffer.at(m_startIndex));
 }
 
 template<class T>
@@ -133,7 +175,12 @@ std::optional<T> CircularBuffer<T>::pop() {
         }
     }
 
-    return m_buffer.pop_front();
+    auto result = std::move(m_buffer.at(m_startIndex));
+
+    const auto maxElements = m_buffer.size();
+    m_startIndex = (m_startIndex + 1) % maxElements;
+
+    return std::move(result);
 }
 
 template<class T>
@@ -155,5 +202,20 @@ std::optional<T> CircularBuffer<T>::pop(std::chrono::duration<Rep, Period> delay
         }
     }
 
-    return m_buffer.pop_front();
+    auto result = std::move(m_buffer.at(m_startIndex));
+
+    const auto maxElements = m_buffer.size();
+    m_startIndex = (m_startIndex + 1) % maxElements;
+
+    return std::move(result);
+}
+
+template<class T>
+std::mutex& CircularBuffer<T>::mutex() {
+    return m_mutex;
+}
+
+template<class T>
+std::vector<T>& CircularBuffer<T>::unsafe() {
+    return m_buffer;
 }
