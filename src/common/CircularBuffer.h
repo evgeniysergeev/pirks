@@ -44,22 +44,22 @@ public:
     std::vector<T>& unsafe();
 
 private:
-    volatile bool   m_active;
-    std::mutex      m_mutex;
-    std::vector<T>  m_buffer;
-    size_t          m_startIndex;
-    size_t          m_endIndex;
+    volatile bool  active_;
+    std::mutex     mutex_;
+    std::vector<T> buffer_;
+    size_t         startIndex_;
+    size_t         endIndex_;
 
-    std::condition_variable m_cv;
+    std::condition_variable cv_;
 };
 
 template<class T>
 CircularBuffer<T>::CircularBuffer(int maxElements) //
-        : m_active(true)
-        , m_startIndex(0)
-        , m_endIndex(0) {
+        : active_(true)
+        , startIndex_(0)
+        , endIndex_(0) {
 
-    m_buffer.resize(maxElements);
+    buffer_.resize(maxElements);
 }
 
 template<class T>
@@ -69,116 +69,118 @@ CircularBuffer<T>::~CircularBuffer() {
 
 template<class T>
 bool CircularBuffer<T>::isActive() const {
-    return m_active;
+    return active_;
 }
 
 template<class T>
 void CircularBuffer<T>::stop() {
-    std::lock_guard lock {m_mutex};
-    m_active = false;
-    m_cv.notify_all();
+    std::lock_guard lock {mutex_};
+    active_ = false;
+    cv_.notify_all();
 }
 
 template<class T>
 void CircularBuffer<T>::push(const T &element) {
-    std::lock_guard lock {m_mutex};
+    std::lock_guard lock {mutex_};
 
-    if (!m_active) {
+    if (!active_) {
         return;
     }
 
-    const auto maxElements = m_buffer.size();
+    const auto maxElements = buffer_.size();
 
-    m_buffer.at(m_endIndex) = std::move(element);
-    m_endIndex = (m_endIndex + 1) % maxElements;
-    if (m_endIndex == m_startIndex) {
-        m_startIndex = (m_startIndex + 1) % maxElements;
+    buffer_.at(endIndex_) = std::move(element);
+
+    endIndex_ = (endIndex_ + 1) % maxElements;
+    if (endIndex_ == startIndex_) {
+        startIndex_ = (startIndex_ + 1) % maxElements;
     }
 
-    m_cv.notify_all();
+    cv_.notify_all();
 }
 
 template<class T>
 bool CircularBuffer<T>::empty() {
-    std::unique_lock lock {m_mutex};
+    std::unique_lock lock {mutex_};
 
-    if (!m_active) {
+    if (!active_) {
         return true;
     }
 
-    return m_startIndex == m_endIndex;
+    return startIndex_ == endIndex_;
 }
 
 template<class T>
 bool CircularBuffer<T>::full() {
-    std::unique_lock lock {m_mutex};
+    std::unique_lock lock {mutex_};
 
-    if (!m_active) {
+    if (!active_) {
         return false;
     }
 
-    const auto maxElements = m_buffer.size();
+    const auto maxElements = buffer_.size();
 
-    return m_endIndex == ((m_startIndex + 1) % maxElements);
+    return endIndex_ == ((startIndex_ + 1) % maxElements);
 }
 
 template<class T>
 std::optional<T> CircularBuffer<T>::peek() {
-    std::unique_lock lock {m_mutex};
+    std::unique_lock lock {mutex_};
 
-    if (!m_active) {
+    if (!active_) {
         return std::nullopt;
     }
 
-    if (m_startIndex == m_endIndex) {
+    if (startIndex_ == endIndex_) {
         return std::nullopt;
     }
 
-    return std::move(m_buffer.at(m_startIndex));
+    return std::move(buffer_.at(startIndex_));
 }
 
 template<class T>
 template<class Rep, class Period>
 std::optional<T> CircularBuffer<T>::peek(std::chrono::duration<Rep, Period> delay) {
-    std::unique_lock lock {m_mutex};
+    std::unique_lock lock {mutex_};
 
-    if (!m_active) {
+    if (!active_) {
         return std::nullopt;
     }
 
-    while (m_buffer.empty()) {
-        if (m_cv.wait_for(lock, delay) == std::cv_status::timeout) {
+    while (buffer_.empty()) {
+        if (cv_.wait_for(lock, delay) == std::cv_status::timeout) {
             return std::nullopt;
         }
 
-        if (!m_active) {
+        if (!active_) {
             return std::nullopt;
         }
     }
 
-    return std::move(m_buffer.at(m_startIndex));
+    return std::move(buffer_.at(startIndex_));
 }
 
 template<class T>
 std::optional<T> CircularBuffer<T>::pop() {
-    std::unique_lock lock {m_mutex};
+    std::unique_lock lock {mutex_};
 
-    if (!m_active) {
+    if (!active_) {
         return std::nullopt;
     }
 
-    while (m_buffer.empty()) {
-        m_cv.wait(lock);
+    while (buffer_.empty()) {
+        cv_.wait(lock);
 
-        if (!m_active) {
+        if (!active_) {
             return std::nullopt;
         }
     }
 
-    auto result = std::move(m_buffer.at(m_startIndex));
+    auto result = std::move(buffer_.at(startIndex_));
 
-    const auto maxElements = m_buffer.size();
-    m_startIndex = (m_startIndex + 1) % maxElements;
+    const auto maxElements = buffer_.size();
+
+    startIndex_ = (startIndex_ + 1) % maxElements;
 
     return std::move(result);
 }
@@ -186,36 +188,37 @@ std::optional<T> CircularBuffer<T>::pop() {
 template<class T>
 template<class Rep, class Period>
 std::optional<T> CircularBuffer<T>::pop(std::chrono::duration<Rep, Period> delay) {
-    std::unique_lock lock {m_mutex};
+    std::unique_lock lock {mutex_};
 
-    if (!m_active) {
+    if (!active_) {
         return std::nullopt;
     }
 
-    while (m_buffer.empty()) {
-        if (m_cv.wait_for(lock, delay) == std::cv_status::timeout) {
+    while (buffer_.empty()) {
+        if (cv_.wait_for(lock, delay) == std::cv_status::timeout) {
             return std::nullopt;
         }
 
-        if (!m_active) {
+        if (!active_) {
             return std::nullopt;
         }
     }
 
-    auto result = std::move(m_buffer.at(m_startIndex));
+    auto result = std::move(buffer_.at(startIndex_));
 
-    const auto maxElements = m_buffer.size();
-    m_startIndex = (m_startIndex + 1) % maxElements;
+    const auto maxElements = buffer_.size();
+
+    startIndex_ = (startIndex_ + 1) % maxElements;
 
     return std::move(result);
 }
 
 template<class T>
 std::mutex& CircularBuffer<T>::mutex() {
-    return m_mutex;
+    return mutex_;
 }
 
 template<class T>
 std::vector<T>& CircularBuffer<T>::unsafe() {
-    return m_buffer;
+    return buffer_;
 }
