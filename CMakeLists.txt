@@ -28,15 +28,11 @@ target_compile_options(default_compiler_flags INTERFACE
     "$<${msvc_cxx}:$<BUILD_INTERFACE:-W3>>"
 )
 
+include(cmake/platform_definitions.cmake)
+include(cmake/debug_definitions.cmake)
+
 # generate config header file
 configure_file(src/version.h.in version.h)
-
-# definitions
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    target_compile_definitions(default_compiler_flags INTERFACE DEBUG=1)
-else()
-    target_compile_definitions(default_compiler_flags INTERFACE RELEASE=1)
-endif()
 
 # add common static library subdirectories
 add_subdirectory(src/common)
