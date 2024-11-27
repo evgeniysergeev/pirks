@@ -15,15 +15,15 @@ public:
     [[nodiscard]]
     bool isActive() const;
 
+    [[nodiscard]]
+    bool isEmpty();
+
+    [[nodiscard]]
+    bool isFull();
+
     void stop();
 
     void push(const T &element);
-
-    [[nodiscard]]
-    bool empty();
-
-    [[nodiscard]]
-    bool full();
 
     [[nodiscard]]
     std::optional<T> peek();
@@ -73,6 +73,31 @@ bool CircularBuffer<T>::isActive() const {
 }
 
 template<class T>
+bool CircularBuffer<T>::isEmpty() {
+    std::unique_lock lock {mutex_};
+
+    if (!active_) {
+        return true;
+    }
+
+    return startIndex_ == endIndex_;
+}
+
+template<class T>
+bool CircularBuffer<T>::isFull() {
+    std::unique_lock lock {mutex_};
+
+    if (!active_) {
+        return false;
+    }
+
+    const auto maxElements = buffer_.size();
+    assert(maxElements != 0);
+
+    return endIndex_ == ((startIndex_ + 1) % maxElements);
+}
+
+template<class T>
 void CircularBuffer<T>::stop() {
     std::lock_guard lock {mutex_};
     active_ = false;
@@ -88,6 +113,7 @@ void CircularBuffer<T>::push(const T &element) {
     }
 
     const auto maxElements = buffer_.size();
+    assert(maxElements != 0);
 
     buffer_.at(endIndex_) = std::move(element);
 
@@ -97,30 +123,6 @@ void CircularBuffer<T>::push(const T &element) {
     }
 
     cv_.notify_all();
-}
-
-template<class T>
-bool CircularBuffer<T>::empty() {
-    std::unique_lock lock {mutex_};
-
-    if (!active_) {
-        return true;
-    }
-
-    return startIndex_ == endIndex_;
-}
-
-template<class T>
-bool CircularBuffer<T>::full() {
-    std::unique_lock lock {mutex_};
-
-    if (!active_) {
-        return false;
-    }
-
-    const auto maxElements = buffer_.size();
-
-    return endIndex_ == ((startIndex_ + 1) % maxElements);
 }
 
 template<class T>
