@@ -6,7 +6,8 @@
 #include <optional>
 
 template<class T>
-class CircularBuffer {
+class CircularBuffer
+{
 public:
     explicit CircularBuffer(int maxElements = 256);
     ~CircularBuffer();
@@ -39,9 +40,9 @@ public:
     [[nodiscard]]
     std::optional<T> pop(std::chrono::duration<Rep, Period> delay);
 
-    std::mutex& mutex();
+    std::mutex &mutex();
 
-    std::vector<T>& unsafe();
+    std::vector<T> &unsafe();
 
 private:
     volatile bool  active_;
@@ -57,24 +58,27 @@ template<class T>
 CircularBuffer<T>::CircularBuffer(int maxElements) //
         : active_(true)
         , startIndex_(0)
-        , endIndex_(0) {
-
+        , endIndex_(0)
+{
     buffer_.resize(maxElements);
 }
 
 template<class T>
-CircularBuffer<T>::~CircularBuffer() {
+CircularBuffer<T>::~CircularBuffer()
+{
     stop();
 }
 
 template<class T>
-bool CircularBuffer<T>::isActive() const {
+bool CircularBuffer<T>::isActive() const
+{
     return active_;
 }
 
 template<class T>
-bool CircularBuffer<T>::isEmpty() {
-    std::unique_lock lock {mutex_};
+bool CircularBuffer<T>::isEmpty()
+{
+    std::unique_lock lock { mutex_ };
 
     if (!active_) {
         return true;
@@ -84,8 +88,9 @@ bool CircularBuffer<T>::isEmpty() {
 }
 
 template<class T>
-bool CircularBuffer<T>::isFull() {
-    std::unique_lock lock {mutex_};
+bool CircularBuffer<T>::isFull()
+{
+    std::unique_lock lock { mutex_ };
 
     if (!active_) {
         return false;
@@ -98,15 +103,17 @@ bool CircularBuffer<T>::isFull() {
 }
 
 template<class T>
-void CircularBuffer<T>::stop() {
-    std::lock_guard lock {mutex_};
+void CircularBuffer<T>::stop()
+{
+    std::lock_guard lock { mutex_ };
     active_ = false;
     cv_.notify_all();
 }
 
 template<class T>
-void CircularBuffer<T>::push(const T &element) {
-    std::lock_guard lock {mutex_};
+void CircularBuffer<T>::push(const T &element)
+{
+    std::lock_guard lock { mutex_ };
 
     if (!active_) {
         return;
@@ -126,8 +133,9 @@ void CircularBuffer<T>::push(const T &element) {
 }
 
 template<class T>
-std::optional<T> CircularBuffer<T>::peek() {
-    std::unique_lock lock {mutex_};
+std::optional<T> CircularBuffer<T>::peek()
+{
+    std::unique_lock lock { mutex_ };
 
     if (!active_) {
         return std::nullopt;
@@ -142,8 +150,9 @@ std::optional<T> CircularBuffer<T>::peek() {
 
 template<class T>
 template<class Rep, class Period>
-std::optional<T> CircularBuffer<T>::peek(std::chrono::duration<Rep, Period> delay) {
-    std::unique_lock lock {mutex_};
+std::optional<T> CircularBuffer<T>::peek(std::chrono::duration<Rep, Period> delay)
+{
+    std::unique_lock lock { mutex_ };
 
     if (!active_) {
         return std::nullopt;
@@ -163,8 +172,9 @@ std::optional<T> CircularBuffer<T>::peek(std::chrono::duration<Rep, Period> dela
 }
 
 template<class T>
-std::optional<T> CircularBuffer<T>::pop() {
-    std::unique_lock lock {mutex_};
+std::optional<T> CircularBuffer<T>::pop()
+{
+    std::unique_lock lock { mutex_ };
 
     if (!active_) {
         return std::nullopt;
@@ -189,8 +199,9 @@ std::optional<T> CircularBuffer<T>::pop() {
 
 template<class T>
 template<class Rep, class Period>
-std::optional<T> CircularBuffer<T>::pop(std::chrono::duration<Rep, Period> delay) {
-    std::unique_lock lock {mutex_};
+std::optional<T> CircularBuffer<T>::pop(std::chrono::duration<Rep, Period> delay)
+{
+    std::unique_lock lock { mutex_ };
 
     if (!active_) {
         return std::nullopt;
@@ -216,11 +227,13 @@ std::optional<T> CircularBuffer<T>::pop(std::chrono::duration<Rep, Period> delay
 }
 
 template<class T>
-std::mutex& CircularBuffer<T>::mutex() {
+std::mutex &CircularBuffer<T>::mutex()
+{
     return mutex_;
 }
 
 template<class T>
-std::vector<T>& CircularBuffer<T>::unsafe() {
+std::vector<T> &CircularBuffer<T>::unsafe()
+{
     return buffer_;
 }
