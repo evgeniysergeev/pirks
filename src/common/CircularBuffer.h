@@ -4,6 +4,7 @@
 #include <condition_variable>
 #include <deque>
 #include <optional>
+#include <chrono>
 
 template<class T>
 class CircularBuffer
@@ -141,6 +142,7 @@ std::optional<T> CircularBuffer<T>::peek()
         return std::nullopt;
     }
 
+    // if start index equal to end index, then buffer is empty
     if (startIndex_ == endIndex_) {
         return std::nullopt;
     }
@@ -158,7 +160,8 @@ std::optional<T> CircularBuffer<T>::peek(std::chrono::duration<Rep, Period> dela
         return std::nullopt;
     }
 
-    while (buffer_.empty()) {
+    // if start index equal to end index, then buffer is empty
+    while (startIndex_ == endIndex_) {
         if (cv_.wait_for(lock, delay) == std::cv_status::timeout) {
             return std::nullopt;
         }
@@ -180,7 +183,8 @@ std::optional<T> CircularBuffer<T>::pop()
         return std::nullopt;
     }
 
-    while (buffer_.empty()) {
+    // if start index is equal to end index, then buffer is empty
+    while (startIndex_ == endIndex_) {
         cv_.wait(lock);
 
         if (!active_) {
@@ -207,7 +211,8 @@ std::optional<T> CircularBuffer<T>::pop(std::chrono::duration<Rep, Period> delay
         return std::nullopt;
     }
 
-    while (buffer_.empty()) {
+    // if start index equal to end index, then buffer is empty
+    while (startIndex_ == endIndex_) {
         if (cv_.wait_for(lock, delay) == std::cv_status::timeout) {
             return std::nullopt;
         }
