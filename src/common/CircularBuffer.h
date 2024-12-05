@@ -1,16 +1,16 @@
 #pragma once
 
 #include <cassert>
+#include <chrono>
 #include <condition_variable>
 #include <deque>
 #include <optional>
-#include <chrono>
 
 template<class T>
 class CircularBuffer
 {
 public:
-    explicit CircularBuffer(int maxElements = 256);
+    explicit CircularBuffer(size_t maxElements = 256);
     ~CircularBuffer();
 
 public:
@@ -22,6 +22,9 @@ public:
 
     [[nodiscard]]
     bool isFull();
+
+    [[nodiscard]]
+    size_t capacity() const;
 
     void stop();
 
@@ -56,7 +59,7 @@ private:
 };
 
 template<class T>
-CircularBuffer<T>::CircularBuffer(int maxElements) //
+CircularBuffer<T>::CircularBuffer(size_t maxElements) //
         : active_(true)
         , startIndex_(0)
         , endIndex_(0)
@@ -101,6 +104,12 @@ bool CircularBuffer<T>::isFull()
     assert(maxElements != 0);
 
     return endIndex_ == ((startIndex_ + 1) % maxElements);
+}
+
+template<class T>
+size_t CircularBuffer<T>::capacity() const
+{
+    return buffer_.capacity();
 }
 
 template<class T>
