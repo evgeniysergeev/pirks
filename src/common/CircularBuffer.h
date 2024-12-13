@@ -14,20 +14,6 @@ public:
     ~CircularBuffer();
 
 public:
-    [[nodiscard]]
-    bool isActive() const;
-
-    [[nodiscard]]
-    bool isEmpty();
-
-    [[nodiscard]]
-    bool isFull();
-
-    [[nodiscard]]
-    size_t capacity() const;
-
-    void stop();
-
     void push(const T &element);
 
     [[nodiscard]]
@@ -44,15 +30,33 @@ public:
     [[nodiscard]]
     std::optional<T> pop(std::chrono::duration<Rep, Period> delay);
 
+    // Helpers
+public:
+    [[nodiscard]]
+    bool isActive() const;
+
+    [[nodiscard]]
+    bool isEmpty();
+
+    [[nodiscard]]
+    bool isFull();
+
+    [[nodiscard]]
+    size_t capacity() const;
+
+    void stop();
+
+    // Unsafe access to buffer. Useful for unit tests. Use with caution.
+public:
     std::mutex &mutex();
 
     std::vector<T> &unsafe();
 
     [[nodiscard]]
-    size_t startIndex();
+    size_t startIndex() const;
 
     [[nodiscard]]
-    size_t endIndex();
+    size_t endIndex() const;
 
 private:
     volatile bool  active_;
@@ -95,53 +99,6 @@ template<class T>
 CircularBuffer<T>::~CircularBuffer()
 {
     stop();
-}
-
-template<class T>
-bool CircularBuffer<T>::isActive() const
-{
-    return active_;
-}
-
-template<class T>
-bool CircularBuffer<T>::isEmpty()
-{
-    std::unique_lock lock { mutex_ };
-
-    if (!active_) {
-        return true;
-    }
-
-    return startIndex_ == endIndex_;
-}
-
-template<class T>
-bool CircularBuffer<T>::isFull()
-{
-    std::unique_lock lock { mutex_ };
-
-    if (!active_) {
-        return false;
-    }
-
-    const auto capacity = buffer_.capacity();
-    assert(capacity != 0);
-
-    return endIndex_ == ((startIndex_ + 1) % capacity);
-}
-
-template<class T>
-size_t CircularBuffer<T>::capacity() const
-{
-    return buffer_.capacity();
-}
-
-template<class T>
-void CircularBuffer<T>::stop()
-{
-    std::lock_guard lock { mutex_ };
-    active_ = false;
-    cv_.notify_all();
 }
 
 template<class T>
@@ -264,6 +221,57 @@ std::optional<T> CircularBuffer<T>::pop(std::chrono::duration<Rep, Period> delay
     return std::move(result);
 }
 
+// Helpers
+
+template<class T>
+bool CircularBuffer<T>::isActive() const
+{
+    return active_;
+}
+
+template<class T>
+bool CircularBuffer<T>::isEmpty()
+{
+    std::unique_lock lock { mutex_ };
+
+    if (!active_) {
+        return true;
+    }
+
+    return startIndex_ == endIndex_;
+}
+
+template<class T>
+bool CircularBuffer<T>::isFull()
+{
+    std::unique_lock lock { mutex_ };
+
+    if (!active_) {
+        return false;
+    }
+
+    const auto capacity = buffer_.capacity();
+    assert(capacity != 0);
+
+    return endIndex_ == ((startIndex_ + 1) % capacity);
+}
+
+template<class T>
+size_t CircularBuffer<T>::capacity() const
+{
+    return buffer_.capacity();
+}
+
+template<class T>
+void CircularBuffer<T>::stop()
+{
+    std::lock_guard lock { mutex_ };
+    active_ = false;
+    cv_.notify_all();
+}
+
+// Unsafe access to buffer. Useful for unit tests. Use with caution.
+
 template<class T>
 std::mutex &CircularBuffer<T>::mutex()
 {
@@ -277,13 +285,13 @@ std::vector<T> &CircularBuffer<T>::unsafe()
 }
 
 template<class T>
-size_t CircularBuffer<T>::startIndex()
+size_t CircularBuffer<T>::startIndex() const
 {
     return startIndex_;
 }
 
 template<class T>
-size_t CircularBuffer<T>::endIndex()
+size_t CircularBuffer<T>::endIndex() const
 {
     return endIndex_;
 }
