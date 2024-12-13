@@ -10,7 +10,7 @@ template<class T>
 class CircularBuffer
 {
 public:
-    explicit CircularBuffer(size_t maxElements = 256);
+    explicit CircularBuffer(size_t capacity = 256);
     ~CircularBuffer();
 
 public:
@@ -48,6 +48,12 @@ public:
 
     std::vector<T> &unsafe();
 
+    [[nodiscard]]
+    size_t startIndex();
+
+    [[nodiscard]]
+    size_t endIndex();
+
 private:
     volatile bool  active_;
     std::mutex     mutex_;
@@ -59,12 +65,30 @@ private:
 };
 
 template<class T>
-CircularBuffer<T>::CircularBuffer(size_t maxElements) //
+CircularBuffer<T>::CircularBuffer(size_t capacity) //
         : active_(true)
         , startIndex_(0)
         , endIndex_(0)
 {
-    buffer_.resize(maxElements);
+    // If start equals end, it means the buffer is empty.
+    // But in a completely full buffer, at some point end will equal start:
+    // | 1 | 2 | 3 | _ |
+    //  ^            ^
+    //  \ start      \ end
+    //
+    // Adding new element: 4 (end = (end + 1) % 4
+    // | 1 | 2 | 3 | 4 |
+    //  ^
+    //  \ start and are now equal
+    //
+    // Move start one element forward so start and end will be different:
+    // | _ | 2 | 3 | 4 |
+    //  ^    ^
+    //  |    \ start
+    //  \ end
+    //
+    // One element is always unused.
+    buffer_.resize(capacity);
 }
 
 template<class T>
@@ -100,10 +124,10 @@ bool CircularBuffer<T>::isFull()
         return false;
     }
 
-    const auto maxElements = buffer_.size();
-    assert(maxElements != 0);
+    const auto capacity = buffer_.capacity();
+    assert(capacity != 0);
 
-    return endIndex_ == ((startIndex_ + 1) % maxElements);
+    return endIndex_ == ((startIndex_ + 1) % capacity);
 }
 
 template<class T>
@@ -129,14 +153,14 @@ void CircularBuffer<T>::push(const T &element)
         return;
     }
 
-    const auto maxElements = buffer_.size();
-    assert(maxElements != 0);
+    const auto capacity = buffer_.capacity();
+    assert(capacity != 0);
 
     buffer_.at(endIndex_) = std::move(element);
 
-    endIndex_ = (endIndex_ + 1) % maxElements;
+    endIndex_ = (endIndex_ + 1) % capacity;
     if (endIndex_ == startIndex_) {
-        startIndex_ = (startIndex_ + 1) % maxElements;
+        startIndex_ = (startIndex_ + 1) % capacity;
     }
 
     cv_.notify_all();
@@ -203,9 +227,9 @@ std::optional<T> CircularBuffer<T>::pop()
 
     auto result = std::move(buffer_.at(startIndex_));
 
-    const auto maxElements = buffer_.size();
+    const auto capacity = buffer_.capacity();
 
-    startIndex_ = (startIndex_ + 1) % maxElements;
+    startIndex_ = (startIndex_ + 1) % capacity;
 
     return std::move(result);
 }
@@ -233,9 +257,9 @@ std::optional<T> CircularBuffer<T>::pop(std::chrono::duration<Rep, Period> delay
 
     auto result = std::move(buffer_.at(startIndex_));
 
-    const auto maxElements = buffer_.size();
+    const auto capacity = buffer_.capacity();
 
-    startIndex_ = (startIndex_ + 1) % maxElements;
+    startIndex_ = (startIndex_ + 1) % capacity;
 
     return std::move(result);
 }
@@ -250,4 +274,16 @@ template<class T>
 std::vector<T> &CircularBuffer<T>::unsafe()
 {
     return buffer_;
+}
+
+template<class T>
+size_t CircularBuffer<T>::startIndex()
+{
+    return startIndex_;
+}
+
+template<class T>
+size_t CircularBuffer<T>::endIndex()
+{
+    return endIndex_;
 }
