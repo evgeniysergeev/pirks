@@ -5,7 +5,7 @@ project(Pirks VERSION 1.0.0.0)
 
 set(PROJECT_LICENSE "AGPL-3")
 
-set(PROJECT_LONG_DESCRIPTION "Pirks is a video streaming applcation")
+set(PROJECT_LONG_DESCRIPTION "Pirks is a video streaming application")
 
 # Build and run tests
 option(BUILD_TESTS "Build tests" ON)
