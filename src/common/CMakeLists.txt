@@ -13,5 +13,5 @@ target_include_directories(common INTERFACE
     ${PROJECT_BINARY_DIR}
 )
 
-# use requrements from interface library with compiler flags
+# use requirements from interface library with compiler flags
 target_link_libraries(common PUBLIC default_compiler_flags)

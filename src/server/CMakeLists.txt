@@ -14,5 +14,5 @@ target_include_directories(pirks-server INTERFACE
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-# use requrements from interface library with compiler flags
+# use requirements from interface library with compiler flags
 target_link_libraries(pirks-server PUBLIC common default_compiler_flags)
