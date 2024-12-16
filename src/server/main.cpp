@@ -1,12 +1,11 @@
-#include <iostream>
+#include <spdlog/spdlog.h>
 
 #include "str_utils.h"
 #include "version.h"
 
 int main()
 {
-    std::cout << PROJECT_NAME << " v"sv << PROJECT_FULL_VERSION << std::endl
-              << "Platform: " << PROJECT_PLATFORM << std::endl;
+    spdlog::info("{} v{} (Platform: {})"sv, PROJECT_NAME, PROJECT_FULL_VERSION, PROJECT_PLATFORM);
 
     return 0;
 }
