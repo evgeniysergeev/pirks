@@ -1,1 +1,7 @@
+# cppcheck can work without system includes.
 missingIncludeSystem
+
+# ignore all warnings in third-party libraries
+*:*/third-party/*
+
+unusedFunction
