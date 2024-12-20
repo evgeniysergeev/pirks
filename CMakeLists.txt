@@ -29,6 +29,7 @@ target_compile_options(default_compiler_flags INTERFACE
 include(cmake/platform_definitions.cmake)
 include(cmake/build_type.cmake)
 include(cmake/spdlog_setup.cmake)
+include(cmake/cli11_setup.cmake)
 
 # generate config header file
 configure_file(src/version.h.in version.h)
