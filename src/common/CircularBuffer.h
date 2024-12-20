@@ -110,14 +110,14 @@ void CircularBuffer<T>::push(const T &element)
         return;
     }
 
-    const auto capacity = buffer_.capacity();
-    assert(capacity != 0);
+    const auto sz = buffer_.capacity();
+    assert(sz != 0);
 
     buffer_.at(endIndex_) = std::move(element);
 
-    endIndex_ = (endIndex_ + 1) % capacity;
+    endIndex_ = (endIndex_ + 1) % sz;
     if (endIndex_ == startIndex_) {
-        startIndex_ = (startIndex_ + 1) % capacity;
+        startIndex_ = (startIndex_ + 1) % sz;
     }
 
     cv_.notify_all();
@@ -184,11 +184,11 @@ std::optional<T> CircularBuffer<T>::pop()
 
     auto result = std::move(buffer_.at(startIndex_));
 
-    const auto capacity = buffer_.capacity();
+    const auto sz = buffer_.capacity();
 
-    startIndex_ = (startIndex_ + 1) % capacity;
+    startIndex_ = (startIndex_ + 1) % sz;
 
-    return std::move(result);
+    return result;
 }
 
 template<class T>
@@ -214,11 +214,11 @@ std::optional<T> CircularBuffer<T>::pop(std::chrono::duration<Rep, Period> delay
 
     auto result = std::move(buffer_.at(startIndex_));
 
-    const auto capacity = buffer_.capacity();
+    const auto sz = buffer_.capacity();
 
-    startIndex_ = (startIndex_ + 1) % capacity;
+    startIndex_ = (startIndex_ + 1) % sz;
 
-    return std::move(result);
+    return result;
 }
 
 // Helpers
@@ -250,10 +250,10 @@ bool CircularBuffer<T>::isFull()
         return false;
     }
 
-    const auto capacity = buffer_.capacity();
-    assert(capacity != 0);
+    const auto sz = buffer_.capacity();
+    assert(sz != 0);
 
-    return endIndex_ == ((startIndex_ + 1) % capacity);
+    return endIndex_ == ((startIndex_ + 1) % sz);
 }
 
 template<class T>
