@@ -5,11 +5,8 @@
 
 #include <CLI/CLI.hpp>
 
-int main(int argc, char** argv)
+int parseArgs(int argc, char** argv)
 {
-    // Print version information early
-    spdlog::info("{} v{} (Platform: {})"sv, PROJECT_NAME, PROJECT_FULL_VERSION, PROJECT_PLATFORM);
-
     CLI::App args { PROJECT_NAME };
     argv = args.ensure_utf8(argv);  // new argv memory is held by app
 
@@ -19,6 +16,19 @@ int main(int argc, char** argv)
         args.parse(argc, argv);
     } catch (const CLI::ParseError &e) {
         return args.exit(e);
+    }
+
+    return 0;
+}
+
+int main(int argc, char** argv)
+{
+    // Print version information early
+    spdlog::info("{} v{} (Platform: {})"sv, PROJECT_NAME, PROJECT_FULL_VERSION, PROJECT_PLATFORM);
+
+    const auto ret = parseArgs(argc, argv);
+    if (ret != 0) {
+        return ret;
     }
 
     return 0;
