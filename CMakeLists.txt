@@ -18,7 +18,7 @@ set(msvc_cxx "$<COMPILE_LANG_AND_ID:CXX,MSVC>")
 add_library(default_compiler_flags INTERFACE)
 
 # specify the C++ standard
-target_compile_features(default_compiler_flags INTERFACE cxx_std_20)
+target_compile_features(default_compiler_flags INTERFACE cxx_std_23)
 
 # set default compiler warning flags
 target_compile_options(default_compiler_flags INTERFACE
@@ -34,8 +34,11 @@ include(cmake/cli11_setup.cmake)
 # generate config header file
 configure_file(src/version.h.in version.h)
 
-# add common static library subdirectories
+# add common static library subdirectory
 add_subdirectory(src/common)
+
+# add capture audio static library subdirectory
+add_subdirectory(src/capture_audio)
 
 # add server subdirectory
 add_subdirectory(src/server)
