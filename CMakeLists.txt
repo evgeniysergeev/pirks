@@ -37,8 +37,8 @@ configure_file(src/version.h.in version.h)
 # add common static library subdirectory
 add_subdirectory(src/common)
 
-# add capture audio static library subdirectory
-add_subdirectory(src/capture_audio)
+# add capture static libraries subdirectory
+add_subdirectory(src/capture)
 
 # add server subdirectory
 add_subdirectory(src/server)
