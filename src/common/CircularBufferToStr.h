@@ -1,9 +1,9 @@
 #pragma once
 
-#include "CircularBuffer.h"
-
 #include <sstream>
 #include <string>
+
+#include "CircularBuffer.h"
 
 template<class T>
 std::string CircularBufferToStr(CircularBuffer<T> &buff)

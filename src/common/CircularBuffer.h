@@ -83,8 +83,8 @@ CircularBuffer<T>::CircularBuffer(size_t capacity) //
     // Adding new element: 4 (end = (end + 1) % 4
     // | 1 | 2 | 3 | 4 |
     //  ^
-    //  \ start 
-    //      and 
+    //  \ start
+    //      and
     //  ^
     //   \ end are now equal
     //
