@@ -1,42 +1,9 @@
 #include <gtest/gtest.h>
 
-#include <sstream>
-#include <string>
-
 #include "CircularBuffer.h"
+#include "CircularBufferToStr.h"
 
 using namespace std::literals;
-
-template<class T>
-std::string CircularBufferToStr(CircularBuffer<T> &buff)
-{
-    [[maybe_unused]]
-    std::lock_guard lock { buff.mutex() };
-
-    const auto &items = buff.unsafe();
-
-    std::stringstream output;
-    output << "{";
-    bool       isFirst = true;
-    const auto sz      = buff.capacity();
-    size_t     index   = buff.startIndex();
-    while (index != buff.endIndex()) {
-        if (!isFirst) {
-            output << ",";
-        } else {
-            isFirst = false;
-        }
-
-        const auto &item = items.at(index);
-        output << item;
-
-        index = (index + 1) % sz;
-    }
-
-    output << "}";
-
-    return output.str();
-}
 
 TEST(CircularBuffer, Initialization)
 {
@@ -50,22 +17,22 @@ TEST(CircularBuffer, Initialization)
 
 TEST(CircularBuffer, BufferStopped)
 {
-    CircularBuffer<int> buff(32);
-    EXPECT_EQ(buff.capacity(), 32);
+    CircularBuffer<int> buff(31);
+    EXPECT_EQ(buff.bufferCapacity(), 32);
 
     buff.stop();
     EXPECT_TRUE(buff.isEmpty());
     EXPECT_FALSE(buff.isFull());
     EXPECT_FALSE(buff.isActive());
-    EXPECT_EQ(buff.capacity(), 32);
+    EXPECT_EQ(buff.bufferCapacity(), 32);
     EXPECT_EQ(buff.peek(), std::nullopt);
     EXPECT_EQ(buff.peek(100ms), std::nullopt);
 }
 
 TEST(CircularBuffer, BasicUsage)
 {
-    CircularBuffer<int> buff { 8 };
-    EXPECT_EQ(buff.capacity(), 8);
+    CircularBuffer<int> buff { 7 };
+    EXPECT_EQ(buff.bufferCapacity(), 8);
 
     EXPECT_EQ(CircularBufferToStr(buff), "{}"s);
 
@@ -128,7 +95,7 @@ TEST(CircularBuffer, BasicUsage)
 
 TEST(CircularBuffer, PeekValue)
 {
-    CircularBuffer<int> buff { 8 };
+    CircularBuffer<int> buff { 7 };
 
     EXPECT_FALSE(buff.peek().has_value());
     EXPECT_FALSE(buff.peek(20ms).has_value());
@@ -158,7 +125,7 @@ TEST(CircularBuffer, PeekValue)
 
 TEST(CircularBuffer, Overwrite)
 {
-    CircularBuffer<int> buff { 4 };
+    CircularBuffer<int> buff { 3 };
 
     EXPECT_EQ(CircularBufferToStr(buff), "{}"s);
 

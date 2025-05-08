@@ -42,7 +42,7 @@ public:
     bool isFull();
 
     [[nodiscard]]
-    size_t capacity() const;
+    size_t bufferCapacity() const;
 
     void stop();
 
@@ -83,7 +83,10 @@ CircularBuffer<T>::CircularBuffer(size_t capacity) //
     // Adding new element: 4 (end = (end + 1) % 4
     // | 1 | 2 | 3 | 4 |
     //  ^
-    //  \ start and are now equal
+    //  \ start 
+    //      and 
+    //  ^
+    //   \ end are now equal
     //
     // Move start one element forward so start and end will be different:
     // | _ | 2 | 3 | 4 |
@@ -92,7 +95,7 @@ CircularBuffer<T>::CircularBuffer(size_t capacity) //
     //  \ end
     //
     // One element is always unused.
-    buffer_.resize(capacity);
+    buffer_.resize(capacity + 1);
 }
 
 template<class T>
@@ -257,7 +260,7 @@ bool CircularBuffer<T>::isFull()
 }
 
 template<class T>
-size_t CircularBuffer<T>::capacity() const
+size_t CircularBuffer<T>::bufferCapacity() const
 {
     return buffer_.capacity();
 }
