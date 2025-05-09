@@ -5,9 +5,8 @@
 
 #include "CaptureResult.h"
 
-namespace capture::audio
+namespace capture::capture_audio
 {
-using namespace capture;
 
 class IMicrophone
 {
@@ -18,4 +17,4 @@ public:
     virtual auto sample() -> std::expected<std::vector<std::uint16_t>, CaptureResult> = 0;
 };
 
-}; // namespace capture::audio
+}; // namespace capture::capture_audio
