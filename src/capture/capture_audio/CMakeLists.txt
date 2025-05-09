@@ -1,8 +1,7 @@
 set(SOURCES
     "IMicrophone.h"
     "IMicrophoneFactory.h"
-    "${PROJECT_SOURCE_DIR}/third-party/TPCircularBuffer/TPCircularBuffer.h"
-    "${PROJECT_SOURCE_DIR}/third-party/TPCircularBuffer/TPCircularBuffer.c"
+    "CaptureResult.h"
 )
 
 if(PLATFORM STREQUAL "Windows")
@@ -20,6 +19,9 @@ if(PLATFORM STREQUAL "MACOS")
         "macos/MacMicrophone.mm"
         "macos/MacMicrophoneFactory.h"
         "macos/MacMicrophoneFactory.mm"
+        "macos/TPCircularBufferHelper.h"
+        "${PROJECT_SOURCE_DIR}/third-party/TPCircularBuffer/TPCircularBuffer.h"
+        "${PROJECT_SOURCE_DIR}/third-party/TPCircularBuffer/TPCircularBuffer.c"
     )
 endif()
 

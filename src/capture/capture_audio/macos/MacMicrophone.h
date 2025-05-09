@@ -12,6 +12,7 @@ class MacMicrophone final : public IMicrophone
 {
 public:
     MacMicrophone(AVCaptureDevice *capture_device, int channels, uint32_t sample_rate, uint32_t frame_size);
+
     ~MacMicrophone() override;
 
 public:
