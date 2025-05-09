@@ -1,6 +1,5 @@
 #pragma once
 
-#include <expected>
 #include <vector>
 
 #include "CaptureResult.h"
@@ -14,7 +13,7 @@ public:
     virtual ~IMicrophone() = default;
 
 public:
-    virtual auto sample() -> std::expected<std::vector<std::uint16_t>, CaptureResult> = 0;
+    virtual CaptureResult sample(std::vector<float> &sample_in) = 0;
 };
 
 }; // namespace capture::capture_audio

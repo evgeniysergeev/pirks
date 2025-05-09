@@ -14,10 +14,10 @@ public:
 
 public:
     virtual std::unique_ptr<IMicrophone> createMicrophone(
-            const std::uint8_t *mapping,
             int                 channels,
             std::uint32_t       sample_rate,
-            std::uint32_t       frame_size) = 0;
+            std::uint32_t       frame_size,
+            const std::uint8_t *mapping = nullptr) = 0;
 };
 
 }; // namespace capture::capture_audio

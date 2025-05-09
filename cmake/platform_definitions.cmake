@@ -4,7 +4,7 @@ if(APPLE)
     target_compile_definitions(default_compiler_flags INTERFACE
         UNIX
         MACOS
-        PROJECT_PLATFORM="MacOS"
+        PROJECT_PLATFORM="macOS"
     )
 elseif(UNIX AND NOT APPLE)
     set(PLATFORM "LINUX")

@@ -1,18 +1,35 @@
 set(SOURCES
     "IMicrophone.h"
     "IMicrophoneFactory.h"
+    "${PROJECT_SOURCE_DIR}/third-party/TPCircularBuffer/TPCircularBuffer.h"
+    "${PROJECT_SOURCE_DIR}/third-party/TPCircularBuffer/TPCircularBuffer.c"
 )
 
 if(PLATFORM STREQUAL "Windows")
     set(PLATFORM_SOURCES
-        "windows/WindowsMicrophoneFactory.h"
-        "windows/WindowsMicrophoneFactory.cpp"
+        "windows/WinMicrophoneFactory.h"
+        "windows/WinMicrophoneFactory.cpp"
+    )
+endif()
+
+if(PLATFORM STREQUAL "MACOS")
+    set(PLATFORM_SOURCES
+        "macos/AVAudio.h"
+        "macos/AVAudio.m"
+        "macos/MacMicrophone.h"
+        "macos/MacMicrophone.mm"
+        "macos/MacMicrophoneFactory.h"
+        "macos/MacMicrophoneFactory.mm"
     )
 endif()
 
 add_library(capture_audio STATIC
     ${SOURCES}
     ${PLATFORM_SOURCES}
+)
+
+target_include_directories(capture_audio PUBLIC
+    "${PROJECT_SOURCE_DIR}/third-party/TPCircularBuffer"
 )
 
 target_include_directories(capture_audio PUBLIC
