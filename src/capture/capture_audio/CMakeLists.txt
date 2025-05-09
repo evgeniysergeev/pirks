@@ -1,11 +1,19 @@
-set(CAPTURE_AUDIO_SRC
+set(SOURCES
     "IMicrophone.h"
     "IMicrophoneFactory.h"
-    "windows/WindowsMicrophoneFactory.h"
-    "windows/WindowsMicrophoneFactory.cpp"
 )
 
-add_library(capture_audio STATIC ${CAPTURE_AUDIO_SRC})
+if(PLATFORM STREQUAL "Windows")
+    set(PLATFORM_SOURCES
+        "windows/WindowsMicrophoneFactory.h"
+        "windows/WindowsMicrophoneFactory.cpp"
+    )
+endif()
+
+add_library(capture_audio STATIC
+    ${SOURCES}
+    ${PLATFORM_SOURCES}
+)
 
 target_include_directories(capture_audio PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
