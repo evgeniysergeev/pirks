@@ -18,13 +18,13 @@ TEST(CircularBuffer, Initialization)
 TEST(CircularBuffer, BufferStopped)
 {
     CircularBuffer<int> buff(31);
-    EXPECT_EQ(buff.bufferCapacity(), 32);
+    EXPECT_EQ(buff.bufferCapacity(), 32u);
 
     buff.stop();
     EXPECT_TRUE(buff.isEmpty());
     EXPECT_FALSE(buff.isFull());
     EXPECT_FALSE(buff.isActive());
-    EXPECT_EQ(buff.bufferCapacity(), 32);
+    EXPECT_EQ(buff.bufferCapacity(), 32u);
     EXPECT_EQ(buff.peek(), std::nullopt);
     EXPECT_EQ(buff.peek(100ms), std::nullopt);
 }
@@ -32,7 +32,7 @@ TEST(CircularBuffer, BufferStopped)
 TEST(CircularBuffer, BasicUsage)
 {
     CircularBuffer<int> buff { 7 };
-    EXPECT_EQ(buff.bufferCapacity(), 8);
+    EXPECT_EQ(buff.bufferCapacity(), 8u);
 
     EXPECT_EQ(CircularBufferToStr(buff), "{}"s);
 
