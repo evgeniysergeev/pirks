@@ -17,18 +17,18 @@ public:
     void push(const T &element);
 
     [[nodiscard]]
-    std::optional<T> peek();
+    auto peek() -> std::optional<T>;
 
     template<class Rep, class Period>
     [[nodiscard]]
-    std::optional<T> peek(std::chrono::duration<Rep, Period> delay);
+    auto peek(std::chrono::duration<Rep, Period> delay) -> std::optional<T>;
 
     [[nodiscard]]
-    std::optional<T> pop();
+    auto pop() -> std::optional<T>;
 
     template<class Rep, class Period>
     [[nodiscard]]
-    std::optional<T> pop(std::chrono::duration<Rep, Period> delay);
+    auto pop(std::chrono::duration<Rep, Period> delay) -> std::optional<T>;
 
     // Helpers
 public:
@@ -42,21 +42,21 @@ public:
     bool isFull();
 
     [[nodiscard]]
-    size_t bufferCapacity() const;
+    auto bufferCapacity() const -> size_t;
 
     void stop();
 
     // Unsafe access to buffer. Useful for unit tests. Use with caution.
 public:
-    std::mutex &mutex();
+    auto mutex() -> std::mutex &;
 
-    std::vector<T> &unsafe();
-
-    [[nodiscard]]
-    size_t startIndex() const;
+    auto unsafe() -> std::vector<T> &;
 
     [[nodiscard]]
-    size_t endIndex() const;
+    auto startIndex() const -> size_t;
+
+    [[nodiscard]]
+    auto endIndex() const -> size_t;
 
 private:
     volatile bool  active_;
@@ -127,7 +127,7 @@ void CircularBuffer<T>::push(const T &element)
 }
 
 template<class T>
-std::optional<T> CircularBuffer<T>::peek()
+auto CircularBuffer<T>::peek() -> std::optional<T>
 {
     std::unique_lock lock { mutex_ };
 
@@ -145,7 +145,7 @@ std::optional<T> CircularBuffer<T>::peek()
 
 template<class T>
 template<class Rep, class Period>
-std::optional<T> CircularBuffer<T>::peek(std::chrono::duration<Rep, Period> delay)
+auto CircularBuffer<T>::peek(std::chrono::duration<Rep, Period> delay) -> std::optional<T>
 {
     std::unique_lock lock { mutex_ };
 
@@ -168,7 +168,7 @@ std::optional<T> CircularBuffer<T>::peek(std::chrono::duration<Rep, Period> dela
 }
 
 template<class T>
-std::optional<T> CircularBuffer<T>::pop()
+auto CircularBuffer<T>::pop() -> std::optional<T>
 {
     std::unique_lock lock { mutex_ };
 
@@ -196,7 +196,7 @@ std::optional<T> CircularBuffer<T>::pop()
 
 template<class T>
 template<class Rep, class Period>
-std::optional<T> CircularBuffer<T>::pop(std::chrono::duration<Rep, Period> delay)
+auto CircularBuffer<T>::pop(std::chrono::duration<Rep, Period> delay) -> std::optional<T>
 {
     std::unique_lock lock { mutex_ };
 
@@ -260,7 +260,7 @@ bool CircularBuffer<T>::isFull()
 }
 
 template<class T>
-size_t CircularBuffer<T>::bufferCapacity() const
+auto CircularBuffer<T>::bufferCapacity() const -> size_t
 {
     return buffer_.capacity();
 }
@@ -276,25 +276,25 @@ void CircularBuffer<T>::stop()
 // Unsafe access to buffer. Useful for unit tests. Use with caution.
 
 template<class T>
-std::mutex &CircularBuffer<T>::mutex()
+auto CircularBuffer<T>::mutex() -> std::mutex &
 {
     return mutex_;
 }
 
 template<class T>
-std::vector<T> &CircularBuffer<T>::unsafe()
+auto CircularBuffer<T>::unsafe() -> std::vector<T> &
 {
     return buffer_;
 }
 
 template<class T>
-size_t CircularBuffer<T>::startIndex() const
+auto CircularBuffer<T>::startIndex() const -> size_t
 {
     return startIndex_;
 }
 
 template<class T>
-size_t CircularBuffer<T>::endIndex() const
+auto CircularBuffer<T>::endIndex() const -> size_t
 {
     return endIndex_;
 }

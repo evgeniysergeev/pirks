@@ -6,7 +6,7 @@
 #include "CircularBuffer.h"
 
 template<class T>
-std::string CircularBufferToStr(CircularBuffer<T> &buff)
+auto CircularBufferToStr(CircularBuffer<T> &buff) -> std::string
 {
     using namespace std::literals;
 
@@ -16,13 +16,13 @@ std::string CircularBufferToStr(CircularBuffer<T> &buff)
     const auto &items = buff.unsafe();
 
     std::stringstream output;
-    output << "{"s;
+    output << "{"sv;
     bool       isFirst = true;
     const auto sz      = buff.bufferCapacity();
-    size_t     index   = buff.startIndex();
+    auto       index   = buff.startIndex();
     while (index != buff.endIndex()) {
         if (!isFirst) {
-            output << ","s;
+            output << ","sv;
         } else {
             isFirst = false;
         }
@@ -33,7 +33,7 @@ std::string CircularBufferToStr(CircularBuffer<T> &buff)
         index = (index + 1) % sz;
     }
 
-    output << "}"s;
+    output << "}"sv;
 
     return output.str();
 }
