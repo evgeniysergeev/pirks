@@ -23,7 +23,7 @@ MacMicrophone::~MacMicrophone()
     [avAudio_ release];
 }
 
-CaptureResult MacMicrophone::sample(std::vector<float> &sample_in)
+auto MacMicrophone::sample(std::vector<float> &sample_in) -> CaptureResult
 {
     const auto sample_size = sample_in.size();
 

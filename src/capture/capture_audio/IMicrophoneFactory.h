@@ -13,11 +13,11 @@ public:
     virtual ~IMicrophoneFactory() = default;
 
 public:
-    virtual std::unique_ptr<IMicrophone> createMicrophone(
+    virtual auto createMicrophone(
             int                 channels,
             std::uint32_t       sample_rate,
             std::uint32_t       frame_size,
-            const std::uint8_t *mapping) = 0;
+            const std::uint8_t *mapping) -> std::unique_ptr<IMicrophone> = 0;
 };
 
 }; // namespace capture::capture_audio

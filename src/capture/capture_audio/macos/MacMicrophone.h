@@ -16,7 +16,7 @@ public:
     ~MacMicrophone() override;
 
 public:
-    CaptureResult sample(std::vector<float> &sample_in) override;
+    auto sample(std::vector<float> &sample_in) -> CaptureResult override;
 
 private:
     AVAudio *avAudio_ {};

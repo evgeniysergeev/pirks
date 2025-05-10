@@ -4,11 +4,11 @@
 namespace capture::capture_audio::macos
 {
 
-std::unique_ptr<IMicrophone> MacMicrophoneFactory::createMicrophone(
+auto MacMicrophoneFactory::createMicrophone(
         int                 channels,
         std::uint32_t       sample_rate,
         std::uint32_t       frame_size,
-        const std::uint8_t * /* mapping */)
+        const std::uint8_t * /* mapping */) -> std::unique_ptr<IMicrophone>
 {
     const char *audio_sink = "";
 

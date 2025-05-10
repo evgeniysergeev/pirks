@@ -13,7 +13,7 @@ public:
     virtual ~IMicrophone() = default;
 
 public:
-    virtual CaptureResult sample(std::vector<float> &sample_in) = 0;
+    virtual auto sample(std::vector<float> &sample_in) -> CaptureResult = 0;
 };
 
 }; // namespace capture::capture_audio
