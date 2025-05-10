@@ -128,8 +128,8 @@
 }
 
 - (void)captureOutput:(AVCaptureOutput *)output
-  didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
-         fromConnection:(AVCaptureConnection *)connection
+didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
+       fromConnection:(AVCaptureConnection *)connection
 {
     if (connection == self.audioConnection) {
         AudioBufferList audioBufferList;
