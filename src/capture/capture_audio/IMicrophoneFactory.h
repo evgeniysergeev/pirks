@@ -17,7 +17,7 @@ public:
             int                 channels,
             std::uint32_t       sample_rate,
             std::uint32_t       frame_size,
-            const std::uint8_t *mapping = nullptr) = 0;
+            const std::uint8_t *mapping) = 0;
 };
 
 }; // namespace capture::capture_audio

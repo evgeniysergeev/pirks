@@ -3,16 +3,19 @@
 
 enable_testing()
 
-set(COMMON_TEST_SOURCES
+set(SOURCES
     "common-tests/CircularBufferTest.cpp"
+    "microphone-tests/MicrophoneTest.cpp"
 )
 
-add_executable(pirks-tests ${COMMON_TEST_SOURCES})
+add_executable(pirks-tests ${SOURCES})
 
 target_link_libraries(pirks-tests
     common
+    capture_audio
     default_compiler_flags
     GTest::gtest_main
+    ${EXTERNAL_LIBRARIES}
 )
 
 include(GoogleTest)

@@ -4,7 +4,7 @@ set(SOURCES
     "CaptureResult.h"
 )
 
-if(PLATFORM STREQUAL "Windows")
+if(PLATFORM STREQUAL "WINDOWS")
     set(PLATFORM_SOURCES
         "windows/WinMicrophoneFactory.h"
         "windows/WinMicrophoneFactory.cpp"
@@ -33,6 +33,18 @@ add_library(capture_audio STATIC
 target_include_directories(capture_audio PUBLIC
     "${PROJECT_SOURCE_DIR}/third-party/TPCircularBuffer"
 )
+
+if(PLATFORM STREQUAL "WINDOWS")
+    target_include_directories(capture_audio INTERFACE
+        ${CMAKE_CURRENT_SOURCE_DIR}/windows
+    )
+endif()
+
+if(PLATFORM STREQUAL "MACOS")
+    target_include_directories(capture_audio INTERFACE
+        ${CMAKE_CURRENT_SOURCE_DIR}/macos
+    )
+endif()
 
 target_include_directories(capture_audio PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}

@@ -16,7 +16,7 @@ target_include_directories(pirks-server INTERFACE
 
 # use requirements from interface library with compiler flags
 target_link_libraries(pirks-server PUBLIC
-    common
     capture_audio
     default_compiler_flags
+    ${EXTERNAL_LIBRARIES}
 )

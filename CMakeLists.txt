@@ -31,6 +31,10 @@ include(cmake/build_type.cmake)
 include(cmake/spdlog_setup.cmake)
 include(cmake/cli11_setup.cmake)
 
+if(PLATFORM STREQUAL "MACOS")
+    include(cmake/macos.cmake)
+endif()
+
 # generate config header file
 configure_file(src/version.h.in version.h)
 
