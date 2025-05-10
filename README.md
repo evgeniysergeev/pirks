@@ -6,6 +6,13 @@ Pirks is based on this open source projects:
 - [Sunshine](https://github.com/LizardByte/Sunshine)
 - [Moonlight](https://github.com/moonlight-stream)
 
+## Documentation
+
+- [Setup development environment](docs/SETUP-DEV-ENV.md)
+- [Build howto](docs/HOWTO-BUILD.md)
+- [Third party libraries](docs/THIRD-PARTY.md)
+- [Commit tags howto](docs/COMMIT-TAGS.md)
+
 ## License
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published by
