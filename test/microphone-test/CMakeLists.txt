@@ -11,18 +11,22 @@ set(SOURCES
 
 add_executable(${TARGET_NAME} ${SOURCES})
 
-# if(PLATFORM STREQUAL "MACOS")
-#     set(PLIST_FILE "${CMAKE_CURRENT_SOURCE_DIR}/res/macos/info.plist")
-#     target_link_options(${TARGET_NAME} PRIVATE
-#         LINKER:-sectcreate,__TEXT,__info_plist,${PLIST_FILE}
-#     )
-# endif()
-#
-# # codesign --verbose=3 --timestamp --options=runtime -s - --force --deep pirks-tests
-# add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
-#     COMMAND codesign
-#     ARGS --verbose=3 --timestamp --options=runtime -s - --force --deep ${TARGET_NAME}
-#     COMMENT "Execute codesign to sign ${TARGET_NAME}"
+if(PLATFORM STREQUAL "MACOS")
+    set(PLIST_FILE "${CMAKE_CURRENT_SOURCE_DIR}/res/macos/info.plist")
+
+    set_target_properties(${TARGET_NAME} PROPERTIES
+        MACOSX_BUNDLE_BUNDLE_NAME ${TARGET_NAME}
+        MACOSX_BUNDLE_INFO_PLIST ${PLIST_FILE} # Use own plist template
+        MACOSX_BUNDLE TRUE
+    )
+endif()
+
+
+# codesign --verbose=3 --force --deep --sign - ${TARGET_NAME}
+#add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
+#    COMMAND codesign
+#    ARGS --verbose=3 --force --deep --sign - ${TARGET_NAME}.app
+#    COMMENT "Execute codesign to sign ${TARGET_NAME}"
 # )
 
 target_link_libraries(${TARGET_NAME}

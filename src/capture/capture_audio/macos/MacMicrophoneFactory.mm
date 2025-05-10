@@ -21,6 +21,14 @@ std::unique_ptr<IMicrophone> MacMicrophoneFactory::createMicrophone(
 
     AVCaptureDevice *captureDevice = [AVAudio findMicrophone:[NSString stringWithUTF8String:audio_sink]];
     if (captureDevice == nullptr) {
+        NSString *audioSinkName = nullptr;
+        for (NSString *name in [AVAudio microphoneNames]) {
+            audioSinkName = name;
+            break;
+        }
+
+        captureDevice = [AVAudio findMicrophone:audioSinkName];
+
     // TODO: 
     /*
         BOOST_LOG(error) << "opening microphone '"sv << audio_sink << "' failed. Please set a valid input source in the Sunshine config."sv;
@@ -34,7 +42,9 @@ std::unique_ptr<IMicrophone> MacMicrophoneFactory::createMicrophone(
         }
         */
 
-        return nullptr;
+        if (captureDevice == nullptr) {
+            return nullptr;
+        }
     }
     
     try {

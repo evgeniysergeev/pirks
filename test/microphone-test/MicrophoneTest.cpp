@@ -6,8 +6,8 @@ TEST(Microphone, MicophoneFactory)
 {
     using namespace capture::capture_audio;
 
-    MicrophoneFactory micFactory;
-    auto              mic = micFactory.createMicrophone(1, 48000, 96000, nullptr);
+    MicrophoneFactory mic_factory;
+    auto              mic = mic_factory.createMicrophone(1, 48000, 96000, nullptr);
 
     ASSERT_TRUE(mic != nullptr);
 }
