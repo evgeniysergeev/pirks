@@ -1,21 +1,23 @@
 # Server
 
-set(SERVER_SOURCES
-    "main.cpp"
-    "server_config.h"
-    "server_config.cpp"
+set(TARGET_NAME pirks-server)
+
+set(SOURCES
+    main.cpp
+    server_config.h
+    server_config.cpp
 )
 
-add_executable(pirks-server ${SERVER_SOURCES})
+add_executable(${TARGET_NAME} ${SOURCES})
 
 # add to include directories
 # ${PROJECT_BINARY_DIR} needed for include version.h was already added in common
-target_include_directories(pirks-server INTERFACE
+target_include_directories(${TARGET_NAME} INTERFACE
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 # use requirements from interface library with compiler flags
-target_link_libraries(pirks-server PUBLIC
+target_link_libraries(${TARGET_NAME} PUBLIC
     capture_audio
     default_compiler_flags
     ${EXTERNAL_LIBRARIES}
