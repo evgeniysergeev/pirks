@@ -8,7 +8,7 @@ set(PROJECT_LICENSE "AGPL-3")
 set(PROJECT_LONG_DESCRIPTION "Pirks is a video streaming application")
 
 # Build and run tests
-option(BUILD_TESTS "Build tests" ON)
+option(BUILD_TESTS "Build and run tests" ON)
 
 # determine which compiler is currently using to build
 set(gcc_like_cxx "$<COMPILE_LANG_AND_ID:CXX,ARMClang,AppleClang,Clang,GNU,LCC>")
@@ -35,9 +35,6 @@ if(PLATFORM STREQUAL "MACOS")
     include(cmake/macos.cmake)
 endif()
 
-# Fine tune tests options
-include(cmake/tests_options.cmake)
-
 # generate config header file
 configure_file(src/version.h.in version.h)
 
@@ -52,6 +49,9 @@ add_subdirectory(src/server)
 
 # Tests
 if(BUILD_TESTS)
+    # Fine tune tests options
+    include(cmake/tests_options.cmake)
+
     include("cmake/fetch_googletest.cmake")
-    add_subdirectory(tests)
+    add_subdirectory(test)
 endif()
