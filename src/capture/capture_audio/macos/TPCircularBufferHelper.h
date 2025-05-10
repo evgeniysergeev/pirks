@@ -5,9 +5,11 @@
 This is helper for include TPCircularBuffer.h with turned off asserts.
 TPCircularBuffer.h has the bug in assert which will produce warnings like this:
 
-TPCircularBuffer/TPCircularBuffer.h:197:30: warning: comparison of integers of different signs: 'int' and 'uint32_t'
-(aka 'unsigned int') [-Wsign-compare] [build]     assert(buffer->fillCount <= buffer->length); [build] ~~~~~~~~~~~~~~~~~
-^  ~~~~~~~~~~~~~~
+TPCircularBuffer/TPCircularBuffer.h:197:30: warning:
+comparison of integers of different signs: 'int' and 'uint32_t'
+(aka 'unsigned int') [-Wsign-compare]
+[build]     assert(buffer->fillCount <= buffer->length);
+[build]           ~~~~~~~~~~~~~~~~~ ^  ~~~~~~~~~~~~~~
 
 */
 
