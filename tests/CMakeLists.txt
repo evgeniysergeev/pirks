@@ -5,8 +5,13 @@ enable_testing()
 
 set(SOURCES
     "common-tests/CircularBufferTest.cpp"
-    "microphone-tests/MicrophoneTest.cpp"
 )
+
+if(TEST_MICROPHONE)
+    list(APPEND SOURCES
+        "microphone-tests/MicrophoneTest.cpp"
+    )
+endif()
 
 add_executable(pirks-tests ${SOURCES})
 
