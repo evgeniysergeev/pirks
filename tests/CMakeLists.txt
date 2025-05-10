@@ -16,7 +16,6 @@ endif()
 add_executable(pirks-tests ${SOURCES})
 
 target_link_libraries(pirks-tests
-    common
     capture_audio
     default_compiler_flags
     GTest::gtest_main
