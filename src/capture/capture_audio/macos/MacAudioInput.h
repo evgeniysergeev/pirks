@@ -2,28 +2,28 @@
 
 #include <AVFoundation/AVFoundation.h>
 
-#include "AVAudio.h"
-#include "IMicrophone.h"
+#include "CaptureDevice.h"
+#include "IAudioInput.h"
 
 namespace capture::capture_audio::macos
 {
 
-class MacMicrophone final : public IMicrophone
+class MacAudioInput final : public IAudioInput
 {
 public:
-    MacMicrophone(
+    MacAudioInput(
             AVCaptureDevice *capture_device,
             int              channels,
             uint32_t         sample_rate,
             uint32_t         frame_size);
 
-    ~MacMicrophone() override;
+    ~MacAudioInput() override;
 
 public:
     auto sample(std::vector<float> &sample_in) -> CaptureResult override;
 
 private:
-    AVAudio *avAudio_ {};
+    CaptureDevice *captureDevice_ {};
 };
 
 }; // namespace capture::capture_audio::macos

@@ -1,13 +1,13 @@
 #include <gtest/gtest.h>
 
-#include "MicrophoneFactory.h"
+#include "AudioInputFactory.h"
 
-TEST(Microphone, MicophoneFactory)
+TEST(AudioInput, MicophoneFactory)
 {
     using namespace capture::capture_audio;
 
-    MicrophoneFactory mic_factory;
-    auto              mic = mic_factory.createMicrophone(1, 48000, 96000, nullptr);
+    AudioInputFactory audio_input_factory;
+    auto              mic = audio_input_factory.create(1, 48000, 96000, nullptr);
 
     ASSERT_TRUE(mic != nullptr);
 }

@@ -1,24 +1,24 @@
 set(SOURCES
-    "IMicrophone.h"
-    "IMicrophoneFactory.h"
+    "IAudioInput.h"
+    "IAudioInputFactory.h"
     "CaptureResult.h"
 )
 
 if(PLATFORM STREQUAL "WINDOWS")
     set(PLATFORM_SOURCES
-        "windows/WinMicrophoneFactory.h"
-        "windows/WinMicrophoneFactory.cpp"
+        "windows/WinAudioInputFactory.h"
+        "windows/WinAudioInputFactory.cpp"
     )
 endif()
 
 if(PLATFORM STREQUAL "MACOS")
     set(PLATFORM_SOURCES
-        "macos/AVAudio.h"
-        "macos/AVAudio.m"
-        "macos/MacMicrophone.h"
-        "macos/MacMicrophone.mm"
-        "macos/MacMicrophoneFactory.h"
-        "macos/MacMicrophoneFactory.mm"
+        "macos/CaptureDevice.h"
+        "macos/CaptureDevice.m"
+        "macos/MacAudioInput.h"
+        "macos/MacAudioInput.mm"
+        "macos/MacAudioInputFactory.h"
+        "macos/MacAudioInputFactory.mm"
         "macos/TPCircularBufferHelper.h"
         "${PROJECT_SOURCE_DIR}/third-party/TPCircularBuffer/TPCircularBuffer.h"
         "${PROJECT_SOURCE_DIR}/third-party/TPCircularBuffer/TPCircularBuffer.c"

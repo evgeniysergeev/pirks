@@ -7,10 +7,10 @@
 namespace capture::capture_audio
 {
 
-class IMicrophone
+class IAudioInput
 {
 public:
-    virtual ~IMicrophone() = default;
+    virtual ~IAudioInput() = default;
 
 public:
     virtual auto sample(std::vector<float> &sample_in) -> CaptureResult = 0;

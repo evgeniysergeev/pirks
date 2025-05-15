@@ -2,7 +2,7 @@
 Pirks is a video streaming engine
 
 ## Description
-Pirks is based on this open source projects:
+Pirks is based on this open source projects licensed under GPL-3.0 license:
 - [Sunshine](https://github.com/LizardByte/Sunshine)
 - [Moonlight](https://github.com/moonlight-stream)
 

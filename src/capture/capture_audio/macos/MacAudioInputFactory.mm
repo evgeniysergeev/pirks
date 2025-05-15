@@ -1,14 +1,14 @@
-#include "MacMicrophoneFactory.h"
-#include "MacMicrophone.h"
+#include "MacAudioInputFactory.h"
+#include "MacAudioInput.h"
 
 namespace capture::capture_audio::macos
 {
 
-auto MacMicrophoneFactory::createMicrophone(
+auto MacAudioInputFactory::create(
         int                 channels,
         std::uint32_t       sample_rate,
         std::uint32_t       frame_size,
-        const std::uint8_t * /* mapping */) -> std::unique_ptr<IMicrophone>
+        const std::uint8_t * /* mapping */) -> std::unique_ptr<IAudioInput>
 {
     const char *audio_sink = "";
 
@@ -19,25 +19,25 @@ auto MacMicrophoneFactory::createMicrophone(
       }
     */
 
-    AVCaptureDevice *captureDevice = [AVAudio findMicrophone:[NSString stringWithUTF8String:audio_sink]];
+    AVCaptureDevice *captureDevice = [CaptureDevice findCaptureDevice:[NSString stringWithUTF8String:audio_sink]];
     if (captureDevice == nullptr) {
         NSString *audioSinkName = nullptr;
-        for (NSString *name in [AVAudio microphoneNames]) {
+        for (NSString *name in [CaptureDevice microphoneNames]) {
             audioSinkName = name;
             break;
         }
 
-        captureDevice = [AVAudio findMicrophone:audioSinkName];
+        captureDevice = [CaptureDevice findCaptureDevice:audioSinkName];
 
     // TODO: 
     /*
-        BOOST_LOG(error) << "opening microphone '"sv << audio_sink << "' failed. Please set a valid input source in the Sunshine config."sv;
+        BOOST_LOG(error) << "opening AudioInput '"sv << audio_sink << "' failed. Please set a valid input source in the Sunshine config."sv;
         BOOST_LOG(error) << "Available inputs:"sv;
         */
 
     // TODO: 
     /*
-        for (NSString *name in [AVAudio microphoneNames]) {
+        for (NSString *name in [CaptureDevice AudioInputNames]) {
           BOOST_LOG(error) << "\t"sv << [name UTF8String];
         }
         */
@@ -48,7 +48,7 @@ auto MacMicrophoneFactory::createMicrophone(
     }
     
     try {
-        return std::make_unique<MacMicrophone>(captureDevice, channels, sample_rate, frame_size);
+        return std::make_unique<MacAudioInput>(captureDevice, channels, sample_rate, frame_size);
     } catch (const std::exception &e) {
         return nullptr;
     }

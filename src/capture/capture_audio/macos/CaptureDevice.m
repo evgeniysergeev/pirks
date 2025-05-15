@@ -1,12 +1,13 @@
 /*
- * This file is based on src/platform/macos/av_audio.m from Sunshine
+ * This file is based on src/platform/macos/av_audio.m from Sunshine (GPL-3.0 license)
+ * see README.md in the root directory for details
  */
 
-#import "AVAudio.h"
+#import "CaptureDevice.h"
 
 #define kBufferLength 4096
 
-@implementation AVAudio
+@implementation CaptureDevice
 
 + (NSArray<AVCaptureDevice *> *)microphones
 {
@@ -39,16 +40,16 @@
 {
     NSMutableArray *result = [[NSMutableArray alloc] init];
 
-    for (AVCaptureDevice *device in [AVAudio microphones]) {
+    for (AVCaptureDevice *device in [CaptureDevice microphones]) {
         [result addObject:[device localizedName]];
     }
 
     return result;
 }
 
-+ (AVCaptureDevice *)findMicrophone:(NSString *)name
++ (AVCaptureDevice *)findCaptureDevice:(NSString *)name
 {
-    for (AVCaptureDevice *device in [AVAudio microphones]) {
+    for (AVCaptureDevice *device in [CaptureDevice microphones]) {
         if ([[device localizedName] isEqualToString:name]) {
             return device;
         }
@@ -68,10 +69,10 @@
     [super dealloc];
 }
 
-- (int)setupMicrophone:(AVCaptureDevice *)device
-            sampleRate:(UInt32)sampleRate
-             frameSize:(UInt32)frameSize
-              channels:(UInt8)channels
+- (int)setupCaptureDevice:(AVCaptureDevice *)device
+               sampleRate:(UInt32)sampleRate
+                frameSize:(UInt32)frameSize
+                 channels:(UInt8)channels
 {
     self.audioCaptureSession = [[AVCaptureSession alloc] init];
 
