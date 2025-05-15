@@ -19,7 +19,6 @@ if(PLATFORM STREQUAL "MACOS")
         "macos/MacAudioInput.mm"
         "macos/MacAudioInputFactory.h"
         "macos/MacAudioInputFactory.mm"
-        "macos/TPCircularBufferHelper.h"
         "${PROJECT_SOURCE_DIR}/third-party/TPCircularBuffer/TPCircularBuffer.h"
         "${PROJECT_SOURCE_DIR}/third-party/TPCircularBuffer/TPCircularBuffer.c"
     )

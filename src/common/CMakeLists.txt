@@ -2,6 +2,7 @@ set(SOURCES
     "CircularBuffer.h"
     "str_utils.h"
     "str_utils.cpp"
+    "helpers/TPCircularBufferHelper.h"
 )
 
 add_library(common STATIC
@@ -12,6 +13,7 @@ add_library(common STATIC
 # ${PROJECT_BINARY_DIR} added for include version.h which generated here
 target_include_directories(common INTERFACE
     ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/helpers
     ${PROJECT_BINARY_DIR}
 )
 
