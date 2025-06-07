@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
 #include "CircularBuffer.h"
-#include "CircularBufferToStr.h"
+#include "debug/CircularBufferToStr.h"
 
 using namespace std::literals;
 

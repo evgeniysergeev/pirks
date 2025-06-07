@@ -1,8 +1,9 @@
 set(SOURCES
+    "debug/CircularBufferToStr.h"
+    "helpers/TPCircularBufferHelper.h"
     "CircularBuffer.h"
     "str_utils.h"
     "str_utils.cpp"
-    "helpers/TPCircularBufferHelper.h"
 )
 
 add_library(common STATIC
