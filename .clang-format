@@ -168,7 +168,15 @@ PenaltyBreakString: 1000
 PenaltyBreakTemplateDeclaration: 10
 PenaltyExcessCharacter: 1000000
 PenaltyIndentedWhitespace: 0
-PenaltyReturnTypeOnItsOwnLine: 80
+
+# RTBS_None (in configuration: AlwaysBreakAfterReturnType: None)
+# Break after return type automatically. PenaltyReturnTypeOnItsOwnLine is taken
+# into account. So "None" doesn't mean that it will never break after return type,
+# it will take into account other settings like BinPackParameters, BraceWrapping, etc.
+# and their penalties. To make breaking after return type less likely
+# or "almost" turned off you can set PenaltyReturnTypeOnItsOwnLine to a very high value,
+# for example: PenaltyReturnTypeOnItsOwnLine: 1000000
+PenaltyReturnTypeOnItsOwnLine: 1000000
 PointerAlignment: Right
 PPIndentWidth:   -1
 QualifierAlignment: Leave

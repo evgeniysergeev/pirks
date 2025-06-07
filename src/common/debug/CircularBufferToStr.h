@@ -7,12 +7,12 @@
 
 /**
  * @brief Print content form a CircularBuffer instanse in one line
- * 
+ *
  * Can be used in tests or for debug logging
- * 
- * @tparam T 
- * @param buff      CurcularBuffer instance
- * @return std::string Result in one line. For example: { 1,2,3 }
+ *
+ * @tparam T
+ * @param buff          CurcularBuffer instance
+ * @return std::string  Result in one line. For example: { 1,2,3 }
  */
 template<class T>
 auto CircularBufferToStr(CircularBuffer<T> &buff) -> std::string
