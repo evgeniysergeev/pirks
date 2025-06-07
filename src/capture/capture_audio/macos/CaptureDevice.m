@@ -20,9 +20,10 @@
         // a different method.
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunguarded-availability-new"
-        AVCaptureDeviceDiscoverySession *discoverySession = [AVCaptureDeviceDiscoverySession discoverySessionWithDeviceTypes:@[AVCaptureDeviceTypeBuiltInMicrophone, AVCaptureDeviceTypeExternalUnknown]
-                                                                                                               mediaType:AVMediaTypeAudio
-                                                                                                                position:AVCaptureDevicePositionUnspecified];
+        AVCaptureDeviceDiscoverySession *discoverySession =
+            [AVCaptureDeviceDiscoverySession discoverySessionWithDeviceTypes:@[AVCaptureDeviceTypeBuiltInMicrophone, AVCaptureDeviceTypeExternalUnknown]
+                                                                   mediaType:AVMediaTypeAudio
+                                                                    position:AVCaptureDevicePositionUnspecified];
         return discoverySession.devices;
 #pragma clang diagnostic pop
     } else {
@@ -47,7 +48,7 @@
     return result;
 }
 
-+ (AVCaptureDevice *)findCaptureDevice:(NSString *)name
++ (AVCaptureDevice *)findMicrophoneDevice:(NSString *)name
 {
     for (AVCaptureDevice *device in [CaptureDevice microphones]) {
         if ([[device localizedName] isEqualToString:name]) {

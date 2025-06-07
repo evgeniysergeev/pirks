@@ -10,9 +10,9 @@ MacAudioInput::MacAudioInput(AVCaptureDevice *capture_device, int channels, uint
     captureDevice_ = [[CaptureDevice alloc] init];
 
     if ([captureDevice_ setupCaptureDevice:capture_device
-                       sampleRate:sample_rate
-                        frameSize:frame_size
-                         channels:channels])
+                                sampleRate:sample_rate
+                                 frameSize:frame_size
+                                  channels:channels])
     {
         throw std::runtime_error("Failed to setup microphone");
     }
