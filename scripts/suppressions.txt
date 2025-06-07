@@ -4,4 +4,5 @@ missingIncludeSystem
 # ignore all warnings in third-party libraries
 *:*/third-party/*
 
+# Covered by gcc's unused-variable warning.
 unusedFunction

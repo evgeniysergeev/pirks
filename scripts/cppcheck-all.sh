@@ -18,6 +18,7 @@ cppcheck \
     --force \
     --template=gcc \
     --library=std.cfg \
+    --inline-suppr \
     --suppressions-list=../scripts/suppressions.txt \
     -i_deps \
     -i$project_path/third-party \
