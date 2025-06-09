@@ -15,6 +15,7 @@ include(cmake/platform_definitions.cmake)
 include(cmake/build_type.cmake)
 include(cmake/spdlog_setup.cmake)
 include(cmake/cli11_setup.cmake)
+include(cmake/deferral_setup.cmake)
 
 if(PLATFORM STREQUAL "MACOS")
     include(cmake/macos.cmake)
