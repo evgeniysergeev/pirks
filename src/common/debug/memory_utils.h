@@ -24,7 +24,7 @@ namespace memory_utils
  *
  * Example output:
  * @code
- * 00000000: 48 65 6c 6c 6f 2c 20 57  6f 72 6c 64 21 00 00 00  |Hello, World!...|
+ * 00000000: 48 65 6c 6c 6f 2c 20 57  6f 72 6c 64 21 00 00 00  |Hello, W orld!...|
  * @endcode
  *
  * @param data A span containing the memory region to dump

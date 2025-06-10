@@ -28,7 +28,7 @@ TEST_F(MemoryUtilsTest, DumpMemoryToString_Basic)
     std::string result = memory_utils::dump_memory_to_string(std::span { data });
 
     std::string expected =
-            "00000000: 48 65 6c 6c 6f 2c 20 57  6f 72 6c 64 21 00 00 00  |Hello, World!...|\n";
+            "00000000: 48 65 6c 6c 6f 2c 20 57  6f 72 6c 64 21 00 00 00  |Hello, W orld!...|\n";
     EXPECT_EQ(result, expected);
 }
 
@@ -38,7 +38,7 @@ TEST_F(MemoryUtilsTest, DumpMemoryToString_WithPrefix)
     std::string          result = memory_utils::dump_memory_to_string(std::span { data }, "TEST: ");
 
     std::string expected =
-            "TEST: 00000000: 48 65 6c 6c 6f                                    |Hello           |\n";
+            "TEST: 00000000: 48 65 6c 6c 6f                                    |Hello            |\n";
     EXPECT_EQ(result, expected);
 }
 
@@ -50,7 +50,7 @@ TEST_F(MemoryUtilsTest, DumpMemoryToString_NonPrintable)
     std::string result = memory_utils::dump_memory_to_string(std::span { data });
 
     std::string expected =
-            "00000000: 00 01 02 03 04 05 06 07  08 09 0a 0b 0c 0d 0e 0f  |................|\n";
+            "00000000: 00 01 02 03 04 05 06 07  08 09 0a 0b 0c 0d 0e 0f  |........ ........|\n";
     EXPECT_EQ(result, expected);
 }
 
@@ -154,7 +154,7 @@ TEST_F(MemoryUtilsTest, DumpMemoryToString_SingleByte)
     std::string          result = memory_utils::dump_memory_to_string(std::span { data });
 
     std::string expected =
-            "00000000: 42                                                |B               |\n";
+            "00000000: 42                                                |B                |\n";
     EXPECT_EQ(result, expected);
 }
 
@@ -168,9 +168,9 @@ TEST_F(MemoryUtilsTest, DumpMemoryToString_AllPrintable)
     std::string result = memory_utils::dump_memory_to_string(std::span { data });
 
     // Check that all characters are displayed correctly
-    EXPECT_TRUE(result.find(" !\"#$%&'()*+,-./") != std::string::npos);
-    EXPECT_TRUE(result.find("0123456789:;<=>?") != std::string::npos);
-    EXPECT_TRUE(result.find("@ABCDEFGHIJKLMNO") != std::string::npos);
+    EXPECT_TRUE(result.find(" !\"#$%&' ()*+,-./") != std::string::npos);
+    EXPECT_TRUE(result.find("01234567 89:;<=>?") != std::string::npos);
+    EXPECT_TRUE(result.find("@ABCDEFG HIJKLMNO") != std::string::npos);
 }
 
 TEST_F(MemoryUtilsTest, DumpMemoryToString_AllNonPrintable)
@@ -183,7 +183,7 @@ TEST_F(MemoryUtilsTest, DumpMemoryToString_AllNonPrintable)
     std::string result = memory_utils::dump_memory_to_string(std::span { data });
 
     // Check that all non-printable characters are displayed as dots
-    EXPECT_TRUE(result.find("................") != std::string::npos);
+    EXPECT_TRUE(result.find("........ ........") != std::string::npos);
 }
 
 TEST_F(MemoryUtilsTest, DumpMemoryToString_Unicode)
@@ -219,7 +219,7 @@ TEST_F(MemoryUtilsTest, DumpMemoryToString_ZeroBytes)
     std::string          result = memory_utils::dump_memory_to_string(std::span { data });
 
     std::string expected =
-            "00000000: 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|\n";
+            "00000000: 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |........ ........|\n";
     EXPECT_EQ(result, expected);
 }
 
@@ -230,7 +230,7 @@ TEST_F(MemoryUtilsTest, DumpMemoryToString_AlternatingBytes)
     std::string          result = memory_utils::dump_memory_to_string(std::span { data });
 
     std::string expected =
-            "00000000: 00 ff 00 ff 00 ff 00 ff  00 ff 00 ff 00 ff 00 ff  |................|\n";
+            "00000000: 00 ff 00 ff 00 ff 00 ff  00 ff 00 ff 00 ff 00 ff  |........ ........|\n";
     EXPECT_EQ(result, expected);
 }
 
@@ -257,9 +257,9 @@ TEST_F(MemoryUtilsTest, DumpMemoryToString_ThreeLines_Detailed)
 
     // Проверяем первую строку
     std::string expected =
-            "00000000: 00 01 02 03 04 05 06 07  08 09 0a 0b 0c 0d 0e 0f  |................|\n"
-            "00000010: 10 11 12 13 14 15 16 17  18 19 1a 1b 1c 1d 1e 1f  |................|\n"
-            "00000020: 20 21 22 23 24 25 26 27  28 29 2a 2b 2c 2d 2e 2f  | !\"#$%&'()*+,-./|\n";
+            "00000000: 00 01 02 03 04 05 06 07  08 09 0a 0b 0c 0d 0e 0f  |........ ........|\n"
+            "00000010: 10 11 12 13 14 15 16 17  18 19 1a 1b 1c 1d 1e 1f  |........ ........|\n"
+            "00000020: 20 21 22 23 24 25 26 27  28 29 2a 2b 2c 2d 2e 2f  | !\"#$%&' ()*+,-./|\n";
 
     EXPECT_EQ(result, expected);
 
@@ -280,11 +280,11 @@ TEST_F(MemoryUtilsTest, DumpMemoryToString_FiveLines_Detailed)
 
     // Проверяем все пять строк
     std::string expected =
-            "00000000: 00 01 02 03 04 05 06 07  08 09 0a 0b 0c 0d 0e 0f  |................|\n"
-            "00000010: 10 11 12 13 14 15 16 17  18 19 1a 1b 1c 1d 1e 1f  |................|\n"
-            "00000020: 20 21 22 23 24 25 26 27  28 29 2a 2b 2c 2d 2e 2f  | !\"#$%&'()*+,-./|\n"
-            "00000030: 30 31 32 33 34 35 36 37  38 39 3a 3b 3c 3d 3e 3f  |0123456789:;<=>?|\n"
-            "00000040: 40 41 42 43 44 45 46 47  48 49 4a 4b 4c 4d 4e 4f  |@ABCDEFGHIJKLMNO|\n";
+            "00000000: 00 01 02 03 04 05 06 07  08 09 0a 0b 0c 0d 0e 0f  |........ ........|\n"
+            "00000010: 10 11 12 13 14 15 16 17  18 19 1a 1b 1c 1d 1e 1f  |........ ........|\n"
+            "00000020: 20 21 22 23 24 25 26 27  28 29 2a 2b 2c 2d 2e 2f  | !\"#$%&' ()*+,-./|\n"
+            "00000030: 30 31 32 33 34 35 36 37  38 39 3a 3b 3c 3d 3e 3f  |01234567 89:;<=>?|\n"
+            "00000040: 40 41 42 43 44 45 46 47  48 49 4a 4b 4c 4d 4e 4f  |@ABCDEFG HIJKLMNO|\n";
 
     EXPECT_EQ(result, expected);
 
@@ -315,11 +315,11 @@ TEST_F(MemoryUtilsTest, DumpMemoryToString_ThreeLines_WithPrintable)
 
     // Check first line (all dots)
     std::string expected =
-            "00000000: 00 01 02 03 04 05 06 07  08 09 0a 0b 0c 0d 0e 0f  |................|\n"
+            "00000000: 00 01 02 03 04 05 06 07  08 09 0a 0b 0c 0d 0e 0f  |........ ........|\n"
             // Check second line (mix of dots and characters)
-            "00000010: 20 21 22 00 01 02 23 24  25 00 01 26 27 28 29 2a  | !\"...#$%..&'()*|\n"
+            "00000010: 20 21 22 00 01 02 23 24  25 00 01 26 27 28 29 2a  | !\"...#$ %..&'()*|\n"
             // Check third line (all characters)
-            "00000020: 41 42 43 44 45 46 47 48  49 4a 4b 4c 4d 4e 4f 50  |ABCDEFGHIJKLMNOP|\n";
+            "00000020: 41 42 43 44 45 46 47 48  49 4a 4b 4c 4d 4e 4f 50  |ABCDEFGH IJKLMNOP|\n";
 
     EXPECT_EQ(result, expected);
 
@@ -340,10 +340,10 @@ TEST_F(MemoryUtilsTest, DumpMemoryToString_LastLinePartial_Short)
 
     // Check first two full lines
     std::string expected =
-            "00000000: 00 01 02 03 04 05 06 07  08 09 0a 0b 0c 0d 0e 0f  |................|\n"
-            "00000010: 10 11 12 13 14 15 16 17  18 19 1a 1b 1c 1d 1e 1f  |................|\n"
+            "00000000: 00 01 02 03 04 05 06 07  08 09 0a 0b 0c 0d 0e 0f  |........ ........|\n"
+            "00000010: 10 11 12 13 14 15 16 17  18 19 1a 1b 1c 1d 1e 1f  |........ ........|\n"
             // Check last partial line (5 bytes + padding)
-            "00000020: 20 21 22 23 24 25                                 | !\"#$%          |\n";
+            "00000020: 20 21 22 23 24 25                                 | !\"#$%           |\n";
 
     EXPECT_EQ(result, expected);
 
@@ -364,11 +364,11 @@ TEST_F(MemoryUtilsTest, DumpMemoryToString_LastLinePartial_Long)
 
     // Check first three full lines
     std::string expected =
-            "00000000: 00 01 02 03 04 05 06 07  08 09 0a 0b 0c 0d 0e 0f  |................|\n"
-            "00000010: 10 11 12 13 14 15 16 17  18 19 1a 1b 1c 1d 1e 1f  |................|\n"
-            "00000020: 20 21 22 23 24 25 26 27  28 29 2a 2b 2c 2d 2e 2f  | !\"#$%&'()*+,-./|\n"
+            "00000000: 00 01 02 03 04 05 06 07  08 09 0a 0b 0c 0d 0e 0f  |........ ........|\n"
+            "00000010: 10 11 12 13 14 15 16 17  18 19 1a 1b 1c 1d 1e 1f  |........ ........|\n"
+            "00000020: 20 21 22 23 24 25 26 27  28 29 2a 2b 2c 2d 2e 2f  | !\"#$%&' ()*+,-./|\n"
             // Check last partial line (12 bytes + padding)
-            "00000030: 30 31 32 33 34 35 36 37  38 39 3a 3b              |0123456789:;    |\n";
+            "00000030: 30 31 32 33 34 35 36 37  38 39 3a 3b              |01234567 89:;    |\n";
 
     EXPECT_EQ(result, expected);
 
@@ -396,10 +396,10 @@ TEST_F(MemoryUtilsTest, DumpMemoryToString_LastLinePartial_Printable)
 
     // Check first two full lines
     std::string expected =
-            "00000000: 41 42 43 44 45 46 47 48  49 4a 4b 4c 4d 4e 4f 50  |ABCDEFGHIJKLMNOP|\n"
-            "00000010: 51 52 53 54 55 56 57 58  59 5a 61 62 63 64 65 66  |QRSTUVWXYZabcdef|\n"
+            "00000000: 41 42 43 44 45 46 47 48  49 4a 4b 4c 4d 4e 4f 50  |ABCDEFGH IJKLMNOP|\n"
+            "00000010: 51 52 53 54 55 56 57 58  59 5a 61 62 63 64 65 66  |QRSTUVWX YZabcdef|\n"
             // Check last partial line (7 bytes + padding)
-            "00000020: 67 68 69 6a 6b 6c 6d                              |ghijklm         |\n";
+            "00000020: 67 68 69 6a 6b 6c 6d                              |ghijklm          |\n";
 
     EXPECT_EQ(result, expected);
 
@@ -427,10 +427,10 @@ TEST_F(MemoryUtilsTest, DumpMemoryToString_LastLinePartial_Mixed)
 
     // Check first two full lines
     std::string expected =
-            "00000000: 41 42 43 44 45 46 47 48  49 4a 4b 4c 4d 4e 4f 50  |ABCDEFGHIJKLMNOP|\n"
-            "00000010: 00 41 00 42 00 43 00 44  00 45 00 46 00 47 00 48  |.A.B.C.D.E.F.G.H|\n"
+            "00000000: 41 42 43 44 45 46 47 48  49 4a 4b 4c 4d 4e 4f 50  |ABCDEFGH IJKLMNOP|\n"
+            "00000010: 00 41 00 42 00 43 00 44  00 45 00 46 00 47 00 48  |.A.B.C.D .E.F.G.H|\n"
             // Check last partial line (9 bytes + padding)
-            "00000020: 00 49 00 4a 00 4b 00 4c  00                       |.I.J.K.L.       |\n";
+            "00000020: 00 49 00 4a 00 4b 00 4c  00                       |.I.J.K.L .       |\n";
 
     EXPECT_EQ(result, expected);
 

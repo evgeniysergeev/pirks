@@ -43,6 +43,11 @@ std::string dump_memory_to_string(std::span<const std::uint8_t> data, const std:
             } else {
                 ss << " ";
             }
+
+            // Add space after 8 bytes
+            if (j == 7) {
+                ss << " ";
+            }
         }
         ss << "|\n";
     }
