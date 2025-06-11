@@ -26,10 +26,7 @@ int main(int argc, char **argv)
 {
     // Print version information early
     spdlog::info("{} v{} (Platform: {})"sv, PROJECT_NAME, PROJECT_FULL_VERSION, PROJECT_PLATFORM);
-    defer
-    {
-        spdlog::info("{} v{} exited"sv, PROJECT_NAME, PROJECT_FULL_VERSION);
-    };
+    defer { spdlog::info("{} v{} exited"sv, PROJECT_NAME, PROJECT_FULL_VERSION); };
 
     const auto ret = parseArgs(argc, argv);
     if (ret != 0) {
