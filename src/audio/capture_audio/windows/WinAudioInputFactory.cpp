@@ -1,6 +1,6 @@
 #include "WinAudioInputFactory.h"
 
-namespace capture::capture_audio::windows
+namespace audio::capture_audio::windows
 {
 
 auto WinAudioInputFactory::create(
@@ -12,4 +12,4 @@ auto WinAudioInputFactory::create(
     return nullptr;
 }
 
-}; // namespace capture::capture_audio::windows
+}; // namespace audio::capture_audio::windows

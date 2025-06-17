@@ -2,7 +2,7 @@
 
 #include <stdexcept>
 
-namespace capture::capture_audio::macos
+namespace audio::capture_audio::macos
 {
 
 MacAudioInput::MacAudioInput(AVCaptureDevice *capture_device, int channels, uint32_t sample_rate, uint32_t frame_size)
@@ -45,4 +45,4 @@ auto MacAudioInput::sample(std::vector<float> &sample_in) -> CaptureResult
     return CaptureResult::OK;
 }
 
-}; // namespace capture::capture_audio::macos
+}; // namespace audio::capture_audio::macos

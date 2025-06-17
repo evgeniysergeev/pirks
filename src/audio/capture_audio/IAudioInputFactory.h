@@ -4,7 +4,7 @@
 
 #include "IAudioInput.h"
 
-namespace capture::capture_audio
+namespace audio::capture_audio
 {
 
 class IAudioInputFactory
@@ -20,4 +20,4 @@ public:
             const std::uint8_t *mapping) -> std::unique_ptr<IAudioInput> = 0;
 };
 
-}; // namespace capture::capture_audio
+}; // namespace audio::capture_audio

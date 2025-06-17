@@ -1,7 +1,7 @@
 #include "MacAudioInputFactory.h"
 #include "MacAudioInput.h"
 
-namespace capture::capture_audio::macos
+namespace audio::capture_audio::macos
 {
 
 auto MacAudioInputFactory::create(
@@ -54,4 +54,4 @@ auto MacAudioInputFactory::create(
     }
 }
 
-}; // namespace capture::capture_audio::macos
+}; // namespace audio::capture_audio::macos

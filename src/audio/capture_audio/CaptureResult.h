@@ -1,6 +1,6 @@
 #pragma once
 
-namespace capture
+namespace audio
 {
 
 enum class CaptureResult : int
@@ -12,4 +12,4 @@ enum class CaptureResult : int
     Error        ///< Error
 };
 
-}; // namespace capture
+}; // namespace audio
