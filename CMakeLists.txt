@@ -38,6 +38,6 @@ if(BUILD_TESTS)
     # Fine tune tests options
     include(cmake/tests_options.cmake)
 
-    include("cmake/fetch_googletest.cmake")
+    include(cmake/fetch_googletest.cmake)
     add_subdirectory(test)
 endif()
