@@ -9,7 +9,7 @@
 
 @implementation CaptureDevice
 
-+ (NSArray<AVCaptureDevice *> *)captureDevices:(BOOL)isMicrophone
++ (NSArray<AVCaptureDevice *> *)captureDevices
 {
     if ([[NSProcessInfo processInfo] isOperatingSystemAtLeastVersion:((NSOperatingSystemVersion) {10, 15, 0})]) {
         // This will generate a warning about AVCaptureDeviceDiscoverySession being
@@ -21,8 +21,9 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunguarded-availability-new"
         AVCaptureDeviceDiscoverySession *discoverySession =
-            [AVCaptureDeviceDiscoverySession discoverySessionWithDeviceTypes:isMicrophone ? @[AVCaptureDeviceTypeBuiltInMicrophone, AVCaptureDeviceTypeExternalUnknown]
-                                                                                          : @[AVCaptureDeviceTypeDeskViewCamera]
+            [AVCaptureDeviceDiscoverySession discoverySessionWithDeviceTypes:@[AVCaptureDeviceTypeBuiltInMicrophone,
+                                                                               AVCaptureDeviceTypeExternalUnknown,
+                                                                               AVCaptureDeviceTypeDeskViewCamera]
                                                                    mediaType:AVMediaTypeAudio
                                                                     position:AVCaptureDevicePositionUnspecified];
         return discoverySession.devices;
@@ -38,11 +39,11 @@
     }
 }
 
-+ (NSArray<NSString *> *)captureDeviceNames:(BOOL)isMicrophone;
++ (NSArray<NSString *> *)captureDeviceNames;
 {
     NSMutableArray *result = [[NSMutableArray alloc] init];
 
-    for (AVCaptureDevice *device in [CaptureDevice captureDevices:isMicrophone]) {
+    for (AVCaptureDevice *device in [CaptureDevice captureDevices]) {
         [result addObject:[device localizedName]];
     }
 
@@ -50,9 +51,8 @@
 }
 
 + (AVCaptureDevice *)findCaptureDevice:(NSString *)name
-                           microphone:(BOOL)isMicrophone
 {
-    for (AVCaptureDevice *device in [CaptureDevice captureDevices:isMicrophone]) {
+    for (AVCaptureDevice *device in [CaptureDevice captureDevices]) {
         if ([[device localizedName] isEqualToString:name]) {
             return device;
         }

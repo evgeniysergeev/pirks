@@ -14,6 +14,7 @@ public:
 
 public:
     virtual auto create(
+            const std::string  &sink_name,
             int                 channels,
             std::uint32_t       sample_rate,
             std::uint32_t       frame_size,
