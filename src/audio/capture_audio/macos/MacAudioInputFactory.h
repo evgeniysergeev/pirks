@@ -8,6 +8,9 @@ namespace audio::capture_audio::macos
 class MacAudioInputFactory final : public IAudioInputFactory
 {
 public:
+    auto getMicrophoneNames() -> std::vector<std::string> override;
+    auto getDesktopAudioNames() -> std::vector<std::string> override;
+
     auto create(
             const std::string  &sink_name,
             int                 channels,

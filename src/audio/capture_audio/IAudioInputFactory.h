@@ -13,6 +13,9 @@ public:
     virtual ~IAudioInputFactory() = default;
 
 public:
+    virtual auto getMicrophoneNames() -> std::vector<std::string>   = 0;
+    virtual auto getDesktopAudioNames() -> std::vector<std::string> = 0;
+
     virtual auto create(
             const std::string  &sink_name,
             int                 channels,

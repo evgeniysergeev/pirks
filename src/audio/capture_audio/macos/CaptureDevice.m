@@ -22,8 +22,7 @@
 #pragma clang diagnostic ignored "-Wunguarded-availability-new"
         AVCaptureDeviceDiscoverySession *discoverySession =
             [AVCaptureDeviceDiscoverySession discoverySessionWithDeviceTypes:@[AVCaptureDeviceTypeBuiltInMicrophone,
-                                                                               AVCaptureDeviceTypeExternalUnknown,
-                                                                               AVCaptureDeviceTypeDeskViewCamera]
+                                                                               AVCaptureDeviceTypeExternalUnknown]
                                                                    mediaType:AVMediaTypeAudio
                                                                     position:AVCaptureDevicePositionUnspecified];
         return discoverySession.devices;

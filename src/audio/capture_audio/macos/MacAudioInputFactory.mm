@@ -6,6 +6,23 @@
 namespace audio::capture_audio::macos
 {
 
+auto MacAudioInputFactory::getMicrophoneNames() -> std::vector<std::string>
+{
+    std::vector<std::string> result;
+
+    for (NSString *deviceName in [CaptureDevice captureDeviceNames]) {
+        result.push_back([deviceName UTF8String]);
+    }
+
+    return result;
+}
+
+auto MacAudioInputFactory::getDesktopAudioNames() -> std::vector<std::string>
+{
+    // TODO: macOS have limitations here
+    return {};
+}
+
 auto MacAudioInputFactory::create(
         const std::string  &sink_name,
         int                 channels,
