@@ -54,6 +54,10 @@ AlwaysBreakTemplateDeclarations: Yes
 AttributeMacros:
   - __capability
 BinPackArguments: false
+# If BinPackLongBracedList is true it overrides BinPackArguments
+# if there are 20 or more items in a braced initializer list.
+# TODO: Work only in clang-format 21
+# BinPackLongBracedList: true
 BinPackParameters: false
 BitFieldColonSpacing: Both
 BraceWrapping:

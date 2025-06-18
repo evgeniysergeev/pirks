@@ -299,6 +299,7 @@ TEST_F(MemoryUtilsTest, DumpMemoryToString_ThreeLines_WithPrintable)
     // Первая строка - непечатаемые символы
     // Вторая строка - смесь печатаемых и непечатаемых
     // Третья строка - все печатаемые
+    // clang-format off
     std::vector<uint8_t> data = {
         // Первая строка (непечатаемые)
         0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
@@ -310,6 +311,7 @@ TEST_F(MemoryUtilsTest, DumpMemoryToString_ThreeLines_WithPrintable)
         0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48,
         0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E, 0x4F, 0x50
     };
+    // clang-format on
 
     std::string result = memory_utils::dump_memory_to_string(std::span { data });
 
@@ -381,6 +383,7 @@ TEST_F(MemoryUtilsTest, DumpMemoryToString_LastLinePartial_Printable)
 {
     // Создаем данные: 2 полные строки (32 байта) + 7 байт в последней строке
     // Используем печатаемые символы для проверки ASCII-представления
+    // clang-format off
     std::vector<uint8_t> data = {
         // Первая строка (16 байт)
         0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48,
@@ -391,6 +394,7 @@ TEST_F(MemoryUtilsTest, DumpMemoryToString_LastLinePartial_Printable)
         // Последняя неполная строка (7 байт)
         0x67, 0x68, 0x69, 0x6A, 0x6B, 0x6C, 0x6D
     };
+    // clang-format on
 
     std::string result = memory_utils::dump_memory_to_string(std::span { data });
 
@@ -412,6 +416,7 @@ TEST_F(MemoryUtilsTest, DumpMemoryToString_LastLinePartial_Mixed)
 {
     // Создаем данные: 2 полные строки (32 байта) + 9 байт в последней строке
     // Смесь печатаемых и непечатаемых символов
+    // clang-format off
     std::vector<uint8_t> data = {
         // Первая строка (16 байт) - все печатаемые
         0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48,
@@ -422,6 +427,7 @@ TEST_F(MemoryUtilsTest, DumpMemoryToString_LastLinePartial_Mixed)
         // Последняя неполная строка (9 байт) - смесь
         0x00, 0x49, 0x00, 0x4A, 0x00, 0x4B, 0x00, 0x4C, 0x00
     };
+    // clang-format on
 
     std::string result = memory_utils::dump_memory_to_string(std::span { data });
 
