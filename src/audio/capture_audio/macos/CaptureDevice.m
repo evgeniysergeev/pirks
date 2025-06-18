@@ -91,7 +91,7 @@
         [self.audioCaptureSession addInput:audioInput];
     } else {
         [audioInput dealloc];
-      return -1;
+    return -1;
     }
 
     AVCaptureAudioDataOutput *audioOutput = [[AVCaptureAudioDataOutput alloc] init];
