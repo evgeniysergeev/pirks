@@ -19,15 +19,17 @@ auto MacAudioInputFactory::create(
       }
     */
 
-    AVCaptureDevice *captureDevice = [CaptureDevice findMicrophone:[NSString stringWithUTF8String:audio_sink]];
+    AVCaptureDevice *captureDevice = [CaptureDevice findCaptureDevice:[NSString stringWithUTF8String:audio_sink]
+                                                          microphone:TRUE];
     if (captureDevice == nullptr) {
         NSString *audioSinkName = nullptr;
-        for (NSString *name in [CaptureDevice microphoneNames]) {
+        for (NSString *name in [CaptureDevice captureDeviceNames:TRUE]) {
             audioSinkName = name;
             break;
         }
 
-        captureDevice = [CaptureDevice findMicrophone:audioSinkName];
+        captureDevice = [CaptureDevice findCaptureDevice:audioSinkName
+                                             microphone:TRUE];
 
     // TODO: 
     /*

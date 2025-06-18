@@ -9,7 +9,7 @@
 
 @implementation CaptureDevice
 
-+ (NSArray<AVCaptureDevice *> *)microphones
++ (NSArray<AVCaptureDevice *> *)captureDevices:(BOOL)isMicrophone
 {
     if ([[NSProcessInfo processInfo] isOperatingSystemAtLeastVersion:((NSOperatingSystemVersion) {10, 15, 0})]) {
         // This will generate a warning about AVCaptureDeviceDiscoverySession being
@@ -21,7 +21,8 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunguarded-availability-new"
         AVCaptureDeviceDiscoverySession *discoverySession =
-            [AVCaptureDeviceDiscoverySession discoverySessionWithDeviceTypes:@[AVCaptureDeviceTypeBuiltInMicrophone, AVCaptureDeviceTypeExternalUnknown]
+            [AVCaptureDeviceDiscoverySession discoverySessionWithDeviceTypes:isMicrophone ? @[AVCaptureDeviceTypeBuiltInMicrophone, AVCaptureDeviceTypeExternalUnknown]
+                                                                                          : @[AVCaptureDeviceTypeDeskViewCamera]
                                                                    mediaType:AVMediaTypeAudio
                                                                     position:AVCaptureDevicePositionUnspecified];
         return discoverySession.devices;
@@ -37,20 +38,21 @@
     }
 }
 
-+ (NSArray<NSString *> *)microphoneNames
++ (NSArray<NSString *> *)captureDeviceNames:(BOOL)isMicrophone;
 {
     NSMutableArray *result = [[NSMutableArray alloc] init];
 
-    for (AVCaptureDevice *device in [CaptureDevice microphones]) {
+    for (AVCaptureDevice *device in [CaptureDevice captureDevices:isMicrophone]) {
         [result addObject:[device localizedName]];
     }
 
     return result;
 }
 
-+ (AVCaptureDevice *)findMicrophone:(NSString *)name
++ (AVCaptureDevice *)findCaptureDevice:(NSString *)name
+                           microphone:(BOOL)isMicrophone
 {
-    for (AVCaptureDevice *device in [CaptureDevice microphones]) {
+    for (AVCaptureDevice *device in [CaptureDevice captureDevices:isMicrophone]) {
         if ([[device localizedName] isEqualToString:name]) {
             return device;
         }
