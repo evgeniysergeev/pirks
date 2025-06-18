@@ -48,7 +48,7 @@
     return result;
 }
 
-+ (AVCaptureDevice *)findMicrophoneDevice:(NSString *)name
++ (AVCaptureDevice *)findMicrophone:(NSString *)name
 {
     for (AVCaptureDevice *device in [CaptureDevice microphones]) {
         if ([[device localizedName] isEqualToString:name]) {

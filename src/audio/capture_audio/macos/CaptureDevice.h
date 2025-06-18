@@ -20,7 +20,7 @@
 @property (nonatomic, assign) NSCondition *samplesArrivedSignal;
 
 + (NSArray<NSString *> *)microphoneNames;
-+ (AVCaptureDevice *)findMicrophoneDevice:(NSString *)name;
++ (AVCaptureDevice *)findMicrophone:(NSString *)name;
 
 - (int)setupCaptureDevice:(AVCaptureDevice *)device
                sampleRate:(UInt32)sampleRate
