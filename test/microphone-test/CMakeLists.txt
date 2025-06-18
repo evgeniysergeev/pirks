@@ -11,6 +11,10 @@ set(SOURCES
 
 add_executable(${TARGET_NAME} ${SOURCES})
 
+# To Access Microphone in this test, Applicaiton need info.plist with 
+# NSMicrophoneUsageDescription key set. 
+# To be able to use info.plist in test, bundle is used instead of just
+# simple console application.
 if(PLATFORM STREQUAL "MACOS")
     set(PLIST_FILE "${CMAKE_CURRENT_SOURCE_DIR}/res/macos/info.plist")
 
@@ -21,7 +25,8 @@ if(PLATFORM STREQUAL "MACOS")
     )
 endif()
 
-
+# Codesign not used for now
+# TODO: Is it really need?
 # codesign --verbose=3 --force --deep --sign - ${TARGET_NAME}
 #add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
 #    COMMAND codesign
