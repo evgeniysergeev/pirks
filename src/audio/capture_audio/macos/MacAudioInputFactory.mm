@@ -6,7 +6,7 @@
 namespace audio::capture_audio::macos
 {
 
-auto MacAudioInputFactory::getMicrophoneNames() -> std::vector<std::string>
+auto MacAudioInputFactory::getAudioSources() -> std::vector<std::string>
 {
     std::vector<std::string> result;
 
@@ -17,20 +17,15 @@ auto MacAudioInputFactory::getMicrophoneNames() -> std::vector<std::string>
     return result;
 }
 
-auto MacAudioInputFactory::getDesktopAudioNames() -> std::vector<std::string>
-{
-    // TODO: macOS have limitations here
-    return {};
-}
-
 auto MacAudioInputFactory::create(
-        const std::string  &sink_name,
+        const std::string  &audio_source,
         int                 channels,
         std::uint32_t       sample_rate,
         std::uint32_t       frame_size,
         const std::uint8_t * /* mapping */) -> std::unique_ptr<IAudioInput>
 {
-    AVCaptureDevice *captureDevice = [CaptureDevice findCaptureDevice:[NSString stringWithUTF8String:sink_name.c_str()]];
+    AVCaptureDevice *captureDevice =
+        [CaptureDevice findCaptureDevice:[NSString stringWithUTF8String:audio_source.c_str()]];
 
     if (captureDevice == nullptr) {
         return nullptr;

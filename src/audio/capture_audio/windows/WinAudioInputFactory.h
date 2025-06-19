@@ -8,7 +8,10 @@ namespace audio::capture_audio::windows
 class WinAudioInputFactory final : public IAudioInputFactory
 {
 public:
-    auto create(
+    virtual auto getAudioSources() -> std::vector<std::string> = 0;
+
+    virtual auto create(
+            const std::string  &audio_source,
             int                 channels,
             std::uint32_t       sample_rate,
             std::uint32_t       frame_size,

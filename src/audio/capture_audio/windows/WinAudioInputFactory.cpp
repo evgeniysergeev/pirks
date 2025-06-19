@@ -3,7 +3,13 @@
 namespace audio::capture_audio::windows
 {
 
+auto WinAudioInputFactory::getAudioSources() -> std::vector<std::string>
+{
+    return {};
+}
+
 auto WinAudioInputFactory::create(
+        [[maybe_unused]] const std::string  &audio_source,
         [[maybe_unused]] int                 channels,
         [[maybe_unused]] std::uint32_t       sample_rate,
         [[maybe_unused]] std::uint32_t       frame_size,
