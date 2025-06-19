@@ -23,11 +23,11 @@ TEST(AudioInput, GetSamples)
     using namespace audio::capture_audio;
 
     AudioInputFactory audio_input_factory;
-    const auto names = audio_input_factory.getAudioSources();
+    const auto        names = audio_input_factory.getAudioSources();
 
     std::vector<float> sample_in(1024);
 
-    for (const auto &name: names) {
+    for (const auto &name : names) {
         auto device = audio_input_factory.create(name, 2, 48000, 96000, nullptr);
         ASSERT_TRUE(device != nullptr);
 
