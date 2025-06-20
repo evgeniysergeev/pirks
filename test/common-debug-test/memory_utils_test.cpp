@@ -25,7 +25,7 @@ TEST_F(MemoryUtilsTest, DumpMemoryToString_Basic)
     std::vector<uint8_t> data = { 0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x2c, 0x20, 0x57,
                                   0x6f, 0x72, 0x6c, 0x64, 0x21, 0x00, 0x00, 0x00 };
 
-    std::string result = memory_utils::dump_memory_to_string(std::span { data });
+    std::string result = memory_utils::dumpMemoryToString(std::span { data });
 
     std::string expected =
             "00000000: 48 65 6c 6c 6f 2c 20 57  6f 72 6c 64 21 00 00 00  |Hello, W orld!...|\n";
@@ -35,7 +35,7 @@ TEST_F(MemoryUtilsTest, DumpMemoryToString_Basic)
 TEST_F(MemoryUtilsTest, DumpMemoryToString_WithPrefix)
 {
     std::vector<uint8_t> data   = { 0x48, 0x65, 0x6c, 0x6c, 0x6f };
-    std::string          result = memory_utils::dump_memory_to_string(std::span { data }, "TEST: ");
+    std::string          result = memory_utils::dumpMemoryToString(std::span { data }, "TEST: ");
 
     std::string expected =
             "TEST: 00000000: 48 65 6c 6c 6f                                    |Hello            |\n";
@@ -47,7 +47,7 @@ TEST_F(MemoryUtilsTest, DumpMemoryToString_NonPrintable)
     std::vector<uint8_t> data = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
                                   0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F };
 
-    std::string result = memory_utils::dump_memory_to_string(std::span { data });
+    std::string result = memory_utils::dumpMemoryToString(std::span { data });
 
     std::string expected =
             "00000000: 00 01 02 03 04 05 06 07  08 09 0a 0b 0c 0d 0e 0f  |........ ........|\n";
@@ -57,7 +57,7 @@ TEST_F(MemoryUtilsTest, DumpMemoryToString_NonPrintable)
 TEST_F(MemoryUtilsTest, DumpMemoryToString_TemplateOverload)
 {
     std::string data   = "Hello";
-    std::string result = memory_utils::dump_memory_to_string(std::span { data });
+    std::string result = memory_utils::dumpMemoryToString(std::span { data });
 
     // Проверяем, что строка содержит правильные байты
     EXPECT_TRUE(result.find("48 65 6c 6c 6f") != std::string::npos);
@@ -70,7 +70,7 @@ TEST_F(MemoryUtilsTest, LogMemoryDump_Levels)
 
     // Тестируем разные уровни логирования
     testing::internal::CaptureStdout();
-    memory_utils::log_memory_dump(std::span { data }, "", spdlog::level::debug);
+    memory_utils::logMemoryDump(std::span { data }, "", spdlog::level::debug);
     std::string output = testing::internal::GetCapturedStdout();
 
     EXPECT_TRUE(output.find("[debug]") != std::string::npos);
@@ -82,7 +82,7 @@ TEST_F(MemoryUtilsTest, LogMemoryDump_EmptyData)
     std::vector<uint8_t> data;
 
     testing::internal::CaptureStdout();
-    memory_utils::log_memory_dump(std::span { data });
+    memory_utils::logMemoryDump(std::span { data });
     std::string output = testing::internal::GetCapturedStdout();
 
     EXPECT_TRUE(output.empty());
@@ -96,7 +96,7 @@ TEST_F(MemoryUtilsTest, LogMemoryDump_LargeData)
         data[i] = static_cast<uint8_t>(i);
     }
 
-    std::string result = memory_utils::dump_memory_to_string(std::span { data });
+    std::string result = memory_utils::dumpMemoryToString(std::span { data });
 
     // Проверяем, что вывод содержит две строки
     size_t newline_count = std::count(result.begin(), result.end(), '\n');
@@ -114,7 +114,7 @@ TEST_F(MemoryUtilsTest, DumpMemoryToString_MultiLine)
         data[i] = static_cast<uint8_t>(i);
     }
 
-    std::string result = memory_utils::dump_memory_to_string(std::span { data });
+    std::string result = memory_utils::dumpMemoryToString(std::span { data });
 
     // Проверяем наличие всех трех строк
     EXPECT_TRUE(result.find("00000000:") != std::string::npos);
@@ -134,7 +134,7 @@ TEST_F(MemoryUtilsTest, DumpMemoryToString_ExactLineSize)
         data[i] = static_cast<uint8_t>(i);
     }
 
-    std::string result = memory_utils::dump_memory_to_string(std::span { data });
+    std::string result = memory_utils::dumpMemoryToString(std::span { data });
 
     // Проверяем, что вывод содержит только одну строку
     size_t newline_count = std::count(result.begin(), result.end(), '\n');
@@ -144,14 +144,14 @@ TEST_F(MemoryUtilsTest, DumpMemoryToString_ExactLineSize)
 TEST_F(MemoryUtilsTest, DumpMemoryToString_EmptyData)
 {
     std::vector<uint8_t> data;
-    std::string          result = memory_utils::dump_memory_to_string(std::span { data });
+    std::string          result = memory_utils::dumpMemoryToString(std::span { data });
     EXPECT_TRUE(result.empty());
 }
 
 TEST_F(MemoryUtilsTest, DumpMemoryToString_SingleByte)
 {
     std::vector<uint8_t> data   = { 0x42 };
-    std::string          result = memory_utils::dump_memory_to_string(std::span { data });
+    std::string          result = memory_utils::dumpMemoryToString(std::span { data });
 
     std::string expected =
             "00000000: 42                                                |B                |\n";
@@ -165,7 +165,7 @@ TEST_F(MemoryUtilsTest, DumpMemoryToString_AllPrintable)
         data.push_back(i);
     }
 
-    std::string result = memory_utils::dump_memory_to_string(std::span { data });
+    std::string result = memory_utils::dumpMemoryToString(std::span { data });
 
     // Check that all characters are displayed correctly
     EXPECT_TRUE(result.find(" !\"#$%&' ()*+,-./") != std::string::npos);
@@ -180,7 +180,7 @@ TEST_F(MemoryUtilsTest, DumpMemoryToString_AllNonPrintable)
         data.push_back(i);
     }
 
-    std::string result = memory_utils::dump_memory_to_string(std::span { data });
+    std::string result = memory_utils::dumpMemoryToString(std::span { data });
 
     // Check that all non-printable characters are displayed as dots
     EXPECT_TRUE(result.find("........ ........") != std::string::npos);
@@ -190,7 +190,7 @@ TEST_F(MemoryUtilsTest, DumpMemoryToString_Unicode)
 {
     // Test Unicode characters (UTF-8)
     std::string data   = "Привет, мир!";
-    std::string result = memory_utils::dump_memory_to_string(std::span { data });
+    std::string result = memory_utils::dumpMemoryToString(std::span { data });
 
     // Check that Unicode characters are correctly displayed in hex
     EXPECT_TRUE(result.find("d0 9f") != std::string::npos); // 'П'
@@ -207,7 +207,7 @@ TEST_F(MemoryUtilsTest, DumpMemoryToString_LargeOffset)
 
     // Создаем span с большим смещением
     auto        span   = std::span { data }.subspan(16);
-    std::string result = memory_utils::dump_memory_to_string(span);
+    std::string result = memory_utils::dumpMemoryToString(span);
 
     // Проверяем, что смещение корректно отображается
     EXPECT_TRUE(result.find("00000000:") != std::string::npos);
@@ -216,7 +216,7 @@ TEST_F(MemoryUtilsTest, DumpMemoryToString_LargeOffset)
 TEST_F(MemoryUtilsTest, DumpMemoryToString_ZeroBytes)
 {
     std::vector<uint8_t> data(16, 0);
-    std::string          result = memory_utils::dump_memory_to_string(std::span { data });
+    std::string          result = memory_utils::dumpMemoryToString(std::span { data });
 
     std::string expected =
             "00000000: 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |........ ........|\n";
@@ -227,7 +227,7 @@ TEST_F(MemoryUtilsTest, DumpMemoryToString_AlternatingBytes)
 {
     std::vector<uint8_t> data   = { 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF,
                                     0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF };
-    std::string          result = memory_utils::dump_memory_to_string(std::span { data });
+    std::string          result = memory_utils::dumpMemoryToString(std::span { data });
 
     std::string expected =
             "00000000: 00 ff 00 ff 00 ff 00 ff  00 ff 00 ff 00 ff 00 ff  |........ ........|\n";
@@ -238,7 +238,7 @@ TEST_F(MemoryUtilsTest, DumpMemoryToString_LongPrefix)
 {
     std::vector<uint8_t> data   = { 0x48, 0x65, 0x6c, 0x6c, 0x6f };
     std::string          prefix = "VERY_LONG_PREFIX_THAT_SHOULD_NOT_BREAK_FORMATTING: ";
-    std::string          result = memory_utils::dump_memory_to_string(std::span { data }, prefix);
+    std::string          result = memory_utils::dumpMemoryToString(std::span { data }, prefix);
 
     // Проверяем, что длинный префикс корректно обрабатывается
     EXPECT_TRUE(result.find(prefix) != std::string::npos);
@@ -253,7 +253,7 @@ TEST_F(MemoryUtilsTest, DumpMemoryToString_ThreeLines_Detailed)
         data[i] = static_cast<uint8_t>(i);
     }
 
-    std::string result = memory_utils::dump_memory_to_string(std::span { data });
+    std::string result = memory_utils::dumpMemoryToString(std::span { data });
 
     // Проверяем первую строку
     std::string expected =
@@ -276,7 +276,7 @@ TEST_F(MemoryUtilsTest, DumpMemoryToString_FiveLines_Detailed)
         data[i] = static_cast<uint8_t>(i);
     }
 
-    std::string result = memory_utils::dump_memory_to_string(std::span { data });
+    std::string result = memory_utils::dumpMemoryToString(std::span { data });
 
     // Проверяем все пять строк
     std::string expected =
@@ -313,7 +313,7 @@ TEST_F(MemoryUtilsTest, DumpMemoryToString_ThreeLines_WithPrintable)
     };
     // clang-format on
 
-    std::string result = memory_utils::dump_memory_to_string(std::span { data });
+    std::string result = memory_utils::dumpMemoryToString(std::span { data });
 
     // Check first line (all dots)
     std::string expected =
@@ -338,7 +338,7 @@ TEST_F(MemoryUtilsTest, DumpMemoryToString_LastLinePartial_Short)
         data[i] = static_cast<uint8_t>(i);
     }
 
-    std::string result = memory_utils::dump_memory_to_string(std::span { data });
+    std::string result = memory_utils::dumpMemoryToString(std::span { data });
 
     // Check first two full lines
     std::string expected =
@@ -362,7 +362,7 @@ TEST_F(MemoryUtilsTest, DumpMemoryToString_LastLinePartial_Long)
         data[i] = static_cast<uint8_t>(i);
     }
 
-    std::string result = memory_utils::dump_memory_to_string(std::span { data });
+    std::string result = memory_utils::dumpMemoryToString(std::span { data });
 
     // Check first three full lines
     std::string expected =
@@ -396,7 +396,7 @@ TEST_F(MemoryUtilsTest, DumpMemoryToString_LastLinePartial_Printable)
     };
     // clang-format on
 
-    std::string result = memory_utils::dump_memory_to_string(std::span { data });
+    std::string result = memory_utils::dumpMemoryToString(std::span { data });
 
     // Check first two full lines
     std::string expected =
@@ -429,7 +429,7 @@ TEST_F(MemoryUtilsTest, DumpMemoryToString_LastLinePartial_Mixed)
     };
     // clang-format on
 
-    std::string result = memory_utils::dump_memory_to_string(std::span { data });
+    std::string result = memory_utils::dumpMemoryToString(std::span { data });
 
     // Check first two full lines
     std::string expected =

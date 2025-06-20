@@ -8,7 +8,7 @@
 namespace memory_utils
 {
 
-std::string dump_memory_to_string(std::span<const std::uint8_t> data, const std::string &prefix)
+std::string dumpMemoryToString(std::span<const std::uint8_t> data, const std::string &prefix)
 {
     std::stringstream ss;
 
@@ -55,17 +55,17 @@ std::string dump_memory_to_string(std::span<const std::uint8_t> data, const std:
     return ss.str();
 }
 
-std::string dump_memory_to_string(std::span<std::uint8_t> data, const std::string &prefix)
+std::string dumpMemoryToString(std::span<std::uint8_t> data, const std::string &prefix)
 {
-    return dump_memory_to_string(std::span<const std::uint8_t>(data), prefix);
+    return dumpMemoryToString(std::span<const std::uint8_t>(data), prefix);
 }
 
-void log_memory_dump(
+void logMemoryDump(
         std::span<const std::uint8_t> data,
         const std::string            &prefix,
         spdlog::level::level_enum     level)
 {
-    std::string dump = dump_memory_to_string(data, prefix);
+    std::string dump = dumpMemoryToString(data, prefix);
 
     // Split the dump into lines and log each line separately
     std::istringstream iss(dump);
@@ -97,12 +97,12 @@ void log_memory_dump(
     }
 }
 
-void log_memory_dump(
+void logMemoryDump(
         std::span<std::uint8_t>   data,
         const std::string        &prefix,
         spdlog::level::level_enum level)
 {
-    log_memory_dump(std::span<const std::uint8_t>(data), prefix, level);
+    logMemoryDump(std::span<const std::uint8_t>(data), prefix, level);
 }
 
 } // namespace memory_utils

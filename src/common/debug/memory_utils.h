@@ -31,17 +31,15 @@ namespace memory_utils
  * @param prefix Optional string to prepend to each line of output
  * @return std::string containing the formatted memory dump
  *
- * @see dump_memory_to_string(const std::span<const T>&, const std::string&)
+ * @see dumpMemoryToString(const std::span<const T>&, const std::string&)
  */
-std::string dump_memory_to_string(
-        std::span<const std::uint8_t> data,
-        const std::string            &prefix = "");
+std::string dumpMemoryToString(std::span<const std::uint8_t> data, const std::string &prefix = "");
 
 /**
  * @brief Overload for non-const byte spans
- * @see dump_memory_to_string(const std::span<const std::uint8_t>&, const std::string&)
+ * @see dumpMemoryToString(const std::span<const std::uint8_t>&, const std::string&)
  */
-std::string dump_memory_to_string(std::span<std::uint8_t> data, const std::string &prefix = "");
+std::string dumpMemoryToString(std::span<std::uint8_t> data, const std::string &prefix = "");
 
 /**
  * @brief Template overload for converting memory of any type to string
@@ -57,12 +55,12 @@ std::string dump_memory_to_string(std::span<std::uint8_t> data, const std::strin
  * @note This function performs a reinterpret_cast of the data to bytes, so it should
  *       only be used with trivially copyable types to avoid undefined behavior
  *
- * @see dump_memory_to_string(const std::span<const std::uint8_t>&, const std::string&)
+ * @see dumpMemoryToString(const std::span<const std::uint8_t>&, const std::string&)
  */
 template<typename T>
-std::string dump_memory_to_string(std::span<const T> data, const std::string &prefix = "")
+std::string dumpMemoryToString(std::span<const T> data, const std::string &prefix = "")
 {
-    return dump_memory_to_string(
+    return dumpMemoryToString(
             std::span<const std::uint8_t>(
                     reinterpret_cast<const std::uint8_t *>(data.data()),
                     data.size() * sizeof(T)),
@@ -71,12 +69,12 @@ std::string dump_memory_to_string(std::span<const T> data, const std::string &pr
 
 /**
  * @brief Template overload for non-const types
- * @see dump_memory_to_string(const std::span<const T>&, const std::string&)
+ * @see dumpMemoryToString(const std::span<const T>&, const std::string&)
  */
 template<typename T>
-std::string dump_memory_to_string(std::span<T> data, const std::string &prefix = "")
+std::string dumpMemoryToString(std::span<T> data, const std::string &prefix = "")
 {
-    return dump_memory_to_string(
+    return dumpMemoryToString(
             std::span<std::uint8_t>(
                     reinterpret_cast<std::uint8_t *>(data.data()),
                     data.size() * sizeof(T)),
@@ -87,25 +85,25 @@ std::string dump_memory_to_string(std::span<T> data, const std::string &prefix =
  * @brief Logs memory contents using spdlog
  *
  * This function formats the memory contents and logs them using spdlog.
- * The output format is the same as in dump_memory_to_string().
+ * The output format is the same as in dumpMemoryToString().
  *
  * @param data A span containing the memory region to dump
  * @param prefix Optional string to prepend to each line of output
  * @param level The spdlog log level to use (default: info)
  *
- * @see dump_memory_to_string()
+ * @see dumpMemoryToString()
  */
-void log_memory_dump(
+void logMemoryDump(
         std::span<const std::uint8_t> data,
         const std::string            &prefix = "",
         spdlog::level::level_enum     level  = spdlog::level::info);
 
 /**
  * @brief Overload for non-const byte spans
- * @see log_memory_dump(const std::span<const std::uint8_t>&, const std::string&,
+ * @see logMemoryDump(const std::span<const std::uint8_t>&, const std::string&,
  * spdlog::level::level_enum)
  */
-void log_memory_dump(
+void logMemoryDump(
         std::span<std::uint8_t>   data,
         const std::string        &prefix = "",
         spdlog::level::level_enum level  = spdlog::level::info);
@@ -118,16 +116,16 @@ void log_memory_dump(
  * @param prefix Optional string to prepend to each line of output
  * @param level The spdlog log level to use (default: info)
  *
- * @see log_memory_dump(const std::span<const std::uint8_t>&, const std::string&,
+ * @see logMemoryDump(const std::span<const std::uint8_t>&, const std::string&,
  * spdlog::level::level_enum)
  */
 template<typename T>
-void log_memory_dump(
+void logMemoryDump(
         std::span<const T>        data,
         const std::string        &prefix = "",
         spdlog::level::level_enum level  = spdlog::level::info)
 {
-    log_memory_dump(
+    logMemoryDump(
             std::span<const std::uint8_t>(
                     reinterpret_cast<const std::uint8_t *>(data.data()),
                     data.size() * sizeof(T)),
@@ -137,15 +135,15 @@ void log_memory_dump(
 
 /**
  * @brief Template overload for non-const types
- * @see log_memory_dump(const std::span<const T>&, const std::string&, spdlog::level::level_enum)
+ * @see logMemoryDump(const std::span<const T>&, const std::string&, spdlog::level::level_enum)
  */
 template<typename T>
-void log_memory_dump(
+void logMemoryDump(
         std::span<T>              data,
         const std::string        &prefix = "",
         spdlog::level::level_enum level  = spdlog::level::info)
 {
-    log_memory_dump(
+    logMemoryDump(
             std::span<std::uint8_t>(
                     reinterpret_cast<std::uint8_t *>(data.data()),
                     data.size() * sizeof(T)),
