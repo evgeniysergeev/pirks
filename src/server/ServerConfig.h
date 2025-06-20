@@ -10,8 +10,9 @@ class ServerConfig final : public Config
 public:
     enum ConnectionType
     {
-        Default = 0, ///< Default (for now it is equal to TCP)
-        TCP          ///< Use TCP/IP for networking
+        Default = 0, ///< Default (for now it is equal to UDP)
+        TCP,         ///< Use TCP/IP for networking
+        UDP          ///< Use UDP for networking (via ENET library)
     };
 
 public:
@@ -25,6 +26,7 @@ private:
     ConnectionType connectionType_ { Default };
 
     bool isTCP_ { false };
+    bool isUDP_ { false };
 };
 
 }; // namespace pirks::config

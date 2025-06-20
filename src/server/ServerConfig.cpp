@@ -5,7 +5,8 @@ namespace pirks::config
 
 void ServerConfig::addOptions(CLI::App &args)
 {
-    args.add_flag("-t,--tcp", isTCP_, "Use TCP/IP for networking");
+    args.add_flag("-t,--tcp", isTCP_, "Use TCP/IP for networking (not implemented yet)");
+    args.add_flag("-u,--udp", isUDP_, "Use UDP for networking");
 }
 
 void ServerConfig::parseOptions([[maybe_unused]] CLI::App &args)
@@ -14,8 +15,12 @@ void ServerConfig::parseOptions([[maybe_unused]] CLI::App &args)
         connectionType_ = TCP;
     }
 
+    if (isUDP_) {
+        connectionType_ = UDP;
+    }
+
     if (connectionType_ == Default) {
-        connectionType_ = TCP;
+        connectionType_ = UDP;
     }
 }
 

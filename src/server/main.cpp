@@ -33,9 +33,12 @@ int main(int argc, char **argv)
     switch (config.connectionType()) {
     case ServerConfig::ConnectionType::Default:
         [[fallthrough]];
-    case ServerConfig::ConnectionType::TCP:
-        spdlog::info("Connection type: TCP");
+    case ServerConfig::ConnectionType::UDP:
+        spdlog::info("Connection type: UDP");
         break;
+    case ServerConfig::ConnectionType::TCP:
+        spdlog::info("Connection type: TCP not implemented yet");
+        return 1;
     }
 
     return 0;
