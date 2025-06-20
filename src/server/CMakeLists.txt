@@ -4,8 +4,8 @@ set(TARGET_NAME pirks-server)
 
 set(SOURCES
     main.cpp
-    server_config.h
-    server_config.cpp
+    ServerConfig.h
+    ServerConfig.cpp
 )
 
 add_executable(${TARGET_NAME} ${SOURCES})

@@ -2,14 +2,16 @@
 
 #include <deferral.hh>
 
-#include "Config.h"
+#include "ServerConfig.h"
 #include "str_utils.h"
 #include "version.h"
 
 int main(int argc, char **argv)
 {
-    pirks::config::Config config;
-    const auto ret = config.parseArgs(PROJECT_DESCRIPTION, PROJECT_NAME, PROJECT_VERSION, argc, argv);
+    pirks::config::ServerConfig config;
+
+    const auto ret =
+            config.parseArgs(PROJECT_DESCRIPTION, PROJECT_NAME, PROJECT_VERSION, argc, argv);
     if (config.shouldExit()) {
         // If we printed help screen or version, then do nothing, log nothing, just exit.
         return ret;
