@@ -6,7 +6,7 @@ namespace pirks::config
 {
 
 /**
- * @brief Config class read options from configuration file and program arguments
+ * @brief Class for read options from configuration file and program arguments
  *
  */
 class Config

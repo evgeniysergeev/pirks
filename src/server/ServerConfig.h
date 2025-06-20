@@ -8,6 +8,7 @@ namespace pirks::config
 class ServerConfig final : public Config
 {
 public:
+    // TODO: Implement TCP connection
     enum ConnectionType
     {
         Default = 0, ///< Default (for now it is equal to UDP)
