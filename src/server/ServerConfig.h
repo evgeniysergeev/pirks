@@ -8,11 +8,10 @@ namespace pirks::config
 class ServerConfig final : public Config
 {
 public:
-    // TODO: Implement TCP connection
     enum ConnectionType
     {
-        Default = 0, ///< Default (for now it is equal to UDP)
-        TCP,         ///< Use TCP/IP for networking
+        Default = 0, ///< Default (for now it is equal to TCP)
+        TCP,         ///< Use TCP/IP for networking (via libwebsocket library)
         UDP          ///< Use UDP for networking (via ENET library)
     };
 

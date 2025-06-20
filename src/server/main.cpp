@@ -21,8 +21,6 @@ int main(int argc, char **argv)
 
     // Print version information early
     spdlog::info("{} v{} (Platform: {})"sv, PROJECT_NAME, PROJECT_FULL_VERSION, PROJECT_PLATFORM);
-
-    // do not print "exited" if called with --help option
     defer { spdlog::info("{} v{} exited"sv, PROJECT_NAME, PROJECT_VERSION); };
 
     if (config.isDebug()) {
@@ -37,7 +35,7 @@ int main(int argc, char **argv)
         spdlog::info("Connection type: UDP");
         break;
     case ServerConfig::ConnectionType::TCP:
-        spdlog::info("Connection type: TCP not implemented yet");
+        spdlog::info("Connection type: TCP");
         return 1;
     }
 
