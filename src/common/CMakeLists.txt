@@ -1,4 +1,6 @@
 set(SOURCES
+    config/Config.h
+    config/Config.cpp
     debug/CircularBufferToStr.h
     debug/memory_utils.h
     debug/memory_utils.cpp
@@ -16,6 +18,8 @@ add_library(common STATIC
 # ${PROJECT_BINARY_DIR} added for include version.h which generated here
 target_include_directories(common INTERFACE
     ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/config
+    ${CMAKE_CURRENT_SOURCE_DIR}/debug
     ${CMAKE_CURRENT_SOURCE_DIR}/helpers
     ${PROJECT_BINARY_DIR}
 )
