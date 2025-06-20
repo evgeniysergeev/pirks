@@ -10,7 +10,7 @@ include(FetchContent)
 
 FetchContent_Declare(
     googletest
-    URL https://github.com/google/googletest/archive/main.zip
+    URL https://github.com/google/googletest/archive/v1.17.x.zip
 )
 
 # For Windows: Prevent overriding the parent project's compiler/linker settings
