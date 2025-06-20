@@ -16,6 +16,9 @@ int Config::parseArgs(
 
     try {
         args.parse(argc, argv);
+        if (isHelp_) {
+            throw CLI::CallForHelp();
+        }
         parseOptions(args);
     } catch (const CLI::ParseError &e) {
         return args.exit(e);
@@ -26,7 +29,13 @@ int Config::parseArgs(
 
 void Config::addOptions([[maybe_unused]] CLI::App &args)
 {
-    args.add_flag("-d,--debug,!--no-debug", isDebug_, "Enable debug logging");
+    // Using help option is from https://github.com/CLIUtils/CLI11/blob/main/examples/modhelp.cpp example
+    // Remove help flag because it shortcuts all processing
+    args.set_help_flag();
+    // Add custom flag that activates help
+    args.add_flag("-h,--help", isHelp_, "Request help");
+
+    args.add_flag("-d,--debug", isDebug_, "Enable debug logging");
 }
 
 void Config::parseOptions([[maybe_unused]] CLI::App &args)

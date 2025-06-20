@@ -28,9 +28,11 @@ protected:
 
 public:
     bool isDebug() { return isDebug_; }
+    bool isHelp() { return isHelp_; }
 
 private:
-    bool isDebug_;
+    bool isDebug_ { false };
+    bool isHelp_ { false };
 };
 
 }; // namespace pirks::config
