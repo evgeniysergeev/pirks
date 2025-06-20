@@ -8,22 +8,18 @@
 
 int main(int argc, char **argv)
 {
-    // Print version information early
-    spdlog::info("{} v{} (Platform: {})"sv, PROJECT_NAME, PROJECT_FULL_VERSION, PROJECT_PLATFORM);
-
     pirks::config::Config config;
-    const auto ret = config.parseArgs(PROJECT_DESCRIPTION, PROJECT_NAME, argc, argv);
-    if (ret != 0) {
+    const auto ret = config.parseArgs(PROJECT_DESCRIPTION, PROJECT_NAME, PROJECT_VERSION, argc, argv);
+    if (config.shouldExit()) {
+        // If we printed help screen or version, then do nothing, log nothing, just exit.
         return ret;
     }
 
-    if (config.isHelp()) {
-        // If we printed help screen, then do nothing, log nothing, just exit.
-        return 0;
-    }
+    // Print version information early
+    spdlog::info("{} v{} (Platform: {})"sv, PROJECT_NAME, PROJECT_FULL_VERSION, PROJECT_PLATFORM);
 
     // do not print "exited" if called with --help option
-    defer { spdlog::info("{} v{} exited"sv, PROJECT_NAME, PROJECT_FULL_VERSION); };
+    defer { spdlog::info("{} v{} exited"sv, PROJECT_NAME, PROJECT_VERSION); };
 
     if (config.isDebug()) {
         spdlog::set_level(spdlog::level::debug);
