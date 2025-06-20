@@ -31,6 +31,9 @@ add_subdirectory(src/common)
 # add capture and output audio static libraries subdirectory
 add_subdirectory(src/audio)
 
+# add networking static libraries subdirectory
+add_subdirectory(src/networking)
+
 # add server subdirectory
 add_subdirectory(src/server)
 
