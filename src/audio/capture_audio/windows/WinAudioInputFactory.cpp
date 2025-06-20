@@ -1,6 +1,6 @@
 #include "WinAudioInputFactory.h"
 
-namespace audio::capture_audio::windows
+namespace audio::capture_audio::platform_windows
 {
 
 auto WinAudioInputFactory::getAudioSources() -> std::vector<std::string>
@@ -19,4 +19,4 @@ auto WinAudioInputFactory::create(
     return nullptr;
 }
 
-}; // namespace audio::capture_audio::windows
+}; // namespace audio::capture_audio::platform_windows

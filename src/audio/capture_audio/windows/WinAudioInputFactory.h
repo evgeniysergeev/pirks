@@ -2,7 +2,7 @@
 
 #include "IAudioInputFactory.h"
 
-namespace audio::capture_audio::windows
+namespace audio::capture_audio::platform_windows
 {
 
 class WinAudioInputFactory final : public IAudioInputFactory
@@ -18,4 +18,4 @@ public:
             const std::uint8_t *mapping) -> std::unique_ptr<IAudioInput> override;
 };
 
-}; // namespace audio::capture_audio::windows
+}; // namespace audio::capture_audio::platform_windows
