@@ -1,11 +1,12 @@
 cmake_minimum_required(VERSION 3.15)
 
 # set the project name
-project(Pirks VERSION 1.0.0.0)
+project(Pirks
+        VERSION 1.0.0.0
+        DESCRIPTION "Pirks is a video streaming application")
+
 
 set(PROJECT_LICENSE "AGPL-3")
-
-set(PROJECT_LONG_DESCRIPTION "Pirks is a video streaming application")
 
 # Build and run tests
 option(BUILD_TESTS "Build and run tests" ON)

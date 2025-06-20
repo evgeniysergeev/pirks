@@ -13,7 +13,7 @@ int main(int argc, char **argv)
     defer { spdlog::info("{} v{} exited"sv, PROJECT_NAME, PROJECT_FULL_VERSION); };
 
     pirks::config::Config config;
-    const auto ret = config.parseArgs(PROJECT_LONG_DESCRIPTION, PROJECT_NAME, argc, argv);
+    const auto ret = config.parseArgs(PROJECT_DESCRIPTION, PROJECT_NAME, argc, argv);
     if (ret != 0) {
         return ret;
     }
