@@ -2,10 +2,10 @@
 
 #include "IAudioInputFactory.h"
 
-namespace audio::capture_audio::windows
+namespace audio::capture_audio::platform_linux
 {
 
-class WinAudioInputFactory final : public IAudioInputFactory
+class LinuxAudioInputFactory final : public IAudioInputFactory
 {
 public:
     auto getAudioSources() -> std::vector<std::string> override;
@@ -18,4 +18,4 @@ public:
             const std::uint8_t *mapping) -> std::unique_ptr<IAudioInput> override;
 };
 
-}; // namespace audio::capture_audio::windows
+}; // namespace audio::capture_audio::platform_linux

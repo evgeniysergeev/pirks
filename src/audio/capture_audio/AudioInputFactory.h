@@ -10,7 +10,7 @@
 #include "LinuxAudioInputFactory.h"
 namespace audio::capture_audio
 {
-using AudioInputFactory = ::audio::capture_audio::windows::LinuxAudioInputFactory;
+using AudioInputFactory = ::audio::capture_audio::platform_linux::LinuxAudioInputFactory;
 }; // namespace audio::capture_audio
 #endif // ifdef LINUX
 
@@ -18,7 +18,7 @@ using AudioInputFactory = ::audio::capture_audio::windows::LinuxAudioInputFactor
 #include "WinAudioInputFactory.h"
 namespace audio::capture_audio
 {
-using AudioInputFactory = ::audio::capture_audio::windows::WinAudioInputFactory;
+using AudioInputFactory = ::audio::capture_audio::platform_windows::WinAudioInputFactory;
 }; // namespace audio::capture_audio
 #endif // ifdef WINDOWS
 
@@ -26,7 +26,7 @@ using AudioInputFactory = ::audio::capture_audio::windows::WinAudioInputFactory;
 #include "MacAudioInputFactory.h"
 namespace audio::capture_audio
 {
-using AudioInputFactory = ::audio::capture_audio::macos::MacAudioInputFactory;
+using AudioInputFactory = ::audio::capture_audio::platform_macos::MacAudioInputFactory;
 }; // namespace audio::capture_audio
 #endif // ifdef MACOS
 

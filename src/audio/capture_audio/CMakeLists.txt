@@ -4,6 +4,13 @@ set(SOURCES
     CaptureResult.h
 )
 
+if(PLATFORM STREQUAL "LINUX")
+    set(PLATFORM_SOURCES
+        linux/LinuxAudioInputFactory.h
+        linux/LinuxAudioInputFactory.cpp
+    )
+endif()
+
 if(PLATFORM STREQUAL "WINDOWS")
     set(PLATFORM_SOURCES
         windows/WinAudioInputFactory.h
@@ -32,6 +39,12 @@ add_library(capture_audio STATIC
 target_include_directories(capture_audio PUBLIC
     ${PROJECT_SOURCE_DIR}/third-party/TPCircularBuffer
 )
+
+if(PLATFORM STREQUAL "LINUX")
+    target_include_directories(capture_audio INTERFACE
+        ${CMAKE_CURRENT_SOURCE_DIR}/linux
+    )
+endif()
 
 if(PLATFORM STREQUAL "WINDOWS")
     target_include_directories(capture_audio INTERFACE

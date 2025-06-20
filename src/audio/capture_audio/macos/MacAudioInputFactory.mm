@@ -3,7 +3,7 @@
 
 #include <string>
 
-namespace audio::capture_audio::macos
+namespace audio::capture_audio::platform_macos
 {
 
 auto MacAudioInputFactory::getAudioSources() -> std::vector<std::string>
@@ -38,4 +38,4 @@ auto MacAudioInputFactory::create(
     }
 }
 
-}; // namespace audio::capture_audio::macos
+}; // namespace audio::capture_audio::platform_macos

@@ -5,7 +5,7 @@
 #include "CaptureDevice.h"
 #include "IAudioInput.h"
 
-namespace audio::capture_audio::macos
+namespace audio::capture_audio::platform_macos
 {
 
 class MacAudioInput final : public IAudioInput
@@ -26,4 +26,4 @@ private:
     CaptureDevice *captureDevice_ {};
 };
 
-}; // namespace audio::capture_audio::macos
+}; // namespace audio::capture_audio::platform_macos
