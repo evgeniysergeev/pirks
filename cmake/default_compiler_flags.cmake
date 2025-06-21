@@ -12,6 +12,6 @@ target_compile_features(default_compiler_flags INTERFACE cxx_std_23)
 
 # set default compiler warning flags
 target_compile_options(default_compiler_flags INTERFACE
-    "$<${gcc_like_cxx}:$<BUILD_INTERFACE:-Wall;-Wextra;-Wshadow;-Wformat=2;-Wunused>>"
-    "$<${msvc_cxx}:$<BUILD_INTERFACE:-W3>>"
+    "$<${gcc_like_cxx}:$<BUILD_INTERFACE:-Werror;-Wall;-Wextra;-Wpedantic;-Wcast-align;-Wcast-qual;-Wctor-dtor-privacy;-Wconversion;-Wenum-compare;-Wfloat-equal;-Wnon-virtual-dtor;-Wold-style-cast;-Woverloaded-virtual;-Wredundant-decls;-Wsign-conversion;-Wsign-promo;-Wshadow;-Wformat=2;-Wunused>>"
+    "$<${msvc_cxx}:$<BUILD_INTERFACE:/W4;/WX>>"
 )
