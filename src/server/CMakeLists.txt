@@ -14,6 +14,7 @@ add_executable(${TARGET_NAME} ${SOURCES})
 # ${PROJECT_BINARY_DIR} needed for include version.h was already added in common
 target_include_directories(${TARGET_NAME} INTERFACE
     ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/config
 )
 
 # use requirements from interface library with compiler flags

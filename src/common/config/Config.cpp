@@ -1,5 +1,7 @@
 #include "Config.h"
 
+#include "ExitCode.h"
+
 namespace pirks::config
 {
 
@@ -20,13 +22,14 @@ int Config::parseArgs(
         args.parse(argc, argv);
         if (!parseOptions(args)) {
             shouldExit_ = true;
+            return ExitCode::ConfigurationError;
         }
     } catch (const CLI::ParseError &e) {
         shouldExit_ = true;
         return args.exit(e);
     }
 
-    return 0;
+    return ExitCode::OK;
 }
 
 void Config::addStandardOptions(CLI::App &args, const std::string &version)

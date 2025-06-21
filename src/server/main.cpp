@@ -2,12 +2,14 @@
 
 #include <deferral.hh>
 
+#include "ExitCode.h"
 #include "ServerConfig.h"
 #include "str_utils.h"
 #include "version.h"
 
 int main(int argc, char **argv)
 {
+    using namespace ::pirks;
     using namespace ::pirks::config;
 
     try {
@@ -44,15 +46,17 @@ int main(int argc, char **argv)
             break;
         case ServerConfig::ConnectionType::TCP:
             spdlog::info("Connection type: TCP");
-            return 1;
+            spdlog::critical("TCP connection is not implemented");
+            return ExitCode::ConfigurationError;
         }
+
     } catch (std::exception &e) {
         spdlog::critical("Exception thrown: {}", e.what());
-        return 2;
+        return ExitCode::ExceptionThrown;
     } catch (...) {
         spdlog::critical("Unknown exception thrown");
-        return 2;
+        return ExitCode::ExceptionThrown;
     }
 
-    return 0;
+    return ExitCode::OK;
 }
