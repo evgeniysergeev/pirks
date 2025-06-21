@@ -27,7 +27,7 @@ TEST(AudioInput, GetSamples)
 
     std::vector<float> sample_in(1024);
 
-    for (const auto &name : names) {
+    for (const auto &name: names) {
         auto device = audio_input_factory.create(name, 2, 48000, 96000, nullptr);
         ASSERT_TRUE(device != nullptr);
 

@@ -157,7 +157,7 @@ void CircularBuffer<T>::push(std::span<const T> elements)
 
     // TODO: Should we check situation when number of elements
     //       is greater than the buffer size?
-    for (const auto &element : elements) {
+    for (const auto &element: elements) {
         buffer_.at(endIndex_) = std::move(element);
 
         endIndex_ = (endIndex_ + 1) % sz;
