@@ -23,7 +23,7 @@ struct PacketHeader
  * @brief This structure is used to store inforamtion about packets in memory
  *
  */
-struct PacketInfo : public PacketHeader
+struct PacketInfo: public PacketHeader
 {
     uint8_t *data { nullptr };
 };

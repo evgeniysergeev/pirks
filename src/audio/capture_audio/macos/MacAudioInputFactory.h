@@ -24,7 +24,7 @@ namespace audio::capture_audio::platform_macos
  *       brew install --cask soundflower
  * ```
  */
-class MacAudioInputFactory final : public IAudioInputFactory
+class MacAudioInputFactory final: public IAudioInputFactory
 {
 public:
     auto getAudioSources() -> std::vector<std::string> override;

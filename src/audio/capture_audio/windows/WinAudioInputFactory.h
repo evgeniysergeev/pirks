@@ -5,7 +5,7 @@
 namespace audio::capture_audio::platform_windows
 {
 
-class WinAudioInputFactory final : public IAudioInputFactory
+class WinAudioInputFactory final: public IAudioInputFactory
 {
 public:
     auto getAudioSources() -> std::vector<std::string> override;
