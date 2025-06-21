@@ -177,7 +177,7 @@ TEST(CircularBuffer, PushMultipleElements)
     EXPECT_EQ(CircularBufferToStr(buff), "{}"s);
 
     {
-        int elements[] = {1, 2, 3, 4};
+        int elements[] = { 1, 2, 3, 4 };
         buff.push(elements);
     }
     EXPECT_EQ(CircularBufferToStr(buff), "{1,2,3,4}"s);
@@ -199,16 +199,68 @@ TEST(CircularBuffer, PushMultipleElements)
     EXPECT_EQ(CircularBufferToStr(buff), "{}"s);
 
     {
-        const int elements[] = {6, 7, 8, 9};
+        const int elements[] = { 6, 7, 8, 9 };
         buff.push(elements);
     }
     EXPECT_EQ(CircularBufferToStr(buff), "{6,7,8,9}"s);
 
-    std::vector<int> vector;
-    vector.push_back(10);
-    vector.push_back(11);
-    vector.push_back(12);
-    vector.push_back(13);
-    buff.push(vector);
+    std::vector<int> v;
+    v.push_back(10);
+    v.push_back(11);
+    v.push_back(12);
+    v.push_back(13);
+    buff.push(v);
     EXPECT_EQ(CircularBufferToStr(buff), "{6,7,8,9,10,11,12,13}"s);
+}
+
+TEST(CircularBuffer, PopMultipleElements)
+{
+    CircularBuffer<int> buff { 8 };
+    EXPECT_EQ(buff.bufferCapacity(), 9u);
+
+    EXPECT_EQ(CircularBufferToStr(buff), "{}"s);
+
+    {
+        int elements[] = { 1, 2, 3, 4 };
+        buff.push(elements);
+    }
+    EXPECT_EQ(CircularBufferToStr(buff), "{1,2,3,4}"s);
+
+    {
+        std::vector<int> v;
+        EXPECT_EQ(buff.pop(v, 2), 2u);
+        EXPECT_EQ(v.at(0), 1);
+        EXPECT_EQ(v.at(1), 2);
+    }
+    EXPECT_EQ(CircularBufferToStr(buff), "{3,4}"s);
+
+    {
+        const int elements[] = { 5, 6, 7, 8, 9 };
+        buff.push(elements);
+    }
+    EXPECT_EQ(CircularBufferToStr(buff), "{3,4,5,6,7,8,9}"s);
+
+    {
+        std::vector<int> v;
+        EXPECT_EQ(buff.pop(v, 4, 20ms), 4u);
+        EXPECT_EQ(v.at(0), 3);
+        EXPECT_EQ(v.at(1), 4);
+        EXPECT_EQ(v.at(2), 5);
+        EXPECT_EQ(v.at(3), 6);
+    }
+    EXPECT_EQ(CircularBufferToStr(buff), "{7,8,9}"s);
+
+    {
+        std::vector<int> v;
+        EXPECT_EQ(buff.pop(v, 16), 3u);
+        EXPECT_EQ(v.at(0), 7);
+        EXPECT_EQ(v.at(1), 8);
+        EXPECT_EQ(v.at(2), 9);
+    }
+    EXPECT_EQ(CircularBufferToStr(buff), "{}"s);
+
+    {
+        std::vector<int> v;
+        EXPECT_EQ(buff.pop(v, 16, 20ms), 0u);
+    }
 }

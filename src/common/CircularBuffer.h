@@ -1,11 +1,13 @@
 #pragma once
 
+#include <algorithm>
 #include <cassert>
 #include <chrono>
 #include <condition_variable>
 #include <deque>
 #include <optional>
 #include <span>
+#include <vector>
 
 template<class T>
 class CircularBuffer
@@ -20,6 +22,7 @@ public:
     // The same as above, but with only one mutex lock for all elements
     void push(std::span<const T> elements);
 
+    // Read element but do not remove it from buffer
     [[nodiscard]]
     auto peek() -> std::optional<T>;
 
@@ -30,9 +33,19 @@ public:
     [[nodiscard]]
     auto pop() -> std::optional<T>;
 
+    [[nodiscard]]
+    auto pop(std::vector<T> &out_buffer, size_t max_elements) -> size_t;
+
     template<class Rep, class Period>
     [[nodiscard]]
     auto pop(std::chrono::duration<Rep, Period> delay) -> std::optional<T>;
+
+    template<class Rep, class Period>
+    [[nodiscard]]
+    auto pop(
+            std::vector<T>                    &out_buffer,
+            size_t                             max_elements,
+            std::chrono::duration<Rep, Period> delay) -> size_t;
 
     // Helpers
 public:
@@ -144,7 +157,7 @@ void CircularBuffer<T>::push(std::span<const T> elements)
 
     // TODO: Should we check situation when number of elements
     //       is greater than the buffer size?
-    for (const auto &element: elements) {
+    for (const auto &element : elements) {
         buffer_.at(endIndex_) = std::move(element);
 
         endIndex_ = (endIndex_ + 1) % sz;
@@ -225,6 +238,39 @@ auto CircularBuffer<T>::pop() -> std::optional<T>
 }
 
 template<class T>
+[[nodiscard]]
+auto CircularBuffer<T>::pop(std::vector<T> &out_buffer, size_t max_elements) -> size_t
+{
+    std::unique_lock lock { mutex_ };
+
+    if (!active_) {
+        return 0;
+    }
+
+    // if start index is equal to end index, then buffer is empty
+    while (startIndex_ == endIndex_) {
+        cv_.wait(lock);
+
+        if (!active_) {
+            return 0;
+        }
+    }
+
+    const auto sz = buffer_.capacity();
+    out_buffer.resize(std::min(sz, max_elements));
+    size_t i = 0;
+    while (i < max_elements) {
+        out_buffer[i++] = std::move(buffer_.at(startIndex_));
+        startIndex_     = (startIndex_ + 1) % sz;
+        if (startIndex_ == endIndex_) {
+            break;
+        }
+    }
+
+    return i;
+}
+
+template<class T>
 template<class Rep, class Period>
 auto CircularBuffer<T>::pop(std::chrono::duration<Rep, Period> delay) -> std::optional<T>
 {
@@ -252,6 +298,44 @@ auto CircularBuffer<T>::pop(std::chrono::duration<Rep, Period> delay) -> std::op
     startIndex_ = (startIndex_ + 1) % sz;
 
     return result;
+}
+
+template<class T>
+template<class Rep, class Period>
+auto CircularBuffer<T>::pop(
+        std::vector<T>                    &out_buffer,
+        size_t                             max_elements,
+        std::chrono::duration<Rep, Period> delay) -> size_t
+{
+    std::unique_lock lock { mutex_ };
+
+    if (!active_) {
+        return 0;
+    }
+
+    // if start index equal to end index, then buffer is empty
+    while (startIndex_ == endIndex_) {
+        if (cv_.wait_for(lock, delay) == std::cv_status::timeout) {
+            return 0;
+        }
+
+        if (!active_) {
+            return 0;
+        }
+    }
+
+    const auto sz = buffer_.capacity();
+    out_buffer.resize(std::min(sz, max_elements));
+    size_t i = 0;
+    while (i < max_elements) {
+        out_buffer[i++] = std::move(buffer_.at(startIndex_));
+        startIndex_     = (startIndex_ + 1) % sz;
+        if (startIndex_ == endIndex_) {
+            break;
+        }
+    }
+
+    return i;
 }
 
 // Helpers
