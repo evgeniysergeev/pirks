@@ -1,3 +1,11 @@
+/**
+ * @file version.h.in
+ * @author Sergeev Evgeniy (evgeniy.sergeev@gmail.com)
+ * @brief Version definitions
+ * 
+ * The final `version.h` is generated from this file during the CMake build.
+ * Use CMake definitions directly, instead of configuring this file.
+ */
 #pragma once
 
 #define PROJECT_NAME "@PROJECT_NAME@"
