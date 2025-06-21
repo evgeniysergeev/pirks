@@ -31,7 +31,7 @@ bool ServerConfig::parseOptions([[maybe_unused]] CLI::App &args)
     }
 
     if (connectionType_ == Default) {
-        connectionType_ = UDP;
+        connectionType_ = TCP;
     }
 
     return true;

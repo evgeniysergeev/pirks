@@ -4,6 +4,7 @@
 
 #include "ExitCode.h"
 #include "ServerConfig.h"
+#include "Server.h"
 #include "str_utils.h"
 #include "version.h"
 
@@ -43,12 +44,14 @@ int main(int argc, char **argv)
             [[fallthrough]];
         case ServerConfig::ConnectionType::UDP:
             spdlog::info("Connection type: UDP, port number: {}", config.port());
-            break;
+            spdlog::critical("UDP connection is not implemented");
+            return ExitCode::ConfigurationError;
         case ServerConfig::ConnectionType::TCP:
             spdlog::info("Connection type: TCP, port number: {}", config.port());
-            spdlog::critical("TCP connection is not implemented");
-            return ExitCode::ConfigurationError;
+            break;
         }
+
+        Server server { config.connectionType() };
 
     } catch (std::exception &e) {
         spdlog::critical("Exception thrown: {}", e.what());

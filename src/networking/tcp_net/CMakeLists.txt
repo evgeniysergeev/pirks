@@ -1,4 +1,6 @@
 set(SOURCES
+    TCPConnection.h
+    TCPConnection.cpp
 )
 
 add_library(tcp_net STATIC
@@ -7,6 +9,10 @@ add_library(tcp_net STATIC
 
 target_include_directories(tcp_net PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+target_include_directories(tcp_net INTERFACE
+    ${CMAKE_CURRENT_SOURCE_DIR}/..
 )
 
 # use requirements from interface library with compiler flags
