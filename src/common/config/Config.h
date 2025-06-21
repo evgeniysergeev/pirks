@@ -32,12 +32,14 @@ private:
 
 public:
     bool isDebug() { return isDebug_; }
+    auto port() -> uint16_t { return port_; }
 
     bool shouldExit() { return shouldExit_; }
 
 private:
     bool isDebug_ { false };
     bool shouldExit_ { false };
+    uint16_t port_ { 5101 }; // Some random unused port
 };
 
 }; // namespace pirks::config

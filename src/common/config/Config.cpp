@@ -38,6 +38,7 @@ void Config::addStandardOptions(CLI::App &args, const std::string &version)
     args.set_version_flag("-v,--version", version);
 
     args.add_flag("-d,--debug", isDebug_, "Enable debug logging");
+    args.add_option("-p,--port", port_, "Server port");
 }
 
 void Config::addOptions([[maybe_unused]] CLI::App &args)

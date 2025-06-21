@@ -7,12 +7,16 @@ namespace pirks::config
 
 void ServerConfig::addOptions(CLI::App &args)
 {
+    Config::addOptions(args);
+
     args.add_flag("-t,--tcp", isTCP_, "Use TCP/IP for networking");
     args.add_flag("-u,--udp", isUDP_, "Use UDP for networking");
 }
 
 bool ServerConfig::parseOptions([[maybe_unused]] CLI::App &args)
 {
+    Config::parseOptions(args);
+
     if (isTCP_ && isUDP_) {
         std::cout << "Unable to use both TCP and UDP connection type" << std::endl;
         return false;
