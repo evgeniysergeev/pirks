@@ -168,3 +168,47 @@ TEST(CircularBuffer, Overwrite)
     EXPECT_FALSE(buff.pop(20ms).has_value());
     EXPECT_EQ(CircularBufferToStr(buff), "{}"s);
 }
+
+TEST(CircularBuffer, PushMultipleElements)
+{
+    CircularBuffer<int> buff { 8 };
+    EXPECT_EQ(buff.bufferCapacity(), 9u);
+
+    EXPECT_EQ(CircularBufferToStr(buff), "{}"s);
+
+    {
+        int elements[] = {1, 2, 3, 4};
+        buff.push(elements);
+    }
+    EXPECT_EQ(CircularBufferToStr(buff), "{1,2,3,4}"s);
+
+    EXPECT_EQ(buff.pop(), 1);
+    EXPECT_EQ(CircularBufferToStr(buff), "{2,3,4}"s);
+
+    EXPECT_EQ(buff.pop(), 2);
+    EXPECT_EQ(CircularBufferToStr(buff), "{3,4}"s);
+
+    EXPECT_EQ(buff.pop(), 3);
+    EXPECT_EQ(CircularBufferToStr(buff), "{4}"s);
+
+    {
+        const auto value = buff.pop(20ms);
+        EXPECT_TRUE(value.has_value());
+        EXPECT_EQ(value, 4);
+    }
+    EXPECT_EQ(CircularBufferToStr(buff), "{}"s);
+
+    {
+        const int elements[] = {6, 7, 8, 9};
+        buff.push(elements);
+    }
+    EXPECT_EQ(CircularBufferToStr(buff), "{6,7,8,9}"s);
+
+    std::vector<int> vector;
+    vector.push_back(10);
+    vector.push_back(11);
+    vector.push_back(12);
+    vector.push_back(13);
+    buff.push(vector);
+    EXPECT_EQ(CircularBufferToStr(buff), "{6,7,8,9,10,11,12,13}"s);
+}

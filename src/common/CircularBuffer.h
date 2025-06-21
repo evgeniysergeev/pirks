@@ -5,6 +5,7 @@
 #include <condition_variable>
 #include <deque>
 #include <optional>
+#include <span>
 
 template<class T>
 class CircularBuffer
@@ -15,6 +16,9 @@ public:
 
 public:
     void push(const T &element);
+
+    // The same as above, but with only one mutex lock for all elements
+    void push(std::span<const T> elements);
 
     [[nodiscard]]
     auto peek() -> std::optional<T>;
@@ -121,6 +125,32 @@ void CircularBuffer<T>::push(const T &element)
     endIndex_ = (endIndex_ + 1) % sz;
     if (endIndex_ == startIndex_) {
         startIndex_ = (startIndex_ + 1) % sz;
+    }
+
+    cv_.notify_all();
+}
+
+template<class T>
+void CircularBuffer<T>::push(std::span<const T> elements)
+{
+    std::lock_guard lock { mutex_ };
+
+    if (!active_) {
+        return;
+    }
+
+    const auto sz = buffer_.capacity();
+    assert(sz != 0);
+
+    // TODO: Should we check situation when number of elements
+    //       is greater than the buffer size?
+    for (const auto &element: elements) {
+        buffer_.at(endIndex_) = std::move(element);
+
+        endIndex_ = (endIndex_ + 1) % sz;
+        if (endIndex_ == startIndex_) {
+            startIndex_ = (startIndex_ + 1) % sz;
+        }
     }
 
     cv_.notify_all();
