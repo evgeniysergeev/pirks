@@ -19,9 +19,9 @@ private:
     static void sendThreadFunc(TCPConnection *connection);
 
 private:
-    std::atomic_bool m_stop;
-    std::thread      m_recvThread;
-    std::thread      m_sendThread;
+    std::atomic_bool stop_;
+    std::thread      recvThread_;
+    std::thread      sendThread_;
 };
 
 }; // namespace pirks::networking

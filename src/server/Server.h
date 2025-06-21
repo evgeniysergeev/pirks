@@ -19,8 +19,8 @@ public:
     void stop();
 
 private:
-    config::ServerConfig::ConnectionType     m_connectionType;
-    std::unique_ptr<networking::IConnection> m_connection;
+    config::ServerConfig::ConnectionType     connectionType_;
+    std::unique_ptr<networking::IConnection> connection_;
 };
 
 }; // namespace pirks

@@ -10,25 +10,30 @@ using namespace std::chrono_literals;
 namespace pirks::networking
 {
 
-TCPConnection::TCPConnection() : m_stop { false } { spdlog::debug("TCPConnection created"); }
+TCPConnection::TCPConnection() //
+        : stop_ { false }
+{
+    // This comment needed for clang-format. Without it, this will be in one line
+    spdlog::debug("TCPConnection created");
+}
 
 TCPConnection::~TCPConnection()
 {
     spdlog::debug("TCPConnection destructor");
 
-    m_stop = true;
+    stop_ = true;
 }
 
 void TCPConnection::recvThreadFunc(TCPConnection *connection)
 {
-    while (!connection->m_stop) {
+    while (!connection->stop_) {
         std::this_thread::sleep_for(100ns);
     }
 }
 
 void TCPConnection::sendThreadFunc(TCPConnection *connection)
 {
-    while (!connection->m_stop) {
+    while (!connection->stop_) {
         std::this_thread::sleep_for(100ns);
     }
 }

@@ -11,8 +11,8 @@ using namespace ::pirks::config;
 using namespace ::pirks::networking;
 
 Server::Server(ServerConfig::ConnectionType connectionType)
-        : m_connectionType { connectionType }
-        , m_connection { nullptr }
+        : connectionType_ { connectionType }
+        , connection_ { nullptr }
 {
     //
 }
@@ -26,8 +26,8 @@ void Server::run()
 {
     spdlog::info("Run server");
 
-    if (m_connectionType == ServerConfig::ConnectionType::TCP) {
-        m_connection.reset(new TCPConnection());
+    if (connectionType_ == ServerConfig::ConnectionType::TCP) {
+        connection_.reset(new TCPConnection());
     }
 }
 
@@ -35,7 +35,7 @@ void Server::stop()
 {
     spdlog::info("Stop server");
 
-    m_connection.reset();
+    connection_.reset();
 }
 
 }; // namespace pirks
