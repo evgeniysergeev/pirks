@@ -44,11 +44,11 @@ int main(int argc, char **argv)
             [[fallthrough]];
         case ServerConfig::ConnectionType::UDP:
             spdlog::info("Connection type: UDP, port number: {}", config.port());
-            spdlog::critical("UDP connection is not implemented");
-            return ExitCode::ConfigurationError;
+            break;
         case ServerConfig::ConnectionType::TCP:
             spdlog::info("Connection type: TCP, port number: {}", config.port());
-            break;
+            spdlog::critical("TCP connection is not implemented");
+            return ExitCode::ConfigurationError;
         }
 
         Server server { config.connectionType() };
