@@ -26,9 +26,14 @@ void Server::run()
 {
     spdlog::info("Run server");
 
+    inPackets_.reset(new networking::PacketsQueue());
+    outPackets_.reset(new networking::PacketsQueue());
+
     if (connectionType_ == ServerConfig::ConnectionType::TCP) {
         connection_.reset(new TCPConnection());
     }
+    // TODO: check that connection was made!
+    connection_->create(inPackets_, outPackets_);
 }
 
 void Server::stop()
@@ -36,6 +41,8 @@ void Server::stop()
     spdlog::info("Stop server");
 
     connection_.reset();
+    inPackets_.reset();
+    outPackets_.reset();
 }
 
 }; // namespace pirks
