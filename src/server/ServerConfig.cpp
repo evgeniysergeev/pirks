@@ -18,7 +18,7 @@ bool ServerConfig::parseOptions([[maybe_unused]] CLI::App &args)
     Config::parseOptions(args);
 
     if (isTCP_ && isUDP_) {
-        std::cout << "Unable to use both TCP and UDP connection type" << std::endl;
+        std::cout << "You can not use both TCP and UDP connection types at the same time." << std::endl;
         return false;
     }
 
@@ -31,7 +31,7 @@ bool ServerConfig::parseOptions([[maybe_unused]] CLI::App &args)
     }
 
     if (connectionType_ == Default) {
-        connectionType_ = TCP;
+        connectionType_ = UDP;
     }
 
     return true;

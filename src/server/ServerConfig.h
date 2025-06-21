@@ -10,7 +10,7 @@ class ServerConfig final: public Config
 public:
     enum ConnectionType
     {
-        Default = 0, ///< Default (for now default is TCP)
+        Default = 0, ///< Default (for now default is UDP)
         TCP,         ///< Use TCP/IP for networking (via libwebsocket library)
         UDP          ///< Use UDP for networking (via ENET library)
     };
