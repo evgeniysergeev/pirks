@@ -25,7 +25,7 @@ public:
 
 protected:
     virtual void addOptions(CLI::App &args);
-    virtual void parseOptions(CLI::App &args);
+    virtual bool parseOptions(CLI::App &args);
 
 private:
     void addStandardOptions(CLI::App &args, const std::string &version);

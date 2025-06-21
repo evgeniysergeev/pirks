@@ -18,7 +18,9 @@ int Config::parseArgs(
 
     try {
         args.parse(argc, argv);
-        parseOptions(args);
+        if (!parseOptions(args)) {
+            shouldExit_ = true;
+        }
     } catch (const CLI::ParseError &e) {
         shouldExit_ = true;
         return args.exit(e);
@@ -40,9 +42,10 @@ void Config::addOptions([[maybe_unused]] CLI::App &args)
     // Here you can add your custom flags and options
 }
 
-void Config::parseOptions([[maybe_unused]] CLI::App &args)
+bool Config::parseOptions([[maybe_unused]] CLI::App &args)
 {
     // Here your can read flags / options after CLI::parse was made
+    return true;
 }
 
 } // namespace pirks::config

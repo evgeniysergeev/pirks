@@ -32,7 +32,7 @@ add_subdirectory(src/common)
 add_subdirectory(src/audio)
 
 # add networking static libraries subdirectory
-add_subdirectory(src/networking)
+# add_subdirectory(src/networking)
 
 # add server subdirectory
 add_subdirectory(src/server)
