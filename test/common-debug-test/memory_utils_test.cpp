@@ -9,7 +9,7 @@
 #include <string>
 #include <vector>
 
-class MemoryUtilsTest : public ::testing::Test
+class MemoryUtilsTest: public ::testing::Test
 {
 protected:
     void SetUp() override
@@ -99,8 +99,8 @@ TEST_F(MemoryUtilsTest, LogMemoryDump_LargeData)
     std::string result = memory_utils::dumpMemoryToString(std::span { data });
 
     // Проверяем, что вывод содержит две строки
-    size_t newline_count = std::count(result.begin(), result.end(), '\n');
-    EXPECT_EQ(newline_count, 2u);
+    const auto newline_count = std::count(result.begin(), result.end(), '\n');
+    EXPECT_EQ(newline_count, 2);
 
     // Проверяем, что вторая строка начинается с правильного смещения
     EXPECT_TRUE(result.find("00000010:") != std::string::npos);
@@ -122,8 +122,8 @@ TEST_F(MemoryUtilsTest, DumpMemoryToString_MultiLine)
     EXPECT_TRUE(result.find("00000020:") != std::string::npos);
 
     // Проверяем количество строк
-    size_t newline_count = std::count(result.begin(), result.end(), '\n');
-    EXPECT_EQ(newline_count, 3u);
+    const auto newline_count = std::count(result.begin(), result.end(), '\n');
+    EXPECT_EQ(newline_count, 3);
 }
 
 TEST_F(MemoryUtilsTest, DumpMemoryToString_ExactLineSize)
@@ -137,8 +137,8 @@ TEST_F(MemoryUtilsTest, DumpMemoryToString_ExactLineSize)
     std::string result = memory_utils::dumpMemoryToString(std::span { data });
 
     // Проверяем, что вывод содержит только одну строку
-    size_t newline_count = std::count(result.begin(), result.end(), '\n');
-    EXPECT_EQ(newline_count, 1u);
+    const auto newline_count = std::count(result.begin(), result.end(), '\n');
+    EXPECT_EQ(newline_count, 1);
 }
 
 TEST_F(MemoryUtilsTest, DumpMemoryToString_EmptyData)
@@ -264,8 +264,8 @@ TEST_F(MemoryUtilsTest, DumpMemoryToString_ThreeLines_Detailed)
     EXPECT_EQ(result, expected);
 
     // Проверяем общее количество строк
-    size_t newline_count = std::count(result.begin(), result.end(), '\n');
-    EXPECT_EQ(newline_count, 3u);
+    const auto newline_count = std::count(result.begin(), result.end(), '\n');
+    EXPECT_EQ(newline_count, 3);
 }
 
 TEST_F(MemoryUtilsTest, DumpMemoryToString_FiveLines_Detailed)
@@ -289,8 +289,8 @@ TEST_F(MemoryUtilsTest, DumpMemoryToString_FiveLines_Detailed)
     EXPECT_EQ(result, expected);
 
     // Проверяем общее количество строк
-    size_t newline_count = std::count(result.begin(), result.end(), '\n');
-    EXPECT_EQ(newline_count, 5u);
+    const auto newline_count = std::count(result.begin(), result.end(), '\n');
+    EXPECT_EQ(newline_count, 5);
 }
 
 TEST_F(MemoryUtilsTest, DumpMemoryToString_ThreeLines_WithPrintable)
@@ -326,8 +326,8 @@ TEST_F(MemoryUtilsTest, DumpMemoryToString_ThreeLines_WithPrintable)
     EXPECT_EQ(result, expected);
 
     // Check total number of lines
-    size_t newline_count = std::count(result.begin(), result.end(), '\n');
-    EXPECT_EQ(newline_count, 3u);
+    const auto newline_count = std::count(result.begin(), result.end(), '\n');
+    EXPECT_EQ(newline_count, 3);
 }
 
 TEST_F(MemoryUtilsTest, DumpMemoryToString_LastLinePartial_Short)
@@ -350,8 +350,8 @@ TEST_F(MemoryUtilsTest, DumpMemoryToString_LastLinePartial_Short)
     EXPECT_EQ(result, expected);
 
     // Check total number of lines
-    size_t newline_count = std::count(result.begin(), result.end(), '\n');
-    EXPECT_EQ(newline_count, 3u);
+    const auto newline_count = std::count(result.begin(), result.end(), '\n');
+    EXPECT_EQ(newline_count, 3);
 }
 
 TEST_F(MemoryUtilsTest, DumpMemoryToString_LastLinePartial_Long)
@@ -375,8 +375,8 @@ TEST_F(MemoryUtilsTest, DumpMemoryToString_LastLinePartial_Long)
     EXPECT_EQ(result, expected);
 
     // Check total number of lines
-    size_t newline_count = std::count(result.begin(), result.end(), '\n');
-    EXPECT_EQ(newline_count, 4u);
+    const auto newline_count = std::count(result.begin(), result.end(), '\n');
+    EXPECT_EQ(newline_count, 4);
 }
 
 TEST_F(MemoryUtilsTest, DumpMemoryToString_LastLinePartial_Printable)
@@ -408,8 +408,8 @@ TEST_F(MemoryUtilsTest, DumpMemoryToString_LastLinePartial_Printable)
     EXPECT_EQ(result, expected);
 
     // Check total number of lines
-    size_t newline_count = std::count(result.begin(), result.end(), '\n');
-    EXPECT_EQ(newline_count, 3u);
+    const auto newline_count = std::count(result.begin(), result.end(), '\n');
+    EXPECT_EQ(newline_count, 3);
 }
 
 TEST_F(MemoryUtilsTest, DumpMemoryToString_LastLinePartial_Mixed)
@@ -441,6 +441,6 @@ TEST_F(MemoryUtilsTest, DumpMemoryToString_LastLinePartial_Mixed)
     EXPECT_EQ(result, expected);
 
     // Check total number of lines
-    size_t newline_count = std::count(result.begin(), result.end(), '\n');
-    EXPECT_EQ(newline_count, 3u);
+    const auto newline_count = std::count(result.begin(), result.end(), '\n');
+    EXPECT_EQ(newline_count, 3);
 }

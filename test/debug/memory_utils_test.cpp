@@ -8,7 +8,7 @@
 #include <string>
 #include <vector>
 
-class MemoryUtilsTest : public ::testing::Test
+class MemoryUtilsTest: public ::testing::Test
 {
 protected:
     void SetUp() override

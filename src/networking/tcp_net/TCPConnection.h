@@ -9,7 +9,7 @@
 namespace pirks::networking
 {
 
-class TCPConnection final : public IConnection
+class TCPConnection final: public IConnection
 {
 public:
     TCPConnection();

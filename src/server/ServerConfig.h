@@ -5,7 +5,7 @@
 namespace pirks::config
 {
 
-class ServerConfig final : public Config
+class ServerConfig final: public Config
 {
 public:
     enum ConnectionType

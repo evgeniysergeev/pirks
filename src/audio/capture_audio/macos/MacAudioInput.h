@@ -8,7 +8,7 @@
 namespace audio::capture_audio::platform_macos
 {
 
-class MacAudioInput final : public IAudioInput
+class MacAudioInput final: public IAudioInput
 {
 public:
     MacAudioInput(

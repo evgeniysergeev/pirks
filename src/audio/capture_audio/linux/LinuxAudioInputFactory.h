@@ -5,7 +5,7 @@
 namespace audio::capture_audio::platform_linux
 {
 
-class LinuxAudioInputFactory final : public IAudioInputFactory
+class LinuxAudioInputFactory final: public IAudioInputFactory
 {
 public:
     auto getAudioSources() -> std::vector<std::string> override;
