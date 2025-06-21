@@ -9,4 +9,4 @@ public:
     virtual ~IConnection() = default;
 };
 
-}; // namespace 
+}; // namespace pirks::networking

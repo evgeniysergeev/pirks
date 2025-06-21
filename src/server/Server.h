@@ -1,10 +1,9 @@
 #pragma once
 
-#include "ServerConfig.h"
-#include "IConnection.h"
-
 #include <memory>
 
+#include "IConnection.h"
+#include "ServerConfig.h"
 
 namespace pirks
 {
@@ -15,9 +14,13 @@ public:
     Server(config::ServerConfig::ConnectionType connectionType);
     ~Server();
 
+public:
+    void run();
+    void stop();
+
 private:
-    config::ServerConfig::ConnectionType m_connectionType;
+    config::ServerConfig::ConnectionType     m_connectionType;
     std::unique_ptr<networking::IConnection> m_connection;
 };
 
-}; // namespace pirks::server
+}; // namespace pirks

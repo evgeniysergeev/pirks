@@ -1,23 +1,22 @@
 #include "TCPConnection.h"
 
+#include <spdlog/spdlog.h>
+
 #include <chrono>
 #include <thread>
-
-#include <spdlog/spdlog.h>
 
 using namespace std::chrono_literals;
 
 namespace pirks::networking
 {
 
-TCPConnection::TCPConnection(): m_stop { false }
-{
-    spdlog::debug("TCPConnection created");
-}
+TCPConnection::TCPConnection() : m_stop { false } { spdlog::debug("TCPConnection created"); }
 
 TCPConnection::~TCPConnection()
 {
     spdlog::debug("TCPConnection destructor");
+
+    m_stop = true;
 }
 
 void TCPConnection::recvThreadFunc(TCPConnection *connection)

@@ -3,8 +3,8 @@
 #include <deferral.hh>
 
 #include "ExitCode.h"
-#include "ServerConfig.h"
 #include "Server.h"
+#include "ServerConfig.h"
 #include "str_utils.h"
 #include "version.h"
 
@@ -52,6 +52,7 @@ int main(int argc, char **argv)
         }
 
         Server server { config.connectionType() };
+        server.run();
 
     } catch (std::exception &e) {
         spdlog::critical("Exception thrown: {}", e.what());
