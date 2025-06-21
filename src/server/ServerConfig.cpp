@@ -1,6 +1,6 @@
-#include <iostream>
-
 #include "ServerConfig.h"
+
+#include <iostream>
 
 namespace pirks::config
 {
