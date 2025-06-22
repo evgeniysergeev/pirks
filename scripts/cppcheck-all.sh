@@ -18,7 +18,7 @@ cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ..
 # But for now checking everything
 cppcheck \
     --enable=all \
-    --std=c++20 \
+    --std=c++23 \
     --cppcheck-build-dir=. \
     --check-level=exhaustive \
     --inconclusive \
