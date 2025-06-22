@@ -11,7 +11,7 @@ namespace pirks
 class Server final
 {
 public:
-    Server(config::ServerConfig::ConnectionType connectionType);
+    explicit Server(config::ServerConfig::ConnectionType connectionType);
     ~Server();
 
 public:
