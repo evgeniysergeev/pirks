@@ -23,9 +23,9 @@ MacAudioInput::~MacAudioInput()
     [captureDevice_ release];
 }
 
-auto MacAudioInput::sample(std::vector<float> &sample_in) -> CaptureResult
+auto MacAudioInput::sample(std::vector<float> &sample_out) -> CaptureResult
 {
-    const auto sample_size64 = sample_in.size();
+    const auto sample_size64 = sample_out.size();
     assert(sample_size64 < UINT32_MAX);
     const uint32_t sample_size = static_cast<uint32_t>(sample_size64);
 
@@ -40,7 +40,7 @@ auto MacAudioInput::sample(std::vector<float> &sample_in) -> CaptureResult
     const float *sampleBuffer = reinterpret_cast<float *>(byteSampleBuffer);
     std::vector<float> vectorBuffer(sampleBuffer, sampleBuffer + sample_size);
 
-    std::copy_n(std::begin(vectorBuffer), sample_size, std::begin(sample_in));
+    std::copy_n(std::begin(vectorBuffer), sample_size, std::begin(sample_out));
 
     TPCircularBufferConsume(&captureDevice_->audioSampleBuffer, sample_size * sizeof(float));
 

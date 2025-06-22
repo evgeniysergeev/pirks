@@ -20,7 +20,7 @@ public:
     ~MacAudioInput() override;
 
 public:
-    auto sample(std::vector<float> &sample_in) -> CaptureResult override;
+    auto sample(std::vector<float> &sample_out) -> CaptureResult override;
 
 private:
     CaptureDevice *captureDevice_ {};
