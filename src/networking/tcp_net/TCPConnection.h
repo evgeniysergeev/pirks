@@ -23,8 +23,9 @@ public:
             std::shared_ptr<PacketsQueue> out_packets) override;
 
 private:
-    static void recvThreadFunc(TCPConnection *connection);
-    static void sendThreadFunc(TCPConnection *connection);
+    // TODO: implement this
+    // static void recvThreadFunc(TCPConnection *connection);
+    // static void sendThreadFunc(TCPConnection *connection);
 
 private:
     std::atomic_bool            stop_;

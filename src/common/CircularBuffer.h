@@ -183,7 +183,7 @@ auto CircularBuffer<T>::peek() -> std::optional<T>
         return std::nullopt;
     }
 
-    return std::move(buffer_.at(startIndex_));
+    return buffer_.at(startIndex_);
 }
 
 template<class T>

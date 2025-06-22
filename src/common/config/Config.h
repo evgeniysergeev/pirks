@@ -31,10 +31,10 @@ private:
     void addStandardOptions(CLI::App &args, const std::string &version);
 
 public:
-    bool isDebug() { return isDebug_; }
-    auto port() -> uint16_t { return port_; }
+    bool isDebug() const { return isDebug_; }
+    auto port() const -> uint16_t { return port_; }
 
-    bool shouldExit() { return shouldExit_; }
+    bool shouldExit() const { return shouldExit_; }
 
 private:
     bool     isDebug_ { false };

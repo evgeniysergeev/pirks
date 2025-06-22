@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Better to call this file with redirect stdout to file. This way you will see
+# only errors and warnings on the screen
+# ./scripts/cppcheck-all.sh > cppcheck.log
+
 project_path=$(pwd -P)
 
 echo $project_path

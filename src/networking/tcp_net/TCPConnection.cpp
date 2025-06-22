@@ -31,6 +31,8 @@ void TCPConnection::create(
     outPackets_ = out_packets;
 }
 
+// TODO: Implement this
+/*
 void TCPConnection::recvThreadFunc(TCPConnection *connection)
 {
     while (!connection->stop_) {
@@ -44,5 +46,6 @@ void TCPConnection::sendThreadFunc(TCPConnection *connection)
         std::this_thread::sleep_for(100ns);
     }
 }
+*/
 
 }; // namespace pirks::networking

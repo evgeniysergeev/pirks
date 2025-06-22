@@ -16,10 +16,13 @@ this command:
 
 ## cppcheck
 
-Cppcheck script is available in
+Cppcheck script is available in [cppcheck-all.sh](../scripts/cppcheck-all.sh)
+Better to call this file with redirect stdout to file. This way you will see only errors and warnings on the screen
 ```bash
-./scripts/cppcheck-all.sh
+./scripts/cppcheck-all.sh > cppcheck.log
 ```
+
+# ./scripts/cppcheck-all.sh > cppcheck.log
 
 ## Rullers in Editor
 
