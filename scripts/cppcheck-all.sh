@@ -9,6 +9,9 @@ pushd cppcheck-build
 
 cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ..
 
+# Note that it is possible to skip checking third-party directory
+# by using this command line option: -i$project_path/third-party
+# But for now checking everything
 cppcheck \
     --enable=all \
     --std=c++20 \
@@ -21,7 +24,6 @@ cppcheck \
     --inline-suppr \
     --suppressions-list=../scripts/suppressions.txt \
     -i_deps \
-    -i$project_path/third-party \
     -j 4 \
     --project=compile_commands.json
 
