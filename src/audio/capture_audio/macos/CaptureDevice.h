@@ -7,7 +7,7 @@
 
 #import <AVFoundation/AVFoundation.h>
 
-#include "TPCircularBufferHelper.h"
+#include "TPCircularBuffer.h"
 
 @interface CaptureDevice: NSObject <AVCaptureAudioDataOutputSampleBufferDelegate>
 {

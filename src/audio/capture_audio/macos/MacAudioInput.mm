@@ -5,7 +5,7 @@
 namespace audio::capture_audio::platform_macos
 {
 
-MacAudioInput::MacAudioInput(AVCaptureDevice *capture_device, int channels, uint32_t sample_rate, uint32_t frame_size)
+MacAudioInput::MacAudioInput(AVCaptureDevice *capture_device, uint8_t channels, uint32_t sample_rate, uint32_t frame_size)
 {
     captureDevice_ = [[CaptureDevice alloc] init];
 
@@ -25,7 +25,9 @@ MacAudioInput::~MacAudioInput()
 
 auto MacAudioInput::sample(std::vector<float> &sample_in) -> CaptureResult
 {
-    const auto sample_size = sample_in.size();
+    const auto sample_size64 = sample_in.size();
+    assert(sample_size64 < UINT32_MAX);
+    const uint32_t sample_size = static_cast<uint32_t>(sample_size64);
 
     uint32_t length = 0;
     void *byteSampleBuffer = TPCircularBufferTail(&captureDevice_->audioSampleBuffer, &length);
