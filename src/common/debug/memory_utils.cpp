@@ -75,21 +75,27 @@ void logMemoryDump(
         case spdlog::level::trace:
             spdlog::trace("{}", line);
             break;
+
         case spdlog::level::debug:
             spdlog::debug("{}", line);
             break;
+
         case spdlog::level::info:
             spdlog::info("{}", line);
             break;
+
         case spdlog::level::warn:
             spdlog::warn("{}", line);
             break;
+
         case spdlog::level::err:
             spdlog::error("{}", line);
             break;
+
         case spdlog::level::critical:
             spdlog::critical("{}", line);
             break;
+
         default:
             spdlog::info("{}", line);
             break;

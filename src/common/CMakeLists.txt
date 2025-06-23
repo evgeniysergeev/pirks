@@ -12,7 +12,7 @@ set(SOURCES
 if(PLATFORM STREQUAL "WINDOWS")
     set(PLATFORM_SOURCES
         windows/WinHandle.h
-        windows/ComInterface.h
+        windows/Interface.h
     )
 endif()
 
@@ -36,6 +36,12 @@ target_include_directories(common INTERFACE
     ${CMAKE_CURRENT_SOURCE_DIR}/helpers
     ${PROJECT_BINARY_DIR}
 )
+
+if(PLATFORM STREQUAL "WINDOWS")
+    target_include_directories(common INTERFACE
+        ${CMAKE_CURRENT_SOURCE_DIR}/windows
+    )
+endif()
 
 # use requirements from interface library with compiler flags
 target_link_libraries(common PUBLIC

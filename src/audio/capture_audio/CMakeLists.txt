@@ -1,7 +1,8 @@
 set(SOURCES
+    AudioInputFactory.h
+    CaptureResult.h
     IAudioInput.h
     IAudioInputFactory.h
-    CaptureResult.h
 )
 
 if(PLATFORM STREQUAL "LINUX")
@@ -13,6 +14,12 @@ endif()
 
 if(PLATFORM STREQUAL "WINDOWS")
     set(PLATFORM_SOURCES
+        windows/AudioClientPtr.h
+        windows/AudioFormats.h
+        windows/AudioNotificationImpl.h
+        windows/DeviceEnumeratorPtr.h
+        windows/WasapiAudioInput.h
+        windows/WasapiAudioInput.cpp
         windows/WinAudioInputFactory.h
         windows/WinAudioInputFactory.cpp
     )
