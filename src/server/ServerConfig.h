@@ -8,7 +8,7 @@ namespace pirks::config
 class ServerConfig final: public Config
 {
 public:
-    enum ConnectionType
+    enum class ConnectionType
     {
         Default = 0, ///< Default (for now default is UDP)
         TCP,         ///< Use TCP/IP for networking (via libwebsocket library)
@@ -23,7 +23,7 @@ protected:
     bool parseOptions(CLI::App &args) override;
 
 private:
-    ConnectionType connectionType_ { Default };
+    ConnectionType connectionType_ { ConnectionType::Default };
 
     bool isTCP_ { false };
     bool isUDP_ { false };
