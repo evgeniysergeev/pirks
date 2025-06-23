@@ -24,15 +24,15 @@ bool ServerConfig::parseOptions([[maybe_unused]] CLI::App &args)
     }
 
     if (isTCP_) {
-        connectionType_ = TCP;
+        connectionType_ = ConnectionType::TCP;
     }
 
     if (isUDP_) {
-        connectionType_ = UDP;
+        connectionType_ = ConnectionType::UDP;
     }
 
-    if (connectionType_ == Default) {
-        connectionType_ = UDP;
+    if (connectionType_ == ConnectionType::Default) {
+        connectionType_ = ConnectionType::UDP;
     }
 
     return true;
