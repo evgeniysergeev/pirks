@@ -17,9 +17,8 @@ public:
     ~TCPConnection() override;
 
 public:
-    void
-    create( //
-            std::shared_ptr<PacketsQueue> in_packets,
+    void create(
+            std::shared_ptr<PacketsQueue> in_packets, //
             std::shared_ptr<PacketsQueue> out_packets) override;
 
 private:

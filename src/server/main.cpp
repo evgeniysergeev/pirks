@@ -20,7 +20,8 @@ int main(int argc, char **argv)
                 PROJECT_DESCRIPTION,
                 PROJECT_NAME,
                 PROJECT_VERSION,
-                argc, argv);
+                argc,
+                argv);
         if (config.shouldExit()) {
             // If we printed help screen or version, then do nothing, log nothing, just exit.
             return ret;
@@ -45,6 +46,7 @@ int main(int argc, char **argv)
         case ServerConfig::ConnectionType::UDP:
             spdlog::info("Connection type: UDP, port number: {}", config.port());
             break;
+
         case ServerConfig::ConnectionType::TCP:
             spdlog::info("Connection type: TCP, port number: {}", config.port());
             spdlog::critical("TCP connection is not implemented");
