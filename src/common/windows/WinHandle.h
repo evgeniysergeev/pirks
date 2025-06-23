@@ -12,7 +12,8 @@ namespace pirks::platform_windows
 class WinHandle final
 {
 public:
-    WinHandle(HANDLE handle) : handle_ { handle } {}
+    WinHandle(HANDLE handle = INVALID_HANDLE_VALUE) : handle_ { handle } {}
+
     ~WinHandle()
     {
         if (handle_ != INVALID_HANDLE_VALUE) {
@@ -22,6 +23,7 @@ public:
 
 public:
     operator bool() const { return handle_ != INVALID_HANDLE_VALUE; }
+
     HANDLE get() const { return handle_; }
 
 private:
