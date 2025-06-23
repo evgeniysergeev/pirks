@@ -95,7 +95,7 @@ TEST_F(MemoryUtilsTest, DumpMemoryToString_CustomStruct)
     };
 
     std::vector<TestStruct> data = {
-        { 1, 'a',  3.14 },
+        { 1, 'a', 3.14  },
         { 2, 'b', 2.718 }
     };
     std::string result = memory_utils::dumpMemoryToString(std::span { data });

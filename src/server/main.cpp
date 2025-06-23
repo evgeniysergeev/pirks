@@ -45,6 +45,7 @@ int main(int argc, char **argv)
         case ServerConfig::ConnectionType::UDP:
             spdlog::info("Connection type: UDP, port number: {}", config.port());
             break;
+
         case ServerConfig::ConnectionType::TCP:
             spdlog::info("Connection type: TCP, port number: {}", config.port());
             spdlog::critical("TCP connection is not implemented");
