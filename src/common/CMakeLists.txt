@@ -9,8 +9,16 @@ set(SOURCES
     str_utils.cpp
 )
 
+if(PLATFORM STREQUAL "WINDOWS")
+    set(PLATFORM_SOURCES
+        windows/WinHandle.h
+        windows/ComInterface.h
+    )
+endif()
+
 add_library(common STATIC
     ${SOURCES}
+    ${PLATFORM_SOURCES}
 )
 
 # add to include directories
