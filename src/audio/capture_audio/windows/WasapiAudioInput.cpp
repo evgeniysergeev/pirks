@@ -20,17 +20,15 @@ WasapiAudioInput::WasapiAudioInput(
         throw std::runtime_error("Unable to create Event handle");
     }
 
-    if (!deviceEnumerator_.init()) {
-        throw std::runtime_error("Unable to create Device Enumerator");
-    }
+    deviceEnumerator_.reset(new DeviceEnumeratorPtr());
 
     HRESULT status = deviceEnumerator_->RegisterEndpointNotificationCallback(&audioNotification_);
     if (FAILED(status)) {
-        spd::error(("Couldn't register endpoint notification. HRESUL = 0x{:X}", status);
+        spd::error(("Couldn't register endpoint notification. HRESULT = 0x{:X}", status);
         throw std::runtime_error("Couldn't register endpoint notification");
     }
 
-    device_ = deviceEnumerator_.getDefaultDevice();
+    device_ = deviceEnumerator_->getDefaultDevice();
     if (!device_) {
         throw std::runtime_error("Can't find default device");
     }
@@ -46,15 +44,19 @@ WasapiAudioInput::WasapiAudioInput(
         }
 
         spd::debug("Trying audio format {}", format.name);
-        if (audioClient_.init(device, format)) {
-            spd::debug("Found audio format {}", format.name);
-            break;
+        try {
+            audioClient_.reset(new AudioClientPtr(device, format));
+        } catch(const std::exception& e) {
+            std::error("Exception while trying audio format {}: {}", format.name, e.what());
+            continue;
         }
+        
+        spd::debug("Found audio format {}", format.name);
+        break;
     }
 
     if (!audioClient_) {
-        BOOST_LOG(error) << "Couldn't find supported format for audio"sv;
-        return -1;
+        throw std::runtime_error("Couldn't find supported format for audio");
     }
 
     REFERENCE_TIME default_latency;

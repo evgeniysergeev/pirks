@@ -20,7 +20,7 @@ namespace audio::capture_audio::platform_windows
 class AudioClientPtr final: public ::pirks::platform_windows::Interface<IAudioClient>
 {
 public:
-    bool init(DevicePtr &device, const AudioFormat &format)
+    AudioClientPtr(DevicePtr &device, const AudioFormat &format)
     {
         HRESULT status = device->Activate(
                 IID_IAudioClient,
@@ -30,7 +30,8 @@ public:
 
         if (FAILED(status)) {
             spd::error("Couldn't create Audio Client. HRESULT = 0x{:X}", status);
-            return false;
+            // TODO: std::format here
+            throw std::runtime_error("Couldn't create Audio Client");
         }
 
         WAVEFORMATEXTENSIBLE capture_waveformat = createWaveformat(
@@ -42,7 +43,8 @@ public:
         status = pointer_->GetMixFormat(&mixer_waveformat);
         if (FAILED(status)) {
             spd::error("Couldn't get mix format for audio device. HRESULT = 0x{:X}", status);
-            return false;
+            // TODO: std::format here
+            throw std::runtime_error("Couldn't get mix format for audio device");
         }
 
         // Prefer the native channel layout of captured audio device when channel counts match
@@ -73,11 +75,11 @@ public:
                     "Couldn't initialize audio client for {}. HRESULT = 0x{:X}",
                     format.name,
                     status);
-            return false;
+            // TODO: std::format here
+            throw std::runtime_error("Couldn't initialize audio client");
         }
 
-        spd::error("Audio capture format is {}", waveformatToStr(capture_waveformat));
-        return true;
+        spd::info("Audio capture format is {}", waveformatToStr(capture_waveformat));
     }
 };
 

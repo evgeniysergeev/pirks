@@ -19,7 +19,7 @@ using DevicePtr = pirks::platform_windows::Interface<IMMDevice>;
 class DeviceEnumeratorPtr final: public pirks::platform_windows::Interface<IMMDeviceEnumerator>
 {
 public:
-    bool init()
+    DeviceEnumeratorPtr()
     {
         HRESULT status = CoCreateInstance(
                 CLSID_MMDeviceEnumerator,
@@ -28,11 +28,9 @@ public:
                 IID_IMMDeviceEnumerator,
                 reinterpret_cast<LPVOID *>(&pointer_));
         if (FAILED(status)) {
-            spd::error(("Couldn't create Device Enumerator. HRESUL = 0x{:X}", status);
-            return false;
+            spd::error(("Couldn't create Device Enumerator. HRESULT = 0x{:X}", status);
+            throw std::runtime_error("Couldn't create Device Enumerator");
         }
-
-        return true;
     }
 
 public:

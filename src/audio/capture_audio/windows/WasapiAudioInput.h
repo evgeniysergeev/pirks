@@ -31,9 +31,9 @@ private:
 private:
     pirks::platform_windows::WinHandle audioEvent_;
 
-    DeviceEnumeratorPtr                                     deviceEnumerator_;
+    std::unique_ptr<DeviceEnumeratorPtr>                    deviceEnumerator_;
     pirks::platform_windows::Interface<IMMDevice>           device_;
-    AudioClientPtr                                          audioClient_;
+    std::unique_ptr<AudioClientPtr>                         audioClient_;
     pirks::platform_windows::Interface<IAudioCaptureClient> audioCapture_;
 
     REFERENCE_TIME defaultLatency; // in milliseconds;
