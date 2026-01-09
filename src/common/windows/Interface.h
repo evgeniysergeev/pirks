@@ -25,7 +25,7 @@ public:
 public:
     T *get() const { return pointer_; }
 
-    operator bool() const { return pointer_ != nullptr; }
+       operator bool() const { return pointer_ != nullptr; }
     T *operator->() const { return pointer_; }
     T &operator*() const { return *pointer_; }
 

@@ -18,13 +18,21 @@ class AudioNotificationImpl final: public IMMNotificationClient
 {
 public:
     AudioNotificationImpl() {}
-    virtual ~AudioNotificationImpl() {}
+    ~AudioNotificationImpl() {};
 
     // IUnknown implementation (unused by IMMDeviceEnumerator)
 public:
-    ULONG STDMETHODCALLTYPE AddRef() { return 1; }
+    ULONG STDMETHODCALLTYPE AddRef()
+    {
+        // TODO: should add reference count
+        return 1;
+    }
 
-    ULONG STDMETHODCALLTYPE Release() { return 1; }
+    ULONG STDMETHODCALLTYPE Release()
+    {
+        // TODO: should substract reference count
+        return 1;
+    }
 
     HRESULT STDMETHODCALLTYPE QueryInterface(REFIID riid, VOID **ppvInterface)
     {
@@ -52,6 +60,7 @@ public:
         if (flow == eRender) {
             defaultDeviceChanged_.store(true);
         }
+
         return S_OK;
     }
 

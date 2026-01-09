@@ -26,7 +26,7 @@ MacAudioInput::~MacAudioInput()
 auto MacAudioInput::sample(std::vector<float> &sample_out) -> CaptureResult
 {
     const auto sample_size64 = sample_out.size();
-    assert(sample_size64 < UINT32_MAX);
+    assert(sample_size64 < UINT32_MAX && "audio sample buffer overflow");
     const uint32_t sample_size = static_cast<uint32_t>(sample_size64);
 
     uint32_t length = 0;

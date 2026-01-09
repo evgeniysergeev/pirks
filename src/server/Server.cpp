@@ -32,7 +32,11 @@ void Server::run()
     if (connectionType_ == ServerConfig::ConnectionType::TCP) {
         connection_.reset(new TCPConnection());
     }
-    // TODO: check that connection was made!
+    // TODO: UDP connection
+
+    // Checking that connection was made
+    assert(connection_ && "Connection is NULL, but should be already created");
+
     connection_->create(inPackets_, outPackets_);
 }
 

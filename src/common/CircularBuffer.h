@@ -131,7 +131,7 @@ void CircularBuffer<T>::push(const T &element)
     }
 
     const auto sz = buffer_.capacity();
-    assert(sz != 0);
+    assert(sz != 0 && "capacity can't be zero");
 
     buffer_.at(endIndex_) = std::move(element);
 
@@ -153,7 +153,7 @@ void CircularBuffer<T>::push(std::span<const T> elements)
     }
 
     const auto sz = buffer_.capacity();
-    assert(sz != 0);
+    assert(sz != 0 && "capacity can't be zero");
 
     // TODO: Should we check situation when number of elements
     //       is greater than the buffer size?
@@ -368,7 +368,7 @@ bool CircularBuffer<T>::isFull()
     }
 
     const auto sz = buffer_.capacity();
-    assert(sz != 0);
+    assert(sz != 0 && "capacity can't be zero");
 
     return endIndex_ == ((startIndex_ + 1) % sz);
 }

@@ -64,7 +64,7 @@ WasapiAudioInput::WasapiAudioInput(
     {
         REFERENCE_TIME default_latency;
         audioClient_->get()->GetDevicePeriod(&default_latency, nullptr);
-        assert(default_latency < UINT32_MAX);
+        assert(default_latency < UINT32_MAX && "default latency is too big");
         defaultLatency_ = static_cast<DWORD>(default_latency / 1000);
     }
 
@@ -134,7 +134,7 @@ WasapiAudioInput::~WasapiAudioInput()
 auto WasapiAudioInput::sample(std::vector<float> &sample_out) -> CaptureResult
 {
     const auto sample_size64 = sample_out.size();
-    assert(sample_size64 < UINT32_MAX);
+    assert(sample_size64 < UINT32_MAX && "audio sample buffer overflow");
     const uint32_t sample_size = static_cast<uint32_t>(sample_size64);
 
     // Refill the sample buffer if needed
@@ -227,7 +227,7 @@ auto WasapiAudioInput::fillBuffer() -> CaptureResult
         }
 
         const size_t used_size = static_cast<size_t>(bufferPos_ - buffer_.data());
-        assert(buffer_.size() - used_size < UINT32_MAX);
+        assert(buffer_.size() - used_size < UINT32_MAX && "audio buffer overflow");
         sample_aligned.uninitialized = static_cast<uint32_t>(buffer_.size() - used_size);
         auto n =
                 std::min(sample_aligned.uninitialized, block_aligned.audio_sample_size * channels_);
