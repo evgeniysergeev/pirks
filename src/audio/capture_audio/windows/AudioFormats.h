@@ -6,6 +6,7 @@
 #pragma once
 
 #include <array>
+#include <format>
 #include <string>
 #include <vector>
 #include <format>
@@ -193,7 +194,12 @@ std::string waveformatToStr(const WAVEFORMATEXTENSIBLE &waveformat)
         break;
     }
 
-    return std::format("{}{} {} {}", sub_format, waveformat.Samples.wValidBitsPerSample, waveformat.Format.nSamplesPerSec, channels);
+    return std::format(
+            "{}{} {} {}",
+            sub_format,
+            waveformat.Samples.wValidBitsPerSample,
+            waveformat.Format.nSamplesPerSec,
+            channels);
 }
 
 struct AudioFormat
