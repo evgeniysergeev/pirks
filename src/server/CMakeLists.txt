@@ -22,6 +22,7 @@ target_include_directories(${TARGET_NAME} INTERFACE
 # use requirements from interface library with compiler flags
 target_link_libraries(${TARGET_NAME} PUBLIC
     capture_audio
+    udp_net
     tcp_net
     default_compiler_flags
     ${EXTERNAL_LIBRARIES}

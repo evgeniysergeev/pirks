@@ -3,6 +3,7 @@
 #include <spdlog/spdlog.h>
 
 #include "TCPConnection.h"
+#include "UDPConnection.h"
 
 namespace pirks
 {
@@ -29,10 +30,17 @@ void Server::run()
     inPackets_.reset(new networking::PacketsQueue());
     outPackets_.reset(new networking::PacketsQueue());
 
-    if (connectionType_ == ServerConfig::ConnectionType::TCP) {
+    switch (connectionType_) {
+    case ServerConfig::ConnectionType::Default:
+        [[fallthrough]];
+    case ServerConfig::ConnectionType::UDP:
+        connection_.reset(new UDPConnection());
+        break;
+
+    case ServerConfig::ConnectionType::TCP:
         connection_.reset(new TCPConnection());
+        break;
     }
-    // TODO: UDP connection
 
     // Checking that connection was made
     assert(connection_ && "Connection is NULL, but should be already created");

@@ -1,4 +1,6 @@
 set(SOURCES
+    UDPConnection.h
+    UDPConnection.cpp
 )
 
 add_library(udp_net STATIC
@@ -7,6 +9,10 @@ add_library(udp_net STATIC
 
 target_include_directories(udp_net PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+target_include_directories(udp_net INTERFACE
+    ${CMAKE_CURRENT_SOURCE_DIR}/..
 )
 
 # use requirements from interface library with compiler flags

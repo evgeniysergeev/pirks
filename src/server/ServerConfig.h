@@ -11,8 +11,11 @@ public:
     enum class ConnectionType
     {
         Default = 0, ///< Default (for now default is UDP)
-        TCP,         ///< Use TCP/IP for networking (via libwebsocket library)
-        UDP          ///< Use UDP for networking (via ENET library)
+        UDP,         ///< Use UDP for networking
+        TCP,         ///< Use TCP/IP for networking
+        // TODO: libwebsockets
+        // TODO: enet
+        // TODO: quic
     };
 
 public:
@@ -25,6 +28,7 @@ protected:
 private:
     ConnectionType connectionType_ { ConnectionType::Default };
 
+    // this members needed only to read config options from command line
     bool isTCP_ { false };
     bool isUDP_ { false };
 };
