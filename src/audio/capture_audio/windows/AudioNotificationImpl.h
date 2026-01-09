@@ -14,7 +14,7 @@
 namespace audio::capture_audio::platform_windows
 {
 
-class AudioNotificationImpl final: public IMMNotificationClient
+class AudioNotificationImpl final: private IMMNotificationClient
 {
 public:
     AudioNotificationImpl() {}
@@ -24,13 +24,13 @@ public:
 public:
     ULONG STDMETHODCALLTYPE AddRef()
     {
-        // TODO: should add reference count
+        //
         return 1;
     }
 
     ULONG STDMETHODCALLTYPE Release()
     {
-        // TODO: should substract reference count
+        //
         return 1;
     }
 
