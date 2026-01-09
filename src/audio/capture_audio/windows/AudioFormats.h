@@ -8,6 +8,7 @@
 #include <array>
 #include <string>
 #include <vector>
+#include <format>
 
 #include "mmreg.h"
 
@@ -97,8 +98,11 @@ constexpr WAVEFORMATEXTENSIBLE createWaveformat(
     waveformat.Format.nChannels      = channel_count;
     waveformat.Format.nSamplesPerSec = SAMPLE_RATE;
 
-    waveformat.Format.nBlockAlign =
-            waveformat.Format.nChannels * waveformat.Format.wBitsPerSample / 8;
+    {
+        const int blockAlign = waveformat.Format.nChannels * waveformat.Format.wBitsPerSample / 8;
+        assert(blockAlign < UINT16_MAX && "Wave format block align overflow");
+        waveformat.Format.nBlockAlign = static_cast<WORD>(blockAlign);
+    }
     waveformat.Format.nAvgBytesPerSec =
             waveformat.Format.nSamplesPerSec * waveformat.Format.nBlockAlign;
     waveformat.Format.cbSize = sizeof(WAVEFORMATEXTENSIBLE) - sizeof(WAVEFORMATEX);
@@ -161,37 +165,35 @@ VirtualSinkWaveformats createVirtualSinkFormats()
 
 std::string waveformatToStr(const WAVEFORMATEXTENSIBLE &waveformat)
 {
-    std::string result = //
+    std::string sub_format = //
             waveformat.SubFormat == KSDATAFORMAT_SUBTYPE_IEEE_FLOAT ? "F"
             : waveformat.SubFormat == KSDATAFORMAT_SUBTYPE_PCM      ? "S"
                                                                     : "UNKNOWN";
 
-    result += std::to_string(waveformat.Samples.wValidBitsPerSample) + " "
-              + std::to_string(waveformat.Format.nSamplesPerSec) + " ";
-
+    std::string channels;
     switch (waveformat.dwChannelMask) {
     case WF_MASK_STEREO:
-        result += "2.0";
+        channels = "2.0";
         break;
 
     case WF_MASK_SURROUND51_WITH_BACKSPEAKERS:
-        result += "5.1";
+        channels = "5.1";
         break;
 
     case WF_MASK_SURROUND51_WITH_SIDESPEAKERS:
-        result += "5.1 (sidespeakers)";
+        channels = "5.1 (sidespeakers)";
         break;
 
     case WF_MASK_SURROUND71:
-        result += "7.1";
+        channels = "7.1";
         break;
 
     default:
-        result += std::to_string(waveformat.Format.nChannels) + " channels (unrecognized)";
+        channels = std::format("{} channels (unrecognized)", waveformat.Format.nChannels);
         break;
     }
 
-    return result;
+    return std::format("{}{} {} {}", sub_format, waveformat.Samples.wValidBitsPerSample, waveformat.Format.nSamplesPerSec, channels);
 }
 
 struct AudioFormat
