@@ -10,3 +10,6 @@
 [submodule "third-party/TPCircularBuffer"]
 	path = third-party/TPCircularBuffer
 	url = https://github.com/evgeniysergeev/TPCircularBuffer
+[submodule "third-party/deferral"]
+	path = third-party/deferral
+	url = https://github.com/justusc/deferral.git
