@@ -1,7 +1,5 @@
 #include <spdlog/spdlog.h>
 
-#include <deferral.hh>
-
 #include "ExitCode.h"
 #include "Server.h"
 #include "ServerConfig.h"
@@ -33,7 +31,7 @@ int main(int argc, char **argv)
                 PROJECT_NAME,
                 PROJECT_FULL_VERSION,
                 PROJECT_PLATFORM);
-        defer { spdlog::info("{} v{} exited"sv, PROJECT_NAME, PROJECT_VERSION); };
+        // TODO: defer { spdlog::info("{} v{} exited"sv, PROJECT_NAME, PROJECT_VERSION); };
 
         if (config.isDebug()) {
             spdlog::set_level(spdlog::level::debug);
