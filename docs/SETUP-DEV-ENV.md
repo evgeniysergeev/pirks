@@ -3,10 +3,10 @@
 ## clang-format
 
 Code uses this (.clang-format)[../.clang-format] style.
-It is based on Google style. 
+It is based on (Google style guide)[https://google.github.io/styleguide/cppguide.html] and (CppCoreGuidelines)[https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines.html]
     - Uses 4 spaces as indentation.
     - Brackets is on the same line.
-    - EOF at end of file.
+    - Empty line at end of file.
 
 To update source code with the selected code style, periodically run 
 this command:
