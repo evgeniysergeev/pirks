@@ -136,7 +136,7 @@ VirtualSinkWaveformats createVirtualSinkFormats()
             createWaveformat(SampleFormat::f32, channel_count, channel_mask),
             createWaveformat(SampleFormat::s32, channel_count, channel_mask),
         };
-    } else if (channel_count == 6) {
+    } else if constexpr (channel_count == 6) {
         constexpr auto channel_mask1 = WF_MASK_SURROUND51_WITH_BACKSPEAKERS;
         constexpr auto channel_mask2 = WF_MASK_SURROUND51_WITH_SIDESPEAKERS;
         return {
@@ -151,7 +151,7 @@ VirtualSinkWaveformats createVirtualSinkFormats()
             createWaveformat(SampleFormat::s16, channel_count, channel_mask1),
             createWaveformat(SampleFormat::s16, channel_count, channel_mask2),
         };
-    } else if (channel_count == 8) {
+    } else if constexpr (channel_count == 8) {
         constexpr auto channel_mask = WF_MASK_SURROUND71;
         return {
             createWaveformat(SampleFormat::f32, channel_count, channel_mask),

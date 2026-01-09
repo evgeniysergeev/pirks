@@ -267,7 +267,7 @@ auto WasapiAudioInput::fillBuffer() -> CaptureResult
         }
 
         if (buffer_flags & AUDCLNT_BUFFERFLAGS_SILENT) {
-            std::fill_n(bufferPos_, n, 0);
+            std::fill_n(bufferPos_, n, 0.0f);
         } else {
             std::copy_n(sample_aligned.samples, n, bufferPos_);
         }
