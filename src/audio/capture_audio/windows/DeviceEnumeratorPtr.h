@@ -7,6 +7,7 @@
 
 #include <mmdeviceapi.h>
 
+#include <format>
 #include <stdexcept>
 
 #include "Interface.h"
@@ -28,8 +29,8 @@ public:
                 IID_IMMDeviceEnumerator,
                 reinterpret_cast<LPVOID *>(&pointer_));
         if (FAILED(status)) {
-            spdlog::error("Couldn't create Device Enumerator. HRESULT = 0x{:X}", status);
-            throw std::runtime_error("Couldn't create Device Enumerator");
+            throw std::runtime_error(
+                    std::format("Couldn't create Device Enumerator. HRESULT = 0x{:X}", status));
         }
     }
 

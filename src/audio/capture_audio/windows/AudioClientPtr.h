@@ -8,6 +8,7 @@
 #include <audioclient.h>
 #include <spdlog/spdlog.h>
 
+#include <format>
 #include <stdexcept>
 
 #include "AudioFormats.h"
@@ -29,9 +30,8 @@ public:
                 reinterpret_cast<LPVOID *>(&pointer_));
 
         if (FAILED(status)) {
-            spdlog::error("Couldn't create Audio Client. HRESULT = 0x{:X}", status);
-            // TODO: std::format here
-            throw std::runtime_error("Couldn't create Audio Client");
+            throw std::runtime_error(
+                    std::fromat("Couldn't create Audio Client. HRESULT = 0x{:X}", status));
         }
 
         WAVEFORMATEXTENSIBLE capture_waveformat = createWaveformat(
@@ -42,9 +42,10 @@ public:
         WAVEFORMATEX *mixer_waveformat {};
         status = pointer_->GetMixFormat(&mixer_waveformat);
         if (FAILED(status)) {
-            spdlog::error("Couldn't get mix format for audio device. HRESULT = 0x{:X}", status);
-            // TODO: std::format here
-            throw std::runtime_error("Couldn't get mix format for audio device");
+            throw std::runtime_error(
+                    std::format(
+                            "Couldn't get mix format for audio device. HRESULT = 0x{:X}",
+                            status));
         }
 
         // Prefer the native channel layout of captured audio device when channel counts match
@@ -72,12 +73,11 @@ public:
                 nullptr);
 
         if (status) {
-            spdlog::error(
-                    "Couldn't initialize audio client for {}. HRESULT = 0x{:X}",
-                    format.name,
-                    status);
-            // TODO: std::format here
-            throw std::runtime_error("Couldn't initialize audio client");
+            throw std::runtime_error(
+                    std::format(
+                            "Couldn't initialize audio client for {}. HRESULT = 0x{:X}",
+                            format.name,
+                            status));
         }
 
         spdlog::info("Audio capture format is {}", waveformatToStr(capture_waveformat));
