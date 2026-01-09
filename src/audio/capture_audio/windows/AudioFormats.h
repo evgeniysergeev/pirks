@@ -9,7 +9,6 @@
 #include <format>
 #include <string>
 #include <vector>
-#include <format>
 
 #include "mmreg.h"
 

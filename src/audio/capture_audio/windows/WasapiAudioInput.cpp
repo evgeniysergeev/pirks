@@ -259,7 +259,9 @@ auto WasapiAudioInput::fillBuffer() -> CaptureResult
         assert(buffer_.size() - used_size < UINT32_MAX && "audio buffer overflow");
         sample_aligned.uninitialized = static_cast<uint32_t>(buffer_.size() - used_size);
 
-        auto n = std::min(sample_aligned.uninitialized, block_aligned.audio_sample_size * channels_);
+        auto n = std::min(
+                sample_aligned.uninitialized, //
+                block_aligned.audio_sample_size * channels_);
         if (n < block_aligned.audio_sample_size * channels_) {
             spdlog::warn("Audio capture buffer overflow");
         }
