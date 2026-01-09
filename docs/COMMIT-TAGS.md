@@ -27,9 +27,16 @@ Commit scope can be:
 | (ui)       | Related to client ui
 | (build)    | Related to build, change version, upload release build etc.
 
+OS can be:
+| OS         | Description
+|:-----------|:--
+| (windows)  | Related to Windows
+| (macos)    | Related to macOS
+| (linux)    | Related to Linux
+
 commit message will be:
 ```
-[type](scope) Commit title (#<issue number>)
+[type](scope)(os) Commit title (#<issue number>)
 ```
 
 For example:
