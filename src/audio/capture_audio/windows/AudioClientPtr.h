@@ -31,7 +31,7 @@ public:
 
         if (FAILED(status)) {
             throw std::runtime_error(
-                    std::fromat("Couldn't create Audio Client. HRESULT = 0x{:X}", status));
+                    std::format("Couldn't create Audio Client. HRESULT = 0x{:X}", status));
         }
 
         WAVEFORMATEXTENSIBLE capture_waveformat = createWaveformat(
