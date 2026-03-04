@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include <string>
+
 #include "AudioClientPtr.h"
 #include "AudioNotificationImpl.h"
 #include "DeviceEnumeratorPtr.h"
@@ -19,6 +21,12 @@ class WasapiAudioInput final: public IAudioInput
 {
 public:
     WasapiAudioInput(uint8_t channels, uint32_t sample_rate, uint32_t frame_size);
+
+    WasapiAudioInput(
+            uint8_t              channels,
+            uint32_t             sample_rate,
+            uint32_t             frame_size,
+            const std::string   &audio_source);
 
     ~WasapiAudioInput() override;
 

@@ -74,3 +74,12 @@ target_link_libraries(capture_audio PUBLIC
     common
     default_compiler_flags
 )
+
+if(PLATFORM STREQUAL "WINDOWS")
+    # Windows audio and MMCSS APIs:
+    #  - avrt      for AvSetMmThreadCharacteristicsA / AvRevertMmThreadCharacteristics
+    #  - mmdevapi  for MMDevice API (CLSID_MMDeviceEnumerator, IMMDeviceEnumerator, etc.)
+    #  - uuid      for GUID/CLSID definitions
+    #  - ksguid    for KS data format GUIDs (e.g. KSDATAFORMAT_SUBTYPE_PCM)
+    target_link_libraries(capture_audio PUBLIC avrt mmdevapi uuid ksguid)
+endif()

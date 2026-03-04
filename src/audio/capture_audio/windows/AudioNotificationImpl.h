@@ -10,6 +10,7 @@
 #include <atomic>
 
 #include "WinHandle.h"
+#include "AudioUUIDs.h"
 
 namespace audio::capture_audio::platform_windows
 {
@@ -46,7 +47,7 @@ public:
             AddRef();
             *ppvInterface = static_cast<IUnknown *>(this);
             return S_OK;
-        } else if (__uuidof(IMMNotificationClient) == riid) {
+        } else if (IID_IMMNotificationClient == riid) {
             AddRef();
             *ppvInterface = static_cast<IMMNotificationClient *>(this);
             return S_OK;

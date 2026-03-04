@@ -163,7 +163,7 @@ VirtualSinkWaveformats createVirtualSinkFormats()
     }
 }
 
-std::string waveformatToStr(const WAVEFORMATEXTENSIBLE &waveformat)
+inline std::string waveformatToStr(const WAVEFORMATEXTENSIBLE &waveformat)
 {
     std::string sub_format = //
             waveformat.SubFormat == KSDATAFORMAT_SUBTYPE_IEEE_FLOAT ? "F"
