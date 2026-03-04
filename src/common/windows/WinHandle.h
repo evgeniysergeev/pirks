@@ -1,6 +1,7 @@
 #pragma once
 
 #include <windows.h>
+
 #include <utility>
 
 namespace pirks::platform_windows
@@ -13,35 +14,32 @@ namespace pirks::platform_windows
  * @tparam InvalidValueT  A callable `HandleT() noexcept` returning the invalid value
  * @tparam CloserT        A callable `void(HandleT) noexcept` that closes the handle
  */
-template <typename HandleT, typename InvalidValueT, typename CloserT>
+template<typename HandleT, typename InvalidValueT, typename CloserT>
 class UniqueHandle
 {
 public:
-    using handle_type       = HandleT;
-    using invalid_value_fn  = InvalidValueT;
-    using closer_type       = CloserT;
+    using handle_type      = HandleT;
+    using invalid_value_fn = InvalidValueT;
+    using closer_type      = CloserT;
 
-    constexpr UniqueHandle() noexcept
-        : handle_ { invalid_value_fn {}() }
+    constexpr UniqueHandle() noexcept : handle_ { invalid_value_fn {}() }
     {
     }
 
     // non-explicit to be able to write something like:
     // WinHandle event = CreateEventA
-    UniqueHandle(handle_type handle) noexcept
-        : handle_ { handle }
+    UniqueHandle(handle_type handle) noexcept : handle_ { handle }
     {
     }
 
-    UniqueHandle(const UniqueHandle&) = delete;
-    UniqueHandle& operator=(const UniqueHandle&) = delete;
+    UniqueHandle(const UniqueHandle &)            = delete;
+    UniqueHandle &operator=(const UniqueHandle &) = delete;
 
-    UniqueHandle(UniqueHandle&& other) noexcept
-        : handle_ { other.release() }
+    UniqueHandle(UniqueHandle &&other) noexcept : handle_ { other.release() }
     {
     }
 
-    UniqueHandle& operator=(UniqueHandle&& other) noexcept
+    UniqueHandle &operator=(UniqueHandle &&other) noexcept
     {
         if (this != &other) {
             reset(other.release());
@@ -67,7 +65,7 @@ public:
     handle_type release() noexcept
     {
         handle_type tmp = handle_;
-        handle_ = invalid_value_fn {}();
+        handle_         = invalid_value_fn {}();
         return tmp;
     }
 
@@ -79,7 +77,7 @@ public:
         handle_ = new_handle;
     }
 
-    void swap(UniqueHandle& other) noexcept
+    void swap(UniqueHandle &other) noexcept
     {
         std::swap(handle_, other.handle_);
     }

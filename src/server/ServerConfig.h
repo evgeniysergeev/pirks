@@ -19,7 +19,10 @@ public:
     };
 
 public:
-    auto connectionType() const -> ConnectionType { return connectionType_; }
+    auto connectionType() const -> ConnectionType
+    {
+        return connectionType_;
+    }
 
 protected:
     void addOptions(CLI::App &args) override;

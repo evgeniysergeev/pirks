@@ -17,8 +17,14 @@ namespace audio::capture_audio::platform_windows
 class AudioNotificationImpl final: private IMMNotificationClient
 {
 public:
-    AudioNotificationImpl() {}
-    ~AudioNotificationImpl() {};
+    AudioNotificationImpl()
+    {
+    }
+
+    ~AudioNotificationImpl()
+    {
+        //
+    };
 
     // IUnknown implementation (unused by IMMDeviceEnumerator)
 public:
