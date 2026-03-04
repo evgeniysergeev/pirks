@@ -1,68 +1,115 @@
 #pragma once
 
 #include <windows.h>
+#include <utility>
 
 namespace pirks::platform_windows
 {
 
 /**
- * @brief RAII class for WinAPI Handles
+ * @brief Generic RAII wrapper for WinAPI-style handles
  *
+ * @tparam HandleT        The handle type (e.g. HANDLE, HKEY, SC_HANDLE)
+ * @tparam InvalidValueT  A callable `HandleT() noexcept` returning the invalid value
+ * @tparam CloserT        A callable `void(HandleT) noexcept` that closes the handle
  */
-class WinHandle final
+template <typename HandleT, typename InvalidValueT, typename CloserT>
+class UniqueHandle
 {
 public:
-    WinHandle(HANDLE handle = INVALID_HANDLE_VALUE) noexcept : handle_ { handle } {}
+    using handle_type       = HandleT;
+    using invalid_value_fn  = InvalidValueT;
+    using closer_type       = CloserT;
 
-    WinHandle(const WinHandle &)            = delete;
-    WinHandle &operator=(const WinHandle &) = delete;
-
-    WinHandle(WinHandle &&other) noexcept : handle_ { other.handle_ }
+    constexpr UniqueHandle() noexcept
+        : handle_ { invalid_value_fn {}() }
     {
-        other.handle_ = INVALID_HANDLE_VALUE;
     }
 
-    WinHandle &operator=(WinHandle &&other) noexcept
+    // non-explicit to be able to write something like:
+    // WinHandle event = CreateEventA
+    UniqueHandle(handle_type handle) noexcept
+        : handle_ { handle }
+    {
+    }
+
+    UniqueHandle(const UniqueHandle&) = delete;
+    UniqueHandle& operator=(const UniqueHandle&) = delete;
+
+    UniqueHandle(UniqueHandle&& other) noexcept
+        : handle_ { other.release() }
+    {
+    }
+
+    UniqueHandle& operator=(UniqueHandle&& other) noexcept
     {
         if (this != &other) {
-            reset();
-            handle_       = other.handle_;
-            other.handle_ = INVALID_HANDLE_VALUE;
+            reset(other.release());
         }
         return *this;
     }
 
-    ~WinHandle() { reset(); }
-
-public:
-    operator bool() const noexcept
+    ~UniqueHandle() noexcept
     {
-        return handle_ != INVALID_HANDLE_VALUE && handle_ != nullptr;
+        reset();
     }
 
-    HANDLE get() const noexcept {
+    explicit operator bool() const noexcept
+    {
+        return handle_ != invalid_value_fn {}();
+    }
+
+    handle_type get() const noexcept
+    {
         return handle_;
     }
 
-    HANDLE release() noexcept
+    handle_type release() noexcept
     {
-        HANDLE tmp = handle_;
-        handle_    = INVALID_HANDLE_VALUE;
+        handle_type tmp = handle_;
+        handle_ = invalid_value_fn {}();
         return tmp;
     }
 
-    void reset(HANDLE new_handle = INVALID_HANDLE_VALUE) noexcept
+    void reset(handle_type new_handle = invalid_value_fn {}()) noexcept
     {
-        if (handle_ != INVALID_HANDLE_VALUE && handle_ != nullptr) {
-            CloseHandle(handle_);
+        if (handle_ != invalid_value_fn {}()) {
+            closer_type {}(handle_);
         }
         handle_ = new_handle;
     }
 
-    void swap(WinHandle &other) noexcept { std::swap(handle_, other.handle_); }
+    void swap(UniqueHandle& other) noexcept
+    {
+        std::swap(handle_, other.handle_);
+    }
 
 private:
-    HANDLE handle_;
+    handle_type handle_;
 };
+
+struct InvalidHandleValue
+{
+    constexpr HANDLE operator()() const noexcept
+    {
+        return INVALID_HANDLE_VALUE;
+    }
+};
+
+struct CloseHandleDeleter
+{
+    void operator()(HANDLE handle) const noexcept
+    {
+        if (handle != INVALID_HANDLE_VALUE && handle != nullptr) {
+            ::CloseHandle(handle);
+        }
+    }
+};
+
+/**
+ * @brief RAII class for WinAPI Handles
+ *
+ */
+using WinHandle = UniqueHandle<HANDLE, InvalidHandleValue, CloseHandleDeleter>;
 
 }; // namespace pirks::platform_windows
