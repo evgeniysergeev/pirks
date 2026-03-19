@@ -1,7 +1,12 @@
 #include <gtest/gtest.h>
 
 #include "AudioInputFactory.h"
+#include "ComInitializer.h"
 
+constexpr auto kSamplesCount = 8;
+
+TEST(AudioInput, CaptureDevice)
+{
 #ifdef WINDOWS
 #include "ComInitializer.h"
 
@@ -9,10 +14,6 @@
 static ::pirks::platform_windows::ComInitializer g_com_initializer;
 #endif
 
-constexpr auto kSamplesCount = 8;
-
-TEST(AudioInput, CaptureDevice)
-{
     using namespace audio::capture_audio;
 
     AudioInputFactory audio_input_factory;
@@ -20,12 +21,19 @@ TEST(AudioInput, CaptureDevice)
     const auto names = audio_input_factory.getAudioSources();
     ASSERT_GE(names.size(), 1u);
 
-    auto device = audio_input_factory.create(names.at(0), 1, 48000, 96000, nullptr);
+    auto device = audio_input_factory.create(names.at(0), 2, 48000, 288000, nullptr);
     ASSERT_TRUE(device != nullptr);
 }
 
 TEST(AudioInput, GetSamples)
 {
+#ifdef WINDOWS
+#include "ComInitializer.h"
+
+// Ensure COM is initialized for Windows microphone tests
+static ::pirks::platform_windows::ComInitializer g_com_initializer;
+#endif
+
     using namespace audio;
     using namespace audio::capture_audio;
 

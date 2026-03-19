@@ -43,7 +43,7 @@ public:
     auto getDefaultDevice() -> DevicePtr
     {
         IMMDevice *device = nullptr;
-        HRESULT    status = pointer_->GetDefaultAudioEndpoint(eRender, eConsole, &device);
+        HRESULT    status = pointer_->GetDefaultAudioEndpoint(eCapture, eMultimedia, &device);
 
         if (FAILED(status)) {
             // TODO: print status
