@@ -279,11 +279,52 @@ auto input = factory.create(deviceName, channels, sampleRate, frameSize);
 
 ## 6. Common Tasks
 
+### File Operations by Platform
+
+**Linux/macOS (Bash):**
+```bash
+# List files recursively
+ls -R src/
+
+# Find specific file types
+find . -name "*.cpp" -o -name "*.h"
+
+# Create directories
+mkdir -p src/audio/capture_audio/newplatform/
+
+# View file contents
+cat src/server/main.cpp
+head -20 src/common/CircularBuffer.h
+```
+
+**Windows (PowerShell):**
+```powershell
+# List files recursively
+Get-ChildItem -Path src -Recurse | Select-Object FullName, Length
+
+# Find specific file types
+Get-ChildItem -Recurse -Include *.cpp,*.h
+
+# Create directories
+New-Item -ItemType Directory -Force -Path "src\audio\capture_audio\newplatform"
+
+# View file contents
+Get-Content src\server\main.cpp
+Get-Content src\common\CircularBuffer.h -Head 20
+
+# Search for text in files
+Select-String -Pattern "eRender" -Path "src\**\*.h"
+```
+
 ### Adding a New Platform-Specific Feature
 
 1. Create platform-specific directory under relevant module:
 ```bash
+# Linux/macOS
 mkdir -p src/audio/capture_audio/newplatform/
+
+# Windows PowerShell
+New-Item -ItemType Directory -Force -Path "src\audio\capture_audio\newplatform"
 ```
 
 2. Implement platform interface:
@@ -321,7 +362,11 @@ void ServerConfig::addOptions(CLI::App& args) {
 
 1. Enable debug logging:
 ```bash
+# Linux/macOS
 ./pirks-server --debug
+
+# Windows
+.\pirks-server.exe --debug
 ```
 
 2. List available audio devices:
@@ -335,7 +380,11 @@ for (const auto& device : devices) {
 
 3. Test with microphone test suite:
 ```bash
+# Linux/macOS
 ./test/microphone-test/MicrophoneTest --gtest_filter=AudioInput.*
+
+# Windows
+.\test\microphone-test\MicrophoneTest.exe --gtest_filter=AudioInput.*
 ```
 
 ### Building for Different Platforms
@@ -347,6 +396,19 @@ cmake -DCMAKE_TOOLCHAIN_FILE=/path/to/mingw-toolchain.cmake ..
 
 # macOS universal build
 cmake -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64" ..
+```
+
+**Windows-specific commands:**
+```powershell
+# List available CMake generators
+cmake --help
+
+# Build with Visual Studio
+cmake -G "Visual Studio 17 2022" -B build
+cmake --build build --config Release
+
+# Run executable from build directory
+.\build\src\server\pirks-server.exe --debug
 ```
 
 ## 7. Troubleshooting
