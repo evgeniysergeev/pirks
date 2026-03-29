@@ -59,7 +59,7 @@ public:
 
         IMMDeviceCollection *collection = nullptr;
         HRESULT              status     = pointer_->EnumAudioEndpoints(
-                eRender,
+                eCapture,
                 DEVICE_STATE_ACTIVE,
                 &collection);
         if (FAILED(status) || collection == nullptr) {
@@ -107,7 +107,7 @@ public:
     {
         IMMDeviceCollection *collection = nullptr;
         HRESULT              status     = pointer_->EnumAudioEndpoints(
-                eRender,
+                eCapture,
                 DEVICE_STATE_ACTIVE,
                 &collection);
         if (FAILED(status) || collection == nullptr) {
