@@ -25,3 +25,10 @@ cmake --build .
 ```
 
 Or install CMake tools in VSCode and use it
+
+# Tests
+
+Microphone tests need OS-level microphone permission. On Windows, see
+[Windows microphone access](windows/AUDIO-SETUP.md) if `microphone-test.exe`
+reports `HRESULT = 0x80070005` or skips with no accessible audio capture
+device.
