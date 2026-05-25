@@ -32,7 +32,10 @@ int main(int argc, char **argv)
                 PROJECT_NAME,
                 PROJECT_FULL_VERSION,
                 PROJECT_PLATFORM);
-        defer { spdlog::info("{} v{} exited"sv, PROJECT_NAME, PROJECT_VERSION); };
+        defer
+        {
+            spdlog::info("{} v{} exited"sv, PROJECT_NAME, PROJECT_VERSION);
+        };
 
         if (config.isDebug()) {
             spdlog::set_level(spdlog::level::debug);
