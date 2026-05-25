@@ -5,9 +5,12 @@
 
 #pragma once
 
-#include <functiondiscoverykeys_devpkey.h>
+// clang-format off
+#include <windows.h>
 #include <mmdeviceapi.h>
+#include <functiondiscoverykeys_devpkey.h>
 #include <propvarutil.h>
+// clang-format on
 
 #include <format>
 #include <stdexcept>
@@ -24,10 +27,10 @@ namespace audio::capture_audio::platform_windows
 
 using DevicePtr = pirks::platform_windows::Interface<IMMDevice>;
 
-class DeviceEnumeratorPtr final: public pirks::platform_windows::Interface<IMMDeviceEnumerator>
+class AudioDeviceEnumerator final: public pirks::platform_windows::Interface<IMMDeviceEnumerator>
 {
 public:
-    DeviceEnumeratorPtr()
+    AudioDeviceEnumerator()
     {
         HRESULT status = CoCreateInstance(
                 CLSID_MMDeviceEnumerator,

@@ -10,7 +10,6 @@
 #include <atomic>
 
 #include "AudioUUIDs.h"
-#include "WinHandle.h"
 
 namespace audio::capture_audio::platform_windows
 {
@@ -25,6 +24,11 @@ public:
     ~AudioNotificationImpl() {
         //
     };
+
+    auto notificationClient() -> IMMNotificationClient *
+    {
+        return static_cast<IMMNotificationClient *>(this);
+    }
 
     // IUnknown implementation (unused by IMMDeviceEnumerator)
 public:
@@ -51,7 +55,7 @@ public:
             *ppvInterface = static_cast<IMMNotificationClient *>(this);
             return S_OK;
         } else {
-            *ppvInterface = NULL;
+            *ppvInterface = nullptr;
             return E_NOINTERFACE;
         }
     }
@@ -107,7 +111,7 @@ public:
     }
 
 private:
-    std::atomic_bool defaultDeviceChanged_;
+    std::atomic_bool defaultDeviceChanged_ { false };
 };
 
 }; // namespace audio::capture_audio::platform_windows

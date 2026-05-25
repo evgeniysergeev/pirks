@@ -9,6 +9,7 @@ set(SOURCES
 
 if(PLATFORM STREQUAL "WINDOWS")
     list(APPEND SOURCES
+        HandleTest.cpp
         InterfaceTest.cpp
     )
 endif()

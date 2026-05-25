@@ -14,10 +14,12 @@ endif()
 
 if(PLATFORM STREQUAL "WINDOWS")
     set(PLATFORM_SOURCES
-        windows/AudioClientPtr.h
+        windows/AudioDeviceEnumerator.h
+        windows/EndpointNotificationRegistration.h
+        windows/MmcssTaskHandle.h
         windows/AudioFormats.h
         windows/AudioNotificationImpl.h
-        windows/DeviceEnumeratorPtr.h
+        windows/WasapiAudioClient.h
         windows/WasapiAudioInput.h
         windows/WasapiAudioInput.cpp
         windows/WinAudioInputFactory.h

@@ -11,18 +11,18 @@
 #include <format>
 #include <stdexcept>
 
+#include "AudioDeviceEnumerator.h"
 #include "AudioFormats.h"
 #include "AudioUUIDs.h"
-#include "DeviceEnumeratorPtr.h"
 #include "Interface.h"
 #include "deferral.h"
 
 namespace audio::capture_audio::platform_windows
 {
-class AudioClientPtr final: public ::pirks::platform_windows::Interface<IAudioClient>
+class WasapiAudioClient final: public ::pirks::platform_windows::Interface<IAudioClient>
 {
 public:
-    AudioClientPtr(DevicePtr &device, const AudioFormat &format)
+    WasapiAudioClient(DevicePtr &device, const AudioFormat &format)
     {
         HRESULT status = device->Activate(
                 IID_IAudioClient,
@@ -89,7 +89,7 @@ public:
         spdlog::info("Audio capture format is {}", waveformatToStr(capture_waveformat));
     }
 
-    virtual ~AudioClientPtr()
+    virtual ~WasapiAudioClient()
     {
         if (pointer_) {
             pointer_->Stop();

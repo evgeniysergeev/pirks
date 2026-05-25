@@ -27,7 +27,7 @@ public:
     }
 
     // non-explicit to be able to write something like:
-    // WinHandle event = CreateEventA
+    // NullWinHandle event = CreateEventA(...)
     UniqueHandle(handle_type handle) noexcept : handle_ { handle }
     {
     }
@@ -86,7 +86,7 @@ private:
     handle_type handle_;
 };
 
-struct InvalidHandleValue
+struct InvalidHandleSentinel
 {
     constexpr HANDLE operator()() const noexcept
     {
@@ -94,20 +94,32 @@ struct InvalidHandleValue
     }
 };
 
+struct NullHandleSentinel
+{
+    constexpr HANDLE operator()() const noexcept
+    {
+        return nullptr;
+    }
+};
+
 struct CloseHandleDeleter
 {
     void operator()(HANDLE handle) const noexcept
     {
-        if (handle != INVALID_HANDLE_VALUE && handle != nullptr) {
-            ::CloseHandle(handle);
-        }
+        ::CloseHandle(handle);
     }
 };
 
 /**
- * @brief RAII class for WinAPI Handles
+ * @brief RAII class for WinAPI handles that use INVALID_HANDLE_VALUE as the invalid value
  *
  */
-using WinHandle = UniqueHandle<HANDLE, InvalidHandleValue, CloseHandleDeleter>;
+using WinHandle = UniqueHandle<HANDLE, InvalidHandleSentinel, CloseHandleDeleter>;
+
+/**
+ * @brief RAII class for WinAPI handles that use nullptr as the invalid value
+ *
+ */
+using NullWinHandle = UniqueHandle<HANDLE, NullHandleSentinel, CloseHandleDeleter>;
 
 }; // namespace pirks::platform_windows

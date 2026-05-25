@@ -1,5 +1,6 @@
 #include "WinAudioInputFactory.h"
 
+#include "AudioDeviceEnumerator.h"
 #include "WasapiAudioInput.h"
 
 namespace audio::capture_audio::platform_windows
@@ -7,8 +8,8 @@ namespace audio::capture_audio::platform_windows
 
 auto WinAudioInputFactory::getAudioSources() -> std::vector<std::string>
 {
-    DeviceEnumeratorPtr enumerator;
-    auto                names = enumerator.getDeviceNames();
+    AudioDeviceEnumerator enumerator;
+    auto                  names = enumerator.getDeviceNames();
 
     // Always put "Default" as the first entry
     names.insert(names.begin(), "Default");

@@ -8,11 +8,13 @@
 #include <memory>
 #include <string>
 
-#include "AudioClientPtr.h"
+#include "AudioDeviceEnumerator.h"
 #include "AudioNotificationImpl.h"
-#include "DeviceEnumeratorPtr.h"
+#include "EndpointNotificationRegistration.h"
 #include "IAudioInput.h"
 #include "Interface.h"
+#include "MmcssTaskHandle.h"
+#include "WasapiAudioClient.h"
 #include "WinHandle.h"
 
 namespace audio::capture_audio::platform_windows
@@ -44,13 +46,13 @@ private:
     auto fillBuffer() -> CaptureResult;
 
 private:
-    pirks::platform_windows::WinHandle audioEvent_;
+    pirks::platform_windows::NullWinHandle audioEvent_;
 
-    DeviceEnumeratorPtr                           deviceEnumerator_ {};
+    AudioDeviceEnumerator                         deviceEnumerator_ {};
     pirks::platform_windows::Interface<IMMDevice> device_;
 
     // TODO: remove unique_ptr and create needed constructors for this
-    std::unique_ptr<AudioClientPtr>                         audioClient_;
+    std::unique_ptr<WasapiAudioClient>                      audioClient_;
     pirks::platform_windows::Interface<IAudioCaptureClient> audioCapture_;
 
     DWORD defaultLatency_ {}; // in milliseconds;
@@ -59,11 +61,11 @@ private:
     float             *bufferPos_ {};
     uint8_t            channels_ {};
 
-    AudioNotificationImpl audioNotification_;
+    AudioNotificationImpl            audioNotification_;
+    EndpointNotificationRegistration endpointNotificationRegistration_;
     // TODO: std::optional<std::function<void()>> default_endpt_changed_cb;
 
-    // TODO: create class for this
-    pirks::platform_windows::WinHandle mmcss_task_handle_;
+    MmcssTaskHandle mmcssTaskHandle_;
 };
 
 }; // namespace audio::capture_audio::platform_windows

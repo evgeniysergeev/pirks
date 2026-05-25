@@ -5,7 +5,6 @@
 
 #include "WasapiAudioInput.h"
 
-#include <avrt.h> // for AvSetMmThreadCharacteristicsA
 #include <windows.h>
 
 // if defined in windows.h
@@ -23,7 +22,7 @@ namespace audio::capture_audio::platform_windows
 namespace
 {
 
-auto selectDeviceByName(DeviceEnumeratorPtr &enumerator, const std::string &audio_source)
+auto selectDeviceByName(AudioDeviceEnumerator &enumerator, const std::string &audio_source)
         -> DevicePtr
 {
     if (audio_source.empty() || audio_source == "Default") {
@@ -63,26 +62,9 @@ void WasapiAudioInput::initialize(
         throw std::runtime_error("Unable to create Event handle");
     }
 
-    IMMNotificationClient *notification_client {};
-    status = audioNotification_.QueryInterface(
-            IID_IMMNotificationClient,
-            reinterpret_cast<void **>(&notification_client));
-    if (FAILED(status)) {
-        throw std::runtime_error(
-                std::format(
-                        "Unable to query IMMNotificationClient interface . HRESULT = 0x{:X}",
-                        status));
-    }
-
-    status = deviceEnumerator_->RegisterEndpointNotificationCallback(notification_client);
-    if (FAILED(status)) {
-        throw std::runtime_error(
-                std::format("Couldn't register endpoint notification. HRESULT = 0x{:X}", status));
-    }
-    defer_fail
-    {
-        deviceEnumerator_->UnregisterEndpointNotificationCallback(notification_client);
-    };
+    endpointNotificationRegistration_.registerCallback(
+            deviceEnumerator_,
+            audioNotification_.notificationClient());
 
     device_ = selectDeviceByName(deviceEnumerator_, audio_source);
     if (!device_) {
@@ -105,7 +87,7 @@ void WasapiAudioInput::initialize(
 
         spdlog::debug("Trying audio format {}", format.name);
         try {
-            audioClient_.reset(new AudioClientPtr(device_, format));
+            audioClient_.reset(new WasapiAudioClient(device_, format));
         } catch (const std::exception &e) {
             spdlog::warn("Exception while trying audio format {}: {}", format.name, e.what());
             continue;
@@ -163,21 +145,15 @@ void WasapiAudioInput::initialize(
     }
 
     {
-        DWORD task_index   = 0;
-        mmcss_task_handle_ = AvSetMmThreadCharacteristics("Pro Audio", &task_index);
-        if (!mmcss_task_handle_) {
+        DWORD task_index = 0;
+        mmcssTaskHandle_ = AvSetMmThreadCharacteristics("Pro Audio", &task_index);
+        if (!mmcssTaskHandle_) {
             throw std::runtime_error(
                     std::format(
                             "Couldn't associate audio capture thread with Pro Audio MMCSS task. GetLastError = 0x{:X}",
                             GetLastError()));
         }
     }
-    defer_fail
-    {
-        if (mmcss_task_handle_) {
-            AvRevertMmThreadCharacteristics(mmcss_task_handle_.release());
-        }
-    };
 
     status = audioClient_->get()->Start();
     if (FAILED(status)) {
@@ -185,27 +161,7 @@ void WasapiAudioInput::initialize(
     }
 }
 
-WasapiAudioInput::~WasapiAudioInput()
-{
-    IMMNotificationClient *notification_client {};
-    HRESULT                status = audioNotification_.QueryInterface(
-            IID_IMMNotificationClient,
-            reinterpret_cast<void **>(&notification_client));
-    if (FAILED(status)) {
-        spdlog::error("Unable to query IMMNotificationClient interface. HRESULT = 0x{:X}", status);
-        std::terminate();
-    }
-
-    assert(deviceEnumerator_ && "The device enumerator must not be NULL");
-    if (deviceEnumerator_) {
-        // TODO: move this and register endpoint to DeviceEnumerator class
-        deviceEnumerator_->UnregisterEndpointNotificationCallback(notification_client);
-    }
-
-    if (mmcss_task_handle_) {
-        AvRevertMmThreadCharacteristics(mmcss_task_handle_.release());
-    }
-}
+WasapiAudioInput::~WasapiAudioInput() = default;
 
 auto WasapiAudioInput::sample(std::vector<float> &sample_out) -> CaptureResult
 {
