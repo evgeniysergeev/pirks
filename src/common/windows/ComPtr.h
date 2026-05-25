@@ -1,5 +1,5 @@
 /*
- * RAII wrapper for COM interfaces with proper reference counting.
+ * RAII pointer for COM interfaces with proper reference counting.
  */
 
 #pragma once
@@ -10,57 +10,49 @@ namespace pirks::platform_windows
 {
 
 /**
- * @brief RAII class for COM Interfaces with proper AddRef/Release semantics
+ * @brief RAII pointer for COM interfaces with proper AddRef/Release semantics
  *
- * COM methods usually return out-parameter interface pointers with a reference
- * already owned by the caller. Use attach() for those pointers.
- * detach() releases wrapper ownership without calling Release().
+ * Use resetAndGetAddress() for COM out-parameters.
  * Copying increments the reference count (AddRef).
  * Moving transfers ownership without AddRef.
  * Destruction calls Release.
  */
 template<typename T>
-class Interface
+class ComPtr
 {
 public:
-    Interface() = default;
+    ComPtr() = default;
 
-    explicit Interface(T *p) : pointer_ { p }
+    explicit ComPtr(T *pointer) : pointer_ { pointer }
     {
         if (pointer_) {
             pointer_->AddRef();
         }
     }
 
-    static auto attach(T *p) noexcept -> Interface
+    /**
+     * Releases the current pointer and returns storage for a COM out-parameter.
+     */
+    auto resetAndGetAddress() -> T **
     {
-        Interface result;
-        result.pointer_ = p;
-        return result;
+        releasePointer();
+        return &pointer_;
     }
 
-    auto detach() noexcept -> T *
-    {
-        T *detached = pointer_;
-        pointer_    = nullptr;
-        return detached;
-    }
-
-    virtual ~Interface()
+    ~ComPtr()
     {
         releasePointer();
     }
 
-public:
     // Copy: increment reference count
-    Interface(const Interface &other) : pointer_ { other.pointer_ }
+    ComPtr(const ComPtr &other) : pointer_ { other.pointer_ }
     {
         if (pointer_) {
             pointer_->AddRef();
         }
     }
 
-    Interface &operator=(const Interface &other)
+    ComPtr &operator=(const ComPtr &other)
     {
         if (this != &other) {
             T *new_pointer = other.pointer_;
@@ -75,12 +67,12 @@ public:
     }
 
     // Move: transfer ownership
-    Interface(Interface &&other) noexcept : pointer_ { other.pointer_ }
+    ComPtr(ComPtr &&other) noexcept : pointer_ { other.pointer_ }
     {
         other.pointer_ = nullptr;
     }
 
-    Interface &operator=(Interface &&other) noexcept
+    ComPtr &operator=(ComPtr &&other) noexcept
     {
         if (this != &other) {
             releasePointer();
@@ -95,7 +87,7 @@ public:
         return pointer_;
     }
 
-    operator bool() const
+    explicit operator bool() const
     {
         return pointer_ != nullptr;
     }
@@ -110,7 +102,7 @@ public:
         return *pointer_;
     }
 
-protected:
+private:
     void releasePointer()
     {
         if (pointer_ != nullptr) {

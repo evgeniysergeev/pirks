@@ -5,14 +5,15 @@
 
 #pragma once
 
-#include <memory>
+#include <cstdint>
 #include <string>
+#include <vector>
 
 #include "AudioDeviceEnumerator.h"
 #include "AudioNotificationImpl.h"
+#include "ComPtr.h"
 #include "EndpointNotificationRegistration.h"
 #include "IAudioInput.h"
-#include "Interface.h"
 #include "MmcssTaskHandle.h"
 #include "WasapiAudioClient.h"
 #include "WinHandle.h"
@@ -37,23 +38,16 @@ public:
     auto sample(std::vector<float> &sample_out) -> CaptureResult override;
 
 private:
-    void initialize(
-            uint8_t            channels,
-            uint32_t           sample_rate,
-            uint32_t           frame_size,
-            const std::string &audio_source);
-
     auto fillBuffer() -> CaptureResult;
 
 private:
     pirks::platform_windows::NullWinHandle audioEvent_;
 
-    AudioDeviceEnumerator                         deviceEnumerator_ {};
-    pirks::platform_windows::Interface<IMMDevice> device_;
+    AudioDeviceEnumerator deviceEnumerator_ {};
+    MmDevice              device_;
 
-    // TODO: remove unique_ptr and create needed constructors for this
-    std::unique_ptr<WasapiAudioClient>                      audioClient_;
-    pirks::platform_windows::Interface<IAudioCaptureClient> audioCapture_;
+    WasapiAudioClient                                    audioClient_;
+    pirks::platform_windows::ComPtr<IAudioCaptureClient> audioCapture_;
 
     DWORD defaultLatency_ {}; // in milliseconds;
 

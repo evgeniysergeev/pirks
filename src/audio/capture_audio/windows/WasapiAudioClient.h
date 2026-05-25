@@ -8,18 +8,21 @@
 #include <audioclient.h>
 #include <spdlog/spdlog.h>
 
+#include <cassert>
+#include <cstdint>
 #include <format>
 #include <stdexcept>
+#include <utility>
 
 #include "AudioDeviceEnumerator.h"
 #include "AudioFormats.h"
 #include "AudioUUIDs.h"
-#include "Interface.h"
+#include "ComPtr.h"
 #include "deferral.h"
 
 namespace audio::capture_audio::platform_windows
 {
-class WasapiAudioClient final: public ::pirks::platform_windows::Interface<IAudioClient>
+class WasapiAudioClient final
 {
 public:
     WasapiAudioClient(MmDevice &device, const AudioFormat &format)
@@ -28,7 +31,7 @@ public:
                 IID_IAudioClient,
                 CLSCTX_ALL,
                 nullptr,
-                reinterpret_cast<LPVOID *>(&pointer_));
+                reinterpret_cast<LPVOID *>(client_.resetAndGetAddress()));
 
         if (FAILED(status)) {
             throw std::runtime_error(
@@ -43,7 +46,7 @@ public:
                 format.captureWaveformatChannelMask);
 
         WAVEFORMATEX *mixer_waveformat {};
-        status = pointer_->GetMixFormat(&mixer_waveformat);
+        status = client_->GetMixFormat(&mixer_waveformat);
         if (FAILED(status)) {
             throw std::runtime_error(
                     std::format(
@@ -67,7 +70,7 @@ public:
 
         // TODO: fix sytle here. alignment is wrong
         const WAVEFORMATEX *waveformat = &capture_waveformat.Format;
-        status                         = pointer_->Initialize(
+        status                         = client_->Initialize(
                 AUDCLNT_SHAREMODE_SHARED,
                 AUDCLNT_STREAMFLAGS_EVENTCALLBACK            //
                         | AUDCLNT_STREAMFLAGS_AUTOCONVERTPCM //
@@ -89,12 +92,102 @@ public:
         spdlog::info("Audio capture format is {}", waveformatToStr(capture_waveformat));
     }
 
-    virtual ~WasapiAudioClient()
+    WasapiAudioClient(const WasapiAudioClient &)            = delete;
+    WasapiAudioClient &operator=(const WasapiAudioClient &) = delete;
+
+    WasapiAudioClient(WasapiAudioClient &&) noexcept = default;
+
+    WasapiAudioClient &operator=(WasapiAudioClient &&other) noexcept
     {
-        if (pointer_) {
-            pointer_->Stop();
+        if (this != &other) {
+            stop();
+            client_ = std::move(other.client_);
+        }
+        return *this;
+    }
+
+    ~WasapiAudioClient()
+    {
+        stop();
+    }
+
+    auto defaultLatencyMs() const -> DWORD
+    {
+        REFERENCE_TIME default_latency {};
+        const HRESULT  status = client_->GetDevicePeriod(&default_latency, nullptr);
+        if (FAILED(status)) {
+            throw std::runtime_error(
+                    std::format(
+                            "Couldn't get audio device period. HRESULT = 0x{:X}",
+                            static_cast<unsigned long>(status)));
+        }
+
+        assert(default_latency < UINT32_MAX && "default latency is too big");
+        return static_cast<DWORD>(default_latency / 1000);
+    }
+
+    auto bufferFrameCount() const -> std::uint32_t
+    {
+        std::uint32_t frames {};
+        const HRESULT status = client_->GetBufferSize(&frames);
+        if (FAILED(status)) {
+            throw std::runtime_error(
+                    std::format(
+                            "Couldn't acquire the number of audio frames. HRESULT = 0x{:X}",
+                            static_cast<unsigned long>(status)));
+        }
+
+        return frames;
+    }
+
+    auto createCaptureClient() const -> pirks::platform_windows::ComPtr<IAudioCaptureClient>
+    {
+        pirks::platform_windows::ComPtr<IAudioCaptureClient> audio_capture;
+        const HRESULT                                        status = client_->GetService(
+                IID_IAudioCaptureClient,
+                reinterpret_cast<void **>(audio_capture.resetAndGetAddress()));
+        if (FAILED(status)) {
+            throw std::runtime_error(
+                    std::format(
+                            "Couldn't initialize audio capture client. HRESULT = 0x{:X}",
+                            static_cast<unsigned long>(status)));
+        }
+
+        return audio_capture;
+    }
+
+    void setEventHandle(HANDLE audio_event)
+    {
+        const HRESULT status = client_->SetEventHandle(audio_event);
+        if (FAILED(status)) {
+            throw std::runtime_error(
+                    std::format(
+                            "Couldn't set event handle. HRESULT = 0x{:X}",
+                            static_cast<unsigned long>(status)));
         }
     }
+
+    void start()
+    {
+        const HRESULT status = client_->Start();
+        if (FAILED(status)) {
+            throw std::runtime_error(
+                    std::format(
+                            "Couldn't start recording. HRESULT = 0x{:X}",
+                            static_cast<unsigned long>(status)));
+        }
+    }
+
+private:
+    void stop() noexcept
+    {
+        if (client_) {
+            client_->Stop();
+        }
+    }
+
+private:
+    pirks::platform_windows::ComPtr<IAudioClient> client_;
 };
 
 }; // namespace audio::capture_audio::platform_windows

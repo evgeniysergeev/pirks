@@ -12,7 +12,7 @@ set(SOURCES
 if(PLATFORM STREQUAL "WINDOWS")
     set(PLATFORM_SOURCES
         windows/WinHandle.h
-        windows/Interface.h
+        windows/ComPtr.h
         windows/WideStrings.h
         windows/WideStrings.cpp
     )

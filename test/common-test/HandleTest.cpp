@@ -19,7 +19,7 @@ struct CountingCloser
 {
     void operator()(int handle) const noexcept
     {
-        ++closeCount;
+        closeCount++;
         lastClosed = handle;
     }
 

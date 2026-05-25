@@ -2,7 +2,6 @@
 
 #include <mmdeviceapi.h>
 
-#include <format>
 #include <stdexcept>
 
 #include "AudioDeviceEnumerator.h"
@@ -60,14 +59,7 @@ public:
             throw std::runtime_error("Endpoint notification client is null");
         }
 
-        const HRESULT status =
-                device_enumerator->RegisterEndpointNotificationCallback(notification_client);
-        if (FAILED(status)) {
-            throw std::runtime_error(
-                    std::format(
-                            "Couldn't register endpoint notification. HRESULT = 0x{:X}",
-                            static_cast<unsigned long>(status)));
-        }
+        device_enumerator.registerEndpointNotificationCallback(notification_client);
 
         deviceEnumerator_   = &device_enumerator;
         notificationClient_ = notification_client;
@@ -76,7 +68,7 @@ public:
     void reset() noexcept
     {
         if (deviceEnumerator_ && notificationClient_) {
-            deviceEnumerator_->get()->UnregisterEndpointNotificationCallback(notificationClient_);
+            deviceEnumerator_->unregisterEndpointNotificationCallback(notificationClient_);
         }
 
         deviceEnumerator_   = nullptr;

@@ -53,7 +53,7 @@ TEST(AudioInput, GetSamples)
 
         sampled_device = true;
 
-        for (auto i = 0; i < kSamplesCount; i++) {
+        for (auto i = 0; i < kSamplesCount; ++i) {
             auto result = device->sample(sample_in);
             ASSERT_TRUE(result == CaptureResult::OK);
         }
