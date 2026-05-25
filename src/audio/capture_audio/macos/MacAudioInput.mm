@@ -5,17 +5,21 @@
 namespace audio::capture_audio::platform_macos
 {
 
+// CaptureDevice is Objective-C MRC-owned here and released in the destructor.
 MacAudioInput::MacAudioInput(AVCaptureDevice *capture_device, uint8_t channels, uint32_t sample_rate, uint32_t frame_size)
 {
-    captureDevice_ = [[CaptureDevice alloc] init];
+    CaptureDevice *captureDevice = [[CaptureDevice alloc] init];
 
-    if ([captureDevice_ setupCaptureDevice:capture_device
-                                sampleRate:sample_rate
-                                 frameSize:frame_size
-                                  channels:channels])
+    if ([captureDevice setupCaptureDevice:capture_device
+                               sampleRate:sample_rate
+                                frameSize:frame_size
+                                 channels:channels])
     {
+        [captureDevice release];
         throw std::runtime_error("Failed to setup microphone");
     }
+
+    captureDevice_ = captureDevice;
 }
 
 MacAudioInput::~MacAudioInput()
@@ -29,13 +33,17 @@ auto MacAudioInput::sample(std::vector<float> &sample_out) -> CaptureResult
     assert(sample_size64 < UINT32_MAX && "audio sample buffer overflow");
     const uint32_t sample_size = static_cast<uint32_t>(sample_size64);
 
+    NSCondition *samplesArrivedSignal = captureDevice_.samplesArrivedSignal;
+
+    [samplesArrivedSignal lock];
     uint32_t length = 0;
     void *byteSampleBuffer = TPCircularBufferTail(&captureDevice_->audioSampleBuffer, &length);
-
     while (length < sample_size * sizeof(float)) {
-        [captureDevice_.samplesArrivedSignal wait];
+        // NSCondition wait must be called with the lock held; the buffer length is the predicate.
+        [samplesArrivedSignal wait];
         byteSampleBuffer = TPCircularBufferTail(&captureDevice_->audioSampleBuffer, &length);
     }
+    [samplesArrivedSignal unlock];
 
     const float *sampleBuffer = reinterpret_cast<float *>(byteSampleBuffer);
     std::vector<float> vectorBuffer(sampleBuffer, sampleBuffer + sample_size);

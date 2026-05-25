@@ -15,9 +15,12 @@
     TPCircularBuffer audioSampleBuffer;
 }
 
-@property (nonatomic, assign) AVCaptureSession *audioCaptureSession;
+// Owned by CaptureDevice under MRC.
+@property (nonatomic, retain) AVCaptureSession *audioCaptureSession;
+@property (nonatomic, retain) NSCondition *samplesArrivedSignal;
+
+// Borrowed from AVCaptureAudioDataOutput/AVCaptureSession; CaptureDevice does not own it.
 @property (nonatomic, assign) AVCaptureConnection *audioConnection;
-@property (nonatomic, assign) NSCondition *samplesArrivedSignal;
 
 + (NSArray<NSString *> *)captureDeviceNames;
 + (AVCaptureDevice *)findCaptureDevice:(NSString *)name;

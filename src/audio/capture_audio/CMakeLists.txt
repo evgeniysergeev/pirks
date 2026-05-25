@@ -28,15 +28,29 @@ if(PLATFORM STREQUAL "WINDOWS")
 endif()
 
 if(PLATFORM STREQUAL "MACOS")
-    set(PLATFORM_SOURCES
+    set(MACOS_OBJECTIVE_C_HEADERS
         macos/CaptureDevice.h
-        macos/CaptureDevice.m
         macos/MacAudioInput.h
-        macos/MacAudioInput.mm
         macos/MacAudioInputFactory.h
+    )
+
+    set(MACOS_OBJECTIVE_C_SOURCES
+        macos/CaptureDevice.m
+        macos/MacAudioInput.mm
         macos/MacAudioInputFactory.mm
+    )
+
+    set(PLATFORM_SOURCES
+        ${MACOS_OBJECTIVE_C_HEADERS}
+        ${MACOS_OBJECTIVE_C_SOURCES}
         ${PROJECT_SOURCE_DIR}/third-party/TPCircularBuffer/TPCircularBuffer.h
         ${PROJECT_SOURCE_DIR}/third-party/TPCircularBuffer/TPCircularBuffer.c
+    )
+
+    # The macOS capture implementation uses manual retain/release/dealloc.
+    # Keep these files on MRC unless the Objective-C ownership code is migrated.
+    set_source_files_properties(${MACOS_OBJECTIVE_C_SOURCES}
+        PROPERTIES COMPILE_FLAGS "-fno-objc-arc"
     )
 endif()
 

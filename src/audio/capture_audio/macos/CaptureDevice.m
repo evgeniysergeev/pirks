@@ -7,6 +7,7 @@
 
 #define kBufferLength 4096
 
+// Compiled with -fno-objc-arc; explicit retain/release/dealloc below are intentional.
 @implementation CaptureDevice
 
 + (NSArray<AVCaptureDevice *> *)captureDevices
@@ -40,7 +41,7 @@
 
 + (NSArray<NSString *> *)captureDeviceNames;
 {
-    NSMutableArray *result = [[NSMutableArray alloc] init];
+    NSMutableArray *result = [NSMutableArray array];
 
     for (AVCaptureDevice *device in [CaptureDevice captureDevices]) {
         [result addObject:[device localizedName]];
@@ -63,11 +64,23 @@
 - (void)dealloc
 {
     // make sure we don't process any further samples
-    self.audioConnection = nil;
+    [_audioCaptureSession stopRunning];
+    _audioConnection = nil;
+
     // make sure nothing gets stuck on this signal
-    [self.samplesArrivedSignal signal];
-    [self.samplesArrivedSignal release];
-    TPCircularBufferCleanup(&audioSampleBuffer);
+    [_samplesArrivedSignal lock];
+    [_samplesArrivedSignal signal];
+    [_samplesArrivedSignal unlock];
+    [_samplesArrivedSignal release];
+    _samplesArrivedSignal = nil;
+
+    [_audioCaptureSession release];
+    _audioCaptureSession = nil;
+
+    if (audioSampleBuffer.buffer != NULL) {
+        TPCircularBufferCleanup(&audioSampleBuffer);
+    }
+
     [super dealloc];
 }
 
@@ -76,9 +89,12 @@
                 frameSize:(UInt32)frameSize
                  channels:(UInt8)channels
 {
-    self.audioCaptureSession = [[AVCaptureSession alloc] init];
+    AVCaptureSession *audioCaptureSession = [[AVCaptureSession alloc] init];
+    self.audioCaptureSession = audioCaptureSession;
+    // CaptureDevice keeps it through the retained property; release our local alloc.
+    [audioCaptureSession release];
 
-    NSError *error;
+    NSError *error = nil;
     AVCaptureDeviceInput *audioInput = 
         [AVCaptureDeviceInput deviceInputWithDevice:device
                                               error:&error];
@@ -89,8 +105,7 @@
     if ([self.audioCaptureSession canAddInput:audioInput]) {
         [self.audioCaptureSession addInput:audioInput];
     } else {
-        [audioInput dealloc];
-    return -1;
+        return -1;
     }
 
     AVCaptureAudioDataOutput *audioOutput = [[AVCaptureAudioDataOutput alloc] init];
@@ -108,24 +123,33 @@
     dispatch_queue_t recordingQueue = dispatch_queue_create("audioSamplingQueue", qos);
 
     [audioOutput setSampleBufferDelegate:self queue:recordingQueue];
+    // The output keeps the queue for callbacks; release our local create ownership.
+    dispatch_release(recordingQueue);
 
     if ([self.audioCaptureSession canAddOutput:audioOutput]) {
         [self.audioCaptureSession addOutput:audioOutput];
     } else {
-        [audioInput release];
+        // The session did not keep the output; release our local alloc.
         [audioOutput release];
         return -1;
     }
 
     self.audioConnection = [audioOutput connectionWithMediaType:AVMediaTypeAudio];
 
+    NSCondition *samplesArrivedSignal = [[NSCondition alloc] init];
+    self.samplesArrivedSignal = samplesArrivedSignal;
+    // CaptureDevice keeps it through the retained property; release our local alloc.
+    [samplesArrivedSignal release];
+
+    if (!TPCircularBufferInit(&self->audioSampleBuffer, kBufferLength * channels)) {
+        // The session kept the output, but setup failed; release our local alloc.
+        [audioOutput release];
+        return -1;
+    }
+
     [self.audioCaptureSession startRunning];
-
-    [audioInput release];
+    // The session keeps added outputs; release our local alloc.
     [audioOutput release];
-
-    self.samplesArrivedSignal = [[NSCondition alloc] init];
-    TPCircularBufferInit(&self->audioSampleBuffer, kBufferLength * channels);
 
     return 0;
 }
@@ -136,9 +160,23 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 {
     if (connection == self.audioConnection) {
         AudioBufferList audioBufferList;
-        CMBlockBufferRef blockBuffer;
+        CMBlockBufferRef blockBuffer = NULL;
 
-        CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(sampleBuffer, NULL, &audioBufferList, sizeof(audioBufferList), NULL, NULL, 0, &blockBuffer);
+        OSStatus status = CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(
+                sampleBuffer,
+                NULL,
+                &audioBufferList,
+                sizeof(audioBufferList),
+                NULL,
+                NULL,
+                0,
+                &blockBuffer);
+        if (status != noErr || audioBufferList.mNumberBuffers == 0) {
+            if (blockBuffer != NULL) {
+                CFRelease(blockBuffer);
+            }
+            return;
+        }
 
         // NSAssert(audioBufferList.mNumberBuffers == 1, @"Expected interleaved PCM format but buffer contained %u streams", audioBufferList.mNumberBuffers);
 
@@ -147,7 +185,15 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         AudioBuffer audioBuffer = audioBufferList.mBuffers[0];
 
         TPCircularBufferProduceBytes(&self->audioSampleBuffer, audioBuffer.mData, audioBuffer.mDataByteSize);
+        if (blockBuffer != NULL) {
+            CFRelease(blockBuffer);
+        }
+
+        // NSCondition requires signaling while holding its lock.
+        // TPCircularBuffer remains the atomic single-producer/single-consumer state.
+        [self.samplesArrivedSignal lock];
         [self.samplesArrivedSignal signal];
+        [self.samplesArrivedSignal unlock];
     }
 }
 
