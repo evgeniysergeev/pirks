@@ -9,7 +9,14 @@ auto wideToUtf8(const std::wstring &wstr) -> std::string
     }
 
     const int len = WideCharToMultiByte(
-            CP_UTF8, 0, wstr.c_str(), static_cast<int>(wstr.size()), nullptr, 0, nullptr, nullptr);
+            CP_UTF8,
+            0,
+            wstr.c_str(),
+            static_cast<int>(wstr.size()),
+            nullptr,
+            0,
+            nullptr,
+            nullptr);
     if (len <= 0) {
         return {};
     }

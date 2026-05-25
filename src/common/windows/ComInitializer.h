@@ -11,8 +11,8 @@
 
 #pragma once
 
-#include <windows.h>
 #include <objbase.h>
+#include <windows.h>
 
 #include <format>
 #include <stdexcept>
@@ -34,8 +34,7 @@ public:
             // В этом случае не вызываем CoUninitialize() в деструкторе.
             shouldUninitialize_ = false;
         } else {
-            throw std::runtime_error(
-                    std::format("Couldn't initialize COM. HRESULT = 0x{:X}", hr));
+            throw std::runtime_error(std::format("Couldn't initialize COM. HRESULT = 0x{:X}", hr));
         }
     }
 
@@ -54,4 +53,3 @@ private:
 };
 
 } // namespace pirks::platform_windows
-

@@ -3,8 +3,8 @@
 #include "ExitCode.h"
 #include "Server.h"
 #include "ServerConfig.h"
-#include "deferral.h"
 #include "StrUtils.h"
+#include "deferral.h"
 #include "version.h"
 
 #ifdef WINDOWS

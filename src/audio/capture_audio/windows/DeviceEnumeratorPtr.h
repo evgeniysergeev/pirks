@@ -5,8 +5,8 @@
 
 #pragma once
 
-#include <mmdeviceapi.h>
 #include <functiondiscoverykeys_devpkey.h>
+#include <mmdeviceapi.h>
 #include <propvarutil.h>
 
 #include <format>
@@ -14,8 +14,8 @@
 #include <string>
 #include <vector>
 
-#include "Interface.h"
 #include "AudioUUIDs.h"
+#include "Interface.h"
 #include "StrUtils.h"
 
 namespace audio::capture_audio::platform_windows
@@ -59,10 +59,7 @@ public:
         std::vector<std::string> result;
 
         IMMDeviceCollection *collection = nullptr;
-        HRESULT              status     = pointer_->EnumAudioEndpoints(
-                eCapture,
-                DEVICE_STATE_ACTIVE,
-                &collection);
+        HRESULT status = pointer_->EnumAudioEndpoints(eCapture, DEVICE_STATE_ACTIVE, &collection);
         if (FAILED(status) || collection == nullptr) {
             return result;
         }
@@ -106,10 +103,7 @@ public:
     auto getDeviceByName(const std::string &name) -> DevicePtr
     {
         IMMDeviceCollection *collection = nullptr;
-        HRESULT              status     = pointer_->EnumAudioEndpoints(
-                eCapture,
-                DEVICE_STATE_ACTIVE,
-                &collection);
+        HRESULT status = pointer_->EnumAudioEndpoints(eCapture, DEVICE_STATE_ACTIVE, &collection);
         if (FAILED(status) || collection == nullptr) {
             return nullptr;
         }

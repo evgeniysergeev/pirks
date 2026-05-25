@@ -9,8 +9,8 @@
 
 #include <atomic>
 
-#include "WinHandle.h"
 #include "AudioUUIDs.h"
+#include "WinHandle.h"
 
 namespace audio::capture_audio::platform_windows
 {
@@ -22,8 +22,7 @@ public:
     {
     }
 
-    ~AudioNotificationImpl()
-    {
+    ~AudioNotificationImpl() {
         //
     };
 

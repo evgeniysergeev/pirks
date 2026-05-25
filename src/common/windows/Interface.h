@@ -71,7 +71,7 @@ public:
             if (pointer_) {
                 pointer_->Release();
             }
-            pointer_    = other.pointer_;
+            pointer_       = other.pointer_;
             other.pointer_ = nullptr;
         }
         return *this;

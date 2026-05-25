@@ -12,9 +12,9 @@
 #include <stdexcept>
 
 #include "AudioFormats.h"
+#include "AudioUUIDs.h"
 #include "DeviceEnumeratorPtr.h"
 #include "Interface.h"
-#include "AudioUUIDs.h"
 
 namespace audio::capture_audio::platform_windows
 {
@@ -31,7 +31,9 @@ public:
 
         if (FAILED(status)) {
             throw std::runtime_error(
-                    std::format("Couldn't create Audio Client. HRESULT = 0x{:X}", status));
+                    std::format(
+                            "Couldn't create Audio Client. HRESULT = 0x{:X}",
+                            static_cast<unsigned long>(status)));
         }
 
         WAVEFORMATEXTENSIBLE capture_waveformat = createWaveformat(
@@ -45,7 +47,7 @@ public:
             throw std::runtime_error(
                     std::format(
                             "Couldn't get mix format for audio device. HRESULT = 0x{:X}",
-                            status));
+                            static_cast<unsigned long>(status)));
         }
 
         // Prefer the native channel layout of captured audio device when channel counts match
@@ -62,8 +64,7 @@ public:
         const WAVEFORMATEX *waveformat = &capture_waveformat.Format;
         status                         = pointer_->Initialize(
                 AUDCLNT_SHAREMODE_SHARED,
-                AUDCLNT_STREAMFLAGS_LOOPBACK                 //
-                        | AUDCLNT_STREAMFLAGS_EVENTCALLBACK  //
+                AUDCLNT_STREAMFLAGS_EVENTCALLBACK            //
                         | AUDCLNT_STREAMFLAGS_AUTOCONVERTPCM //
                         | AUDCLNT_STREAMFLAGS_SRC_DEFAULT_QUALITY, // Enable automatic resampling to
                                                                    // 48 KHz
@@ -72,12 +73,12 @@ public:
                 waveformat,
                 nullptr);
 
-        if (status) {
+        if (FAILED(status)) {
             throw std::runtime_error(
                     std::format(
                             "Couldn't initialize audio client for {}. HRESULT = 0x{:X}",
                             format.name,
-                            status));
+                            static_cast<unsigned long>(status)));
         }
 
         spdlog::info("Audio capture format is {}", waveformatToStr(capture_waveformat));

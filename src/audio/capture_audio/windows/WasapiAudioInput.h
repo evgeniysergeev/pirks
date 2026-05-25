@@ -23,10 +23,10 @@ public:
     WasapiAudioInput(uint8_t channels, uint32_t sample_rate, uint32_t frame_size);
 
     WasapiAudioInput(
-            uint8_t              channels,
-            uint32_t             sample_rate,
-            uint32_t             frame_size,
-            const std::string   &audio_source);
+            uint8_t            channels,
+            uint32_t           sample_rate,
+            uint32_t           frame_size,
+            const std::string &audio_source);
 
     ~WasapiAudioInput() override;
 

@@ -19,11 +19,11 @@
 namespace audio::capture_audio::platform_windows
 {
 
-namespace {
+namespace
+{
 
-auto selectDeviceByName(
-        DeviceEnumeratorPtr &enumerator,
-        const std::string   &audio_source) -> DevicePtr
+auto selectDeviceByName(DeviceEnumeratorPtr &enumerator, const std::string &audio_source)
+        -> DevicePtr
 {
     if (audio_source.empty() || audio_source == "Default") {
         return enumerator.getDefaultDevice();
