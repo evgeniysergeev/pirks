@@ -16,6 +16,7 @@
 
 #include "Interface.h"
 #include "AudioUUIDs.h"
+#include "str_utils.h"
 
 namespace audio::capture_audio::platform_windows
 {
@@ -88,9 +89,8 @@ public:
 
             status = property_store->GetValue(PKEY_Device_FriendlyName, &friendly_name);
             if (SUCCEEDED(status) && friendly_name.vt == VT_LPWSTR && friendly_name.pwszVal) {
-                const std::wstring_view wname { friendly_name.pwszVal };
-                std::string             name(wname.begin(), wname.end());
-                result.push_back(std::move(name));
+                const std::wstring wname { friendly_name.pwszVal };
+                result.push_back(wideToUtf8(wname));
             }
 
             PropVariantClear(&friendly_name);
@@ -136,8 +136,8 @@ public:
 
             status = property_store->GetValue(PKEY_Device_FriendlyName, &friendly_name);
             if (SUCCEEDED(status) && friendly_name.vt == VT_LPWSTR && friendly_name.pwszVal) {
-                const std::wstring_view wname { friendly_name.pwszVal };
-                std::string             current_name(wname.begin(), wname.end());
+                const std::wstring wname { friendly_name.pwszVal };
+                const std::string  current_name = wideToUtf8(wname);
 
                 if (current_name == name) {
                     PropVariantClear(&friendly_name);
