@@ -23,7 +23,7 @@ namespace
 {
 
 auto selectDeviceByName(AudioDeviceEnumerator &enumerator, const std::string &audio_source)
-        -> DevicePtr
+        -> MmDevice
 {
     if (audio_source.empty() || audio_source == "Default") {
         return enumerator.getDefaultDevice();

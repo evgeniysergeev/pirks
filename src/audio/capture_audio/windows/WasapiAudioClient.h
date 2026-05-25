@@ -22,7 +22,7 @@ namespace audio::capture_audio::platform_windows
 class WasapiAudioClient final: public ::pirks::platform_windows::Interface<IAudioClient>
 {
 public:
-    WasapiAudioClient(DevicePtr &device, const AudioFormat &format)
+    WasapiAudioClient(MmDevice &device, const AudioFormat &format)
     {
         HRESULT status = device->Activate(
                 IID_IAudioClient,

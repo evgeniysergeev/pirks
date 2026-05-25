@@ -25,7 +25,7 @@
 namespace audio::capture_audio::platform_windows
 {
 
-using DevicePtr = pirks::platform_windows::Interface<IMMDevice>;
+using MmDevice = pirks::platform_windows::Interface<IMMDevice>;
 
 class AudioDeviceEnumerator final: public pirks::platform_windows::Interface<IMMDeviceEnumerator>
 {
@@ -45,7 +45,7 @@ public:
     }
 
 public:
-    auto getDefaultDevice() -> DevicePtr
+    auto getDefaultDevice() -> MmDevice
     {
         IMMDevice *device = nullptr;
         HRESULT    status = pointer_->GetDefaultAudioEndpoint(eCapture, eMultimedia, &device);
@@ -55,7 +55,7 @@ public:
             return {};
         }
 
-        return DevicePtr::attach(device);
+        return MmDevice::attach(device);
     }
 
     auto getDeviceNames() -> std::vector<std::string>
@@ -115,7 +115,7 @@ public:
         return result;
     }
 
-    auto getDeviceByName(const std::string &name) -> DevicePtr
+    auto getDeviceByName(const std::string &name) -> MmDevice
     {
         IMMDeviceCollection *collection = nullptr;
         HRESULT status = pointer_->EnumAudioEndpoints(eCapture, DEVICE_STATE_ACTIVE, &collection);
@@ -168,7 +168,7 @@ public:
 
                 if (current_name == name) {
                     device_release.release();
-                    return DevicePtr::attach(device);
+                    return MmDevice::attach(device);
                 }
             }
         }
