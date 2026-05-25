@@ -12,6 +12,9 @@ namespace pirks::platform_windows
 /**
  * @brief RAII class for COM Interfaces with proper AddRef/Release semantics
  *
+ * COM methods usually return out-parameter interface pointers with a reference
+ * already owned by the caller. Use attach() for those pointers.
+ * detach() releases wrapper ownership without calling Release().
  * Copying increments the reference count (AddRef).
  * Moving transfers ownership without AddRef.
  * Destruction calls Release.
@@ -20,18 +23,32 @@ template<typename T>
 class Interface
 {
 public:
-    Interface(T *p = nullptr) : pointer_ { p }
+    Interface() = default;
+
+    explicit Interface(T *p) : pointer_ { p }
     {
         if (pointer_) {
             pointer_->AddRef();
         }
     }
 
+    static auto attach(T *p) noexcept -> Interface
+    {
+        Interface result;
+        result.pointer_ = p;
+        return result;
+    }
+
+    auto detach() noexcept -> T *
+    {
+        T *detached = pointer_;
+        pointer_    = nullptr;
+        return detached;
+    }
+
     virtual ~Interface()
     {
-        if (pointer_ != nullptr) {
-            pointer_->Release();
-        }
+        releasePointer();
     }
 
 public:
@@ -46,15 +63,13 @@ public:
     Interface &operator=(const Interface &other)
     {
         if (this != &other) {
-            // Release old
-            if (pointer_) {
-                pointer_->Release();
+            T *new_pointer = other.pointer_;
+            if (new_pointer) {
+                new_pointer->AddRef();
             }
-            // Copy new
-            pointer_ = other.pointer_;
-            if (pointer_) {
-                pointer_->AddRef();
-            }
+
+            releasePointer();
+            pointer_ = new_pointer;
         }
         return *this;
     }
@@ -68,9 +83,7 @@ public:
     Interface &operator=(Interface &&other) noexcept
     {
         if (this != &other) {
-            if (pointer_) {
-                pointer_->Release();
-            }
+            releasePointer();
             pointer_       = other.pointer_;
             other.pointer_ = nullptr;
         }
@@ -98,6 +111,14 @@ public:
     }
 
 protected:
+    void releasePointer()
+    {
+        if (pointer_ != nullptr) {
+            pointer_->Release();
+            pointer_ = nullptr;
+        }
+    }
+
     T *pointer_ { nullptr };
 };
 

@@ -7,6 +7,12 @@ set(SOURCES
     CircularBufferTest.cpp
 )
 
+if(PLATFORM STREQUAL "WINDOWS")
+    list(APPEND SOURCES
+        InterfaceTest.cpp
+    )
+endif()
+
 add_executable(${TARGET_NAME} ${SOURCES})
 
 target_link_libraries(${TARGET_NAME}
