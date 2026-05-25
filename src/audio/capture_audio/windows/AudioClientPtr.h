@@ -15,6 +15,7 @@
 #include "AudioUUIDs.h"
 #include "DeviceEnumeratorPtr.h"
 #include "Interface.h"
+#include "deferral.h"
 
 namespace audio::capture_audio::platform_windows
 {
@@ -49,6 +50,10 @@ public:
                             "Couldn't get mix format for audio device. HRESULT = 0x{:X}",
                             static_cast<unsigned long>(status)));
         }
+        defer
+        {
+            CoTaskMemFree(mixer_waveformat);
+        };
 
         // Prefer the native channel layout of captured audio device when channel counts match
         if (mixer_waveformat->nChannels == format.channelCount

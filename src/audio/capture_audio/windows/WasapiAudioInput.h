@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include <memory>
 #include <string>
 
 #include "AudioClientPtr.h"
@@ -34,6 +35,12 @@ public:
     auto sample(std::vector<float> &sample_out) -> CaptureResult override;
 
 private:
+    void initialize(
+            uint8_t            channels,
+            uint32_t           sample_rate,
+            uint32_t           frame_size,
+            const std::string &audio_source);
+
     auto fillBuffer() -> CaptureResult;
 
 private:
@@ -46,11 +53,11 @@ private:
     std::unique_ptr<AudioClientPtr>                         audioClient_;
     pirks::platform_windows::Interface<IAudioCaptureClient> audioCapture_;
 
-    DWORD defaultLatency_; // in milliseconds;
+    DWORD defaultLatency_ {}; // in milliseconds;
 
     std::vector<float> buffer_;
-    float             *bufferPos_;
-    uint8_t            channels_;
+    float             *bufferPos_ {};
+    uint8_t            channels_ {};
 
     AudioNotificationImpl audioNotification_;
     // TODO: std::optional<std::function<void()>> default_endpt_changed_cb;

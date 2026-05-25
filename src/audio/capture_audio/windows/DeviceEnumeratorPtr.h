@@ -17,6 +17,7 @@
 #include "AudioUUIDs.h"
 #include "Interface.h"
 #include "StrUtils.h"
+#include "deferral.h"
 
 namespace audio::capture_audio::platform_windows
 {
@@ -48,54 +49,65 @@ public:
 
         if (FAILED(status)) {
             // TODO: print status
-            return nullptr;
+            return {};
         }
 
-        return device;
+        return DevicePtr::attach(device);
     }
 
     auto getDeviceNames() -> std::vector<std::string>
     {
-        std::vector<std::string> result;
-
         IMMDeviceCollection *collection = nullptr;
         HRESULT status = pointer_->EnumAudioEndpoints(eCapture, DEVICE_STATE_ACTIVE, &collection);
         if (FAILED(status) || collection == nullptr) {
-            return result;
+            return {};
         }
+        defer
+        {
+            collection->Release();
+        };
 
         UINT count = 0;
-        collection->GetCount(&count);
+        status     = collection->GetCount(&count);
+        if (FAILED(status)) {
+            return {};
+        }
 
+        std::vector<std::string> result;
         for (UINT i = 0; i < count; ++i) {
             IMMDevice *device = nullptr;
             status            = collection->Item(i, &device);
             if (FAILED(status) || device == nullptr) {
                 continue;
             }
+            defer
+            {
+                device->Release();
+            };
 
             IPropertyStore *property_store = nullptr;
             status                         = device->OpenPropertyStore(STGM_READ, &property_store);
             if (FAILED(status) || property_store == nullptr) {
-                device->Release();
                 continue;
             }
+            defer
+            {
+                property_store->Release();
+            };
 
             PROPVARIANT friendly_name;
             PropVariantInit(&friendly_name);
+            defer
+            {
+                PropVariantClear(&friendly_name);
+            };
 
             status = property_store->GetValue(PKEY_Device_FriendlyName, &friendly_name);
             if (SUCCEEDED(status) && friendly_name.vt == VT_LPWSTR && friendly_name.pwszVal) {
                 const std::wstring wname { friendly_name.pwszVal };
                 result.push_back(wideToUtf8(wname));
             }
-
-            PropVariantClear(&friendly_name);
-            property_store->Release();
-            device->Release();
         }
-
-        collection->Release();
 
         return result;
     }
@@ -105,11 +117,18 @@ public:
         IMMDeviceCollection *collection = nullptr;
         HRESULT status = pointer_->EnumAudioEndpoints(eCapture, DEVICE_STATE_ACTIVE, &collection);
         if (FAILED(status) || collection == nullptr) {
-            return nullptr;
+            return {};
         }
+        defer
+        {
+            collection->Release();
+        };
 
         UINT count = 0;
-        collection->GetCount(&count);
+        status     = collection->GetCount(&count);
+        if (FAILED(status)) {
+            return {};
+        }
 
         for (UINT i = 0; i < count; ++i) {
             IMMDevice *device = nullptr;
@@ -117,16 +136,27 @@ public:
             if (FAILED(status) || device == nullptr) {
                 continue;
             }
+            defer_(device_release)
+            {
+                device->Release();
+            };
 
             IPropertyStore *property_store = nullptr;
             status                         = device->OpenPropertyStore(STGM_READ, &property_store);
             if (FAILED(status) || property_store == nullptr) {
-                device->Release();
                 continue;
             }
+            defer
+            {
+                property_store->Release();
+            };
 
             PROPVARIANT friendly_name;
             PropVariantInit(&friendly_name);
+            defer
+            {
+                PropVariantClear(&friendly_name);
+            };
 
             status = property_store->GetValue(PKEY_Device_FriendlyName, &friendly_name);
             if (SUCCEEDED(status) && friendly_name.vt == VT_LPWSTR && friendly_name.pwszVal) {
@@ -134,20 +164,13 @@ public:
                 const std::string  current_name = wideToUtf8(wname);
 
                 if (current_name == name) {
-                    PropVariantClear(&friendly_name);
-                    property_store->Release();
-                    collection->Release();
-                    return device;
+                    device_release.release();
+                    return DevicePtr::attach(device);
                 }
             }
-
-            PropVariantClear(&friendly_name);
-            property_store->Release();
-            device->Release();
         }
 
-        collection->Release();
-        return nullptr;
+        return {};
     }
 };
 
