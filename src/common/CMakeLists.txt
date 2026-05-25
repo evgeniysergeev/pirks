@@ -5,14 +5,16 @@ set(SOURCES
     debug/memory_utils.h
     debug/memory_utils.cpp
     CircularBuffer.h
-    str_utils.h
-    str_utils.cpp
+    StrUtils.h
+    StrUtils.cpp
 )
 
 if(PLATFORM STREQUAL "WINDOWS")
     set(PLATFORM_SOURCES
         windows/WinHandle.h
         windows/Interface.h
+        windows/WideStrings.h
+        windows/WideStrings.cpp
     )
 endif()
 

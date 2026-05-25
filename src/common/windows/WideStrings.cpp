@@ -1,10 +1,7 @@
-#include "str_utils.h"
+#include "WideStrings.h"
 
-#ifdef _WIN32
 #include <windows.h>
-#endif
 
-#ifdef _WIN32
 auto wideToUtf8(const std::wstring &wstr) -> std::string
 {
     if (wstr.empty()) {
@@ -29,4 +26,3 @@ auto wideToUtf8(const std::wstring &wstr) -> std::string
             nullptr);
     return result;
 }
-#endif

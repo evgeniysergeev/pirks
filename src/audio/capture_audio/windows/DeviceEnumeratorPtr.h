@@ -16,7 +16,7 @@
 
 #include "Interface.h"
 #include "AudioUUIDs.h"
-#include "str_utils.h"
+#include "StrUtils.h"
 
 namespace audio::capture_audio::platform_windows
 {
