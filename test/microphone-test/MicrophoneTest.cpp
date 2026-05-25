@@ -2,6 +2,13 @@
 
 #include "AudioInputFactory.h"
 
+#ifdef WINDOWS
+#include "ComInitializer.h"
+
+// Ensure COM is initialized for Windows microphone tests
+static ::pirks::platform_windows::ComInitializer g_com_initializer;
+#endif
+
 constexpr auto kSamplesCount = 8;
 
 TEST(AudioInput, CaptureDevice)

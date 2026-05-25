@@ -14,9 +14,25 @@
 #include <algorithm> // for std::max
 
 #include "AudioFormats.h"
+#include "AudioUUIDs.h"
 
 namespace audio::capture_audio::platform_windows
 {
+
+namespace {
+
+auto selectDeviceByName(
+        DeviceEnumeratorPtr &enumerator,
+        const std::string   &audio_source) -> DevicePtr
+{
+    if (audio_source.empty() || audio_source == "Default") {
+        return enumerator.getDefaultDevice();
+    }
+
+    return enumerator.getDeviceByName(audio_source);
+}
+
+} // namespace
 
 WasapiAudioInput::WasapiAudioInput(
         uint8_t                   channels,
@@ -33,7 +49,7 @@ WasapiAudioInput::WasapiAudioInput(
 
     IMMNotificationClient *notification_client {};
     status = audioNotification_.QueryInterface(
-            __uuidof(IMMNotificationClient),
+            IID_IMMNotificationClient,
             reinterpret_cast<void **>(&notification_client));
     if (FAILED(status)) {
         throw std::runtime_error(
@@ -138,11 +154,132 @@ WasapiAudioInput::WasapiAudioInput(
     }
 }
 
+WasapiAudioInput::WasapiAudioInput(
+        uint8_t                   channels,
+        [[maybe_unused]] uint32_t sample_rate,
+        [[maybe_unused]] uint32_t frame_size,
+        const std::string        &audio_source)
+        : channels_ { channels }
+{
+    HRESULT status {};
+
+    audioEvent_ = CreateEventA(nullptr, FALSE, FALSE, nullptr);
+    if (!audioEvent_) {
+        throw std::runtime_error("Unable to create Event handle");
+    }
+
+    IMMNotificationClient *notification_client {};
+    status = audioNotification_.QueryInterface(
+            IID_IMMNotificationClient,
+            reinterpret_cast<void **>(&notification_client));
+    if (FAILED(status)) {
+        throw std::runtime_error(
+                std::format(
+                        "Unable to query IMMNotificationClient interface . HRESULT = 0x{:X}",
+                        status));
+    }
+
+    status = deviceEnumerator_->RegisterEndpointNotificationCallback(notification_client);
+    if (FAILED(status)) {
+        throw std::runtime_error(
+                std::format("Couldn't register endpoint notification. HRESULT = 0x{:X}", status));
+    }
+
+    device_ = selectDeviceByName(deviceEnumerator_, audio_source);
+    if (!device_) {
+        throw std::runtime_error("Can't find audio device: " + audio_source);
+    }
+
+    for (const auto &format: s_AudioFormats) {
+        if (format.channelCount != channels_) {
+            spdlog::debug(
+                    "Skipping audio format {} with channel count {} != {}",
+                    format.name,
+                    format.channelCount,
+                    channels_);
+            continue;
+        }
+
+        spdlog::debug("Trying audio format {}", format.name);
+        try {
+            audioClient_.reset(new AudioClientPtr(device_, format));
+        } catch (const std::exception &e) {
+            spdlog::warn("Exception while trying audio format {}: {}", format.name, e.what());
+            continue;
+        }
+
+        spdlog::debug("Found audio format {}", format.name);
+        break;
+    }
+
+    if (!audioClient_) {
+        throw std::runtime_error("Couldn't find supported format for audio");
+    }
+
+    REFERENCE_TIME default_latency;
+    audioClient_->get()->GetDevicePeriod(&default_latency, nullptr);
+    assert(default_latency < UINT32_MAX && "default latency is too big");
+    defaultLatency_ = static_cast<DWORD>(default_latency / 1000);
+
+    std::uint32_t frames;
+    status = audioClient_->get()->GetBufferSize(&frames);
+    if (FAILED(status)) {
+        throw std::runtime_error(
+                std::format(
+                        "Couldn't acquire the number of audio frames. HRESULT = 0x{:X}",
+                        status));
+    }
+
+    // *2 because needs to fit double
+    const uint32_t buffer_size = std::max(frames, frame_size) * 2 * channels_;
+    // TODO: check overflow ?
+    spdlog::debug("Audio samples buffer size is {}", buffer_size);
+    buffer_.resize(buffer_size);
+    bufferPos_ = buffer_.data();
+
+    {
+        IAudioCaptureClient *audio_capture = nullptr;
+        status                             = audioClient_->get()->GetService(
+                IID_IAudioCaptureClient,
+                reinterpret_cast<void **>(&audio_capture));
+        if (FAILED(status)) {
+            throw std::runtime_error(
+                    std::format(
+                            "Couldn't initialize audio capture client. HRESULT = 0x{:X}",
+                            status));
+        }
+
+        audioCapture_ = audio_capture;
+    }
+
+    status = audioClient_->get()->SetEventHandle(audioEvent_.get());
+    if (FAILED(status)) {
+        throw std::runtime_error(
+                std::format("Couldn't set event handle. HRESULT = 0x{:X}", status));
+    }
+
+    {
+        DWORD task_index   = 0;
+        mmcss_task_handle_ = AvSetMmThreadCharacteristics("Pro Audio", &task_index);
+        if (!mmcss_task_handle_) {
+            throw std::runtime_error(
+                    std::format(
+                            "Couldn't associate audio capture thread with Pro Audio MMCSS task. GetLastError = 0x{:X}",
+                            GetLastError()));
+        }
+    }
+
+    status = audioClient_->get()->Start();
+    if (FAILED(status)) {
+        throw std::runtime_error(std::format("Couldn't start recording. HRESULT = 0x{:X}", status));
+    }
+}
+
 WasapiAudioInput::~WasapiAudioInput()
 {
     IMMNotificationClient *notification_client {};
     HRESULT                status = audioNotification_.QueryInterface(
-            __uuidof(IMMNotificationClient),
+            IID_IMMNotificationClient,
             reinterpret_cast<void **>(&notification_client));
     if (FAILED(status)) {
         spdlog::error("Unable to query IMMNotificationClient interface. HRESULT = 0x{:X}", status);

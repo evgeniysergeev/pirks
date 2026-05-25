@@ -14,10 +14,10 @@
 #include "AudioFormats.h"
 #include "DeviceEnumeratorPtr.h"
 #include "Interface.h"
+#include "AudioUUIDs.h"
 
 namespace audio::capture_audio::platform_windows
 {
-
 class AudioClientPtr final: public ::pirks::platform_windows::Interface<IAudioClient>
 {
 public:
