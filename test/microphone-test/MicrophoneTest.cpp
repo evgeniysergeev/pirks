@@ -15,15 +15,13 @@ constexpr auto kSamplesCount = 8;
 
 #ifdef WINDOWS
 // Ensure COM is initialized for Windows microphone tests.
-static ::pirks::platform_windows::ComInitializer g_com_initializer;
+static ComInitializer g_com_initializer;
 #endif
 
 } // namespace
 
 TEST(AudioInput, CaptureDevice)
 {
-    using namespace audio::capture_audio;
-
     AudioInputFactory audio_input_factory;
     const auto        names = audio_input_factory.getAudioSources();
     ASSERT_GE(names.size(), 1u);
@@ -36,8 +34,6 @@ TEST(AudioInput, CaptureDevice)
 
 TEST(AudioInput, DefaultAudioSourceName)
 {
-    using namespace audio::capture_audio;
-
     AudioInputFactory audio_input_factory;
     auto              default_name = audio_input_factory.getDefaultAudioSourceName();
     if (!default_name) {
@@ -50,9 +46,6 @@ TEST(AudioInput, DefaultAudioSourceName)
 
 TEST(AudioInput, GetSamples)
 {
-    using namespace audio;
-    using namespace audio::capture_audio;
-
     AudioInputFactory audio_input_factory;
     const auto        names = audio_input_factory.getAudioSources();
 

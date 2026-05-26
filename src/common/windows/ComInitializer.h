@@ -2,7 +2,7 @@
  * Simple RAII helper for COM initialization on Windows.
  *
  * Usage example:
- *   static pirks::platform_windows::ComInitializer g_com_initializer;
+ *   static ComInitializer g_com_initializer;
  *
  * This will call CoInitializeEx(nullptr, COINIT_MULTITHREADED) once at startup
  * (when the translation unit is loaded) and CoUninitialize() automatically
@@ -16,9 +16,6 @@
 
 #include <format>
 #include <stdexcept>
-
-namespace pirks::platform_windows
-{
 
 class ComInitializer
 {
@@ -51,5 +48,3 @@ public:
 private:
     bool shouldUninitialize_ { false };
 };
-
-} // namespace pirks::platform_windows

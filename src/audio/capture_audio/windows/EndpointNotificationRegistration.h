@@ -6,9 +6,6 @@
 
 #include "AudioDeviceEnumerator.h"
 
-namespace audio::capture_audio::platform_windows
-{
-
 class EndpointNotificationRegistration final
 {
 public:
@@ -79,5 +76,3 @@ private:
     AudioDeviceEnumerator *deviceEnumerator_ {};
     IMMNotificationClient *notificationClient_ {};
 };
-
-}; // namespace audio::capture_audio::platform_windows

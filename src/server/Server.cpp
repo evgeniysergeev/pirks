@@ -5,12 +5,6 @@
 #include "TCPConnection.h"
 #include "UDPConnection.h"
 
-namespace pirks
-{
-
-using namespace ::pirks::config;
-using namespace ::pirks::networking;
-
 Server::Server(ServerConfig::ConnectionType connectionType)
         : connectionType_ { connectionType }
         , connection_ { nullptr }
@@ -27,8 +21,8 @@ void Server::run()
 {
     spdlog::info("Run server");
 
-    inPackets_.reset(new networking::PacketsQueue());
-    outPackets_.reset(new networking::PacketsQueue());
+    inPackets_.reset(new PacketsQueue());
+    outPackets_.reset(new PacketsQueue());
 
     switch (connectionType_) {
     case ServerConfig::ConnectionType::Default:
@@ -56,5 +50,3 @@ void Server::stop()
     inPackets_.reset();
     outPackets_.reset();
 }
-
-}; // namespace pirks

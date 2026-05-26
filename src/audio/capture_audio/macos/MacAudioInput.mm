@@ -4,9 +4,6 @@
 #include <cassert>
 #include <stdexcept>
 
-namespace audio::capture_audio::platform_macos
-{
-
 // CaptureDevice is Objective-C MRC-owned here and released in the destructor.
 MacAudioInput::MacAudioInput(AVCaptureDevice *capture_device, uint8_t channels, uint32_t sample_rate, uint32_t frame_size)
 {
@@ -54,5 +51,3 @@ auto MacAudioInput::sample(std::vector<float> &sample_out) -> CaptureResult
 
     return CaptureResult::OK;
 }
-
-}; // namespace audio::capture_audio::platform_macos

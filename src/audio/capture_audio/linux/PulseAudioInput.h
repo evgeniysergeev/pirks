@@ -8,14 +8,6 @@
 
 struct pa_simple;
 
-namespace audio::capture_audio::platform_linux
-{
-
-struct PulseAudioSimpleDeleter final
-{
-    void operator()(pa_simple *stream) const noexcept;
-};
-
 class PulseAudioInput final: public IAudioInput
 {
 public:
@@ -32,7 +24,10 @@ public:
     auto sample(std::vector<float> &sample_out) -> CaptureResult override;
 
 private:
+    struct PulseAudioSimpleDeleter final
+    {
+        void operator()(pa_simple *stream) const noexcept;
+    };
+
     std::unique_ptr<pa_simple, PulseAudioSimpleDeleter> stream_;
 };
-
-}; // namespace audio::capture_audio::platform_linux

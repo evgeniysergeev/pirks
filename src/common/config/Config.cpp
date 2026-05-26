@@ -2,9 +2,6 @@
 
 #include "ExitCode.h"
 
-namespace pirks::config
-{
-
 int Config::parseArgs(
         const std::string &app_description,
         const std::string &app_name,
@@ -51,5 +48,3 @@ bool Config::parseOptions([[maybe_unused]] CLI::App &args)
     // Here your can read flags / options after CLI::parse was made
     return true;
 }
-
-} // namespace pirks::config

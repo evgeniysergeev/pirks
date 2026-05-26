@@ -12,9 +12,6 @@
 
 #include "mmreg.h"
 
-namespace audio::capture_audio::platform_windows
-{
-
 constexpr auto SAMPLE_RATE = 48000;
 
 constexpr auto WF_MASK_STEREO = //
@@ -219,5 +216,3 @@ static const std::array<AudioFormat, 3> s_AudioFormats = {
     { 6, "Surround 5.1", WF_MASK_SURROUND51_WITH_BACKSPEAKERS, createVirtualSinkFormats<6>() },
     { 8, "Surround 7.1", WF_MASK_SURROUND71,                   createVirtualSinkFormats<8>() },
 };
-
-} // namespace audio::capture_audio::platform_windows

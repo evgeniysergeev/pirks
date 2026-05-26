@@ -6,9 +6,6 @@
 
 #include "../IConnection.h"
 
-namespace pirks::networking
-{
-
 // TODO: Implement TCP connection
 class TCPConnection final: public IConnection
 {
@@ -33,5 +30,3 @@ private:
     std::thread                 recvThread_;
     std::thread                 sendThread_;
 };
-
-}; // namespace pirks::networking

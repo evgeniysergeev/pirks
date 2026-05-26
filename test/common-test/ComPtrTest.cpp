@@ -52,7 +52,7 @@ TEST(ComPtr, BorrowedConstructorAddsReference)
     RefCountedInterface ref_counted;
 
     {
-        pirks::platform_windows::ComPtr<RefCountedInterface> ptr { &ref_counted };
+        ComPtr<RefCountedInterface> ptr { &ref_counted };
 
         EXPECT_EQ(ptr.get(), &ref_counted);
         EXPECT_EQ(ref_counted.addRefCount(), 1UL);
@@ -68,10 +68,10 @@ TEST(ComPtr, CopyAddsReference)
     RefCountedInterface ref_counted;
 
     {
-        pirks::platform_windows::ComPtr<RefCountedInterface> ptr { &ref_counted };
+        ComPtr<RefCountedInterface> ptr { &ref_counted };
 
         {
-            pirks::platform_windows::ComPtr<RefCountedInterface> copy { ptr };
+            ComPtr<RefCountedInterface> copy { ptr };
 
             EXPECT_EQ(copy.get(), &ref_counted);
             EXPECT_EQ(ref_counted.addRefCount(), 2UL);
@@ -91,8 +91,8 @@ TEST(ComPtr, MoveTransfersReference)
     RefCountedInterface ref_counted;
 
     {
-        pirks::platform_windows::ComPtr<RefCountedInterface> ptr { &ref_counted };
-        pirks::platform_windows::ComPtr<RefCountedInterface> moved { std::move(ptr) };
+        ComPtr<RefCountedInterface> ptr { &ref_counted };
+        ComPtr<RefCountedInterface> moved { std::move(ptr) };
 
         EXPECT_FALSE(ptr);
         EXPECT_EQ(moved.get(), &ref_counted);
@@ -110,7 +110,7 @@ TEST(ComPtr, ResetAndGetAddressReleasesCurrentPointer)
     RefCountedInterface second;
 
     {
-        pirks::platform_windows::ComPtr<RefCountedInterface> ptr { &first };
+        ComPtr<RefCountedInterface> ptr { &first };
 
         RefCountedInterface **out = ptr.resetAndGetAddress();
         EXPECT_FALSE(ptr);

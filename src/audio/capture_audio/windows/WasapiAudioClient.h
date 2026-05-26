@@ -20,8 +20,6 @@
 #include "ComPtr.h"
 #include "deferral.h"
 
-namespace audio::capture_audio::platform_windows
-{
 class WasapiAudioClient final
 {
 public:
@@ -140,9 +138,9 @@ public:
         return frames;
     }
 
-    auto createCaptureClient() const -> pirks::platform_windows::ComPtr<IAudioCaptureClient>
+    auto createCaptureClient() const -> ComPtr<IAudioCaptureClient>
     {
-        pirks::platform_windows::ComPtr<IAudioCaptureClient> audio_capture;
+        ComPtr<IAudioCaptureClient> audio_capture;
         const HRESULT                                        status = client_->GetService(
                 IID_IAudioCaptureClient,
                 reinterpret_cast<void **>(audio_capture.resetAndGetAddress()));
@@ -187,7 +185,5 @@ private:
     }
 
 private:
-    pirks::platform_windows::ComPtr<IAudioClient> client_;
+    ComPtr<IAudioClient> client_;
 };
-
-}; // namespace audio::capture_audio::platform_windows

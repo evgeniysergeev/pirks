@@ -1,8 +1,5 @@
 #pragma once
 
-namespace audio
-{
-
 enum class CaptureResult : int
 {
     OK = 0,      ///< Success
@@ -11,5 +8,3 @@ enum class CaptureResult : int
     Interrupted, ///< Capture was interrupted
     Error        ///< Error
 };
-
-}; // namespace audio

@@ -2,9 +2,6 @@
 
 #include "Config.h"
 
-namespace pirks::config
-{
-
 class ServerConfig final: public Config
 {
 public:
@@ -35,5 +32,3 @@ private:
     bool isTCP_ { false };
     bool isUDP_ { false };
 };
-
-}; // namespace pirks::config

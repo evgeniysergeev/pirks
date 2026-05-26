@@ -5,13 +5,10 @@
 #include "IConnection.h"
 #include "ServerConfig.h"
 
-namespace pirks
-{
-
 class Server final
 {
 public:
-    explicit Server(config::ServerConfig::ConnectionType connectionType);
+    explicit Server(ServerConfig::ConnectionType connectionType);
     ~Server();
 
 public:
@@ -19,10 +16,8 @@ public:
     void stop();
 
 private:
-    config::ServerConfig::ConnectionType      connectionType_;
-    std::unique_ptr<networking::IConnection>  connection_;
-    std::shared_ptr<networking::PacketsQueue> inPackets_;
-    std::shared_ptr<networking::PacketsQueue> outPackets_;
+    ServerConfig::ConnectionType              connectionType_;
+    std::unique_ptr<IConnection>          connection_;
+    std::shared_ptr<PacketsQueue>         inPackets_;
+    std::shared_ptr<PacketsQueue>         outPackets_;
 };
-
-}; // namespace pirks

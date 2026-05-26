@@ -20,3 +20,9 @@ Use prefix increment/decrement in `for` loop headers, e.g. `++i` or `--i`, for
 consistency across numeric counters and iterators. Use postfix
 increment/decrement, e.g. `count++` or `count--`, for ordinary arithmetic
 updates outside loop headers when the old value is not used.
+
+## C++ namespaces
+
+Use namespaces only when they express a real API or ownership boundary. Do not
+add a namespace just to mirror the directory tree, platform folder, or file
+name. Use unnamed namespaces if possible for static functions and variables.

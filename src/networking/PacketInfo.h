@@ -2,9 +2,6 @@
 
 #include <inttypes.h>
 
-namespace pirks::networking
-{
-
 #pragma pack(push, 1)
 
 /**
@@ -29,5 +26,3 @@ struct PacketInfo: public PacketHeader
 };
 
 #pragma pack(pop)
-
-}; // namespace pirks::networking

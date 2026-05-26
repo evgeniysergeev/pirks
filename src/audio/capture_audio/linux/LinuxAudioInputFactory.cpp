@@ -17,9 +17,6 @@
 #include "AppConstants.h"
 #include "PulseAudioInput.h"
 
-namespace audio::capture_audio::platform_linux
-{
-
 namespace
 {
 
@@ -342,5 +339,3 @@ auto LinuxAudioInputFactory::create(
         return nullptr;
     }
 }
-
-}; // namespace audio::capture_audio::platform_linux

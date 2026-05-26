@@ -2,9 +2,6 @@
 
 #include <iostream>
 
-namespace pirks::config
-{
-
 void ServerConfig::addOptions(CLI::App &args)
 {
     Config::addOptions(args);
@@ -37,5 +34,3 @@ bool ServerConfig::parseOptions([[maybe_unused]] CLI::App &args)
 
     return true;
 }
-
-}; // namespace pirks::config

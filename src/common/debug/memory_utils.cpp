@@ -5,9 +5,6 @@
 #include <iomanip>
 #include <sstream>
 
-namespace memory_utils
-{
-
 std::string dumpMemoryToString(std::span<const std::uint8_t> data, const std::string &prefix)
 {
     std::stringstream ss;
@@ -110,5 +107,3 @@ void logMemoryDump(
 {
     logMemoryDump(std::span<const std::uint8_t>(data), prefix, level);
 }
-
-} // namespace memory_utils

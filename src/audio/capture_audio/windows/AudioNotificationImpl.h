@@ -11,9 +11,6 @@
 
 #include "AudioUUIDs.h"
 
-namespace audio::capture_audio::platform_windows
-{
-
 class AudioNotificationImpl final: private IMMNotificationClient
 {
 public:
@@ -113,5 +110,3 @@ public:
 private:
     std::atomic_bool defaultDeviceChanged_ { false };
 };
-
-}; // namespace audio::capture_audio::platform_windows

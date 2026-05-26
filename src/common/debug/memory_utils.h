@@ -7,13 +7,6 @@
 #include <string>
 
 /**
- * @namespace memory_utils
- * @brief Namespace containing utilities for memory inspection and debugging
- */
-namespace memory_utils
-{
-
-/**
  * @brief Converts memory contents to a string in hexadecimal and ASCII format
  *
  * This function formats the contents of a memory region in a format similar to hex editors.
@@ -150,5 +143,3 @@ void logMemoryDump(
             prefix,
             level);
 }
-
-} // namespace memory_utils

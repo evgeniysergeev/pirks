@@ -4,9 +4,6 @@
 
 #include <utility>
 
-namespace pirks::platform_windows
-{
-
 /**
  * @brief Generic RAII wrapper for WinAPI-style handles
  *
@@ -121,5 +118,3 @@ using WinHandle = UniqueHandle<HANDLE, InvalidHandleSentinel, CloseHandleDeleter
  *
  */
 using NullWinHandle = UniqueHandle<HANDLE, NullHandleSentinel, CloseHandleDeleter>;
-
-}; // namespace pirks::platform_windows

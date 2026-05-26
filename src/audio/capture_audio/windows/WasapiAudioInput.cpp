@@ -22,15 +22,12 @@
 #include "AudioFormats.h"
 #include "deferral.h"
 
-namespace audio::capture_audio::platform_windows
-{
-
 namespace
 {
 
-auto createAudioEvent() -> pirks::platform_windows::NullWinHandle
+auto createAudioEvent() -> NullWinHandle
 {
-    pirks::platform_windows::NullWinHandle audio_event =
+    NullWinHandle audio_event =
             CreateEventA(nullptr, FALSE, FALSE, nullptr);
     if (!audio_event) {
         throw std::runtime_error("Unable to create Event handle");
@@ -263,5 +260,3 @@ auto WasapiAudioInput::fillBuffer() -> CaptureResult
 
     return CaptureResult::OK;
 }
-
-}; // namespace audio::capture_audio::platform_windows

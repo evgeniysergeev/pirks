@@ -8,26 +8,17 @@
 
 #ifdef LINUX
 #include "LinuxAudioInputFactory.h"
-namespace audio::capture_audio
-{
-using AudioInputFactory = ::audio::capture_audio::platform_linux::LinuxAudioInputFactory;
-}; // namespace audio::capture_audio
+using AudioInputFactory = LinuxAudioInputFactory;
 #endif // ifdef LINUX
 
 #ifdef WINDOWS
 #include "WinAudioInputFactory.h"
-namespace audio::capture_audio
-{
-using AudioInputFactory = ::audio::capture_audio::platform_windows::WinAudioInputFactory;
-}; // namespace audio::capture_audio
+using AudioInputFactory = WinAudioInputFactory;
 #endif // ifdef WINDOWS
 
 #ifdef MACOS
 #include "MacAudioInputFactory.h"
-namespace audio::capture_audio
-{
-using AudioInputFactory = ::audio::capture_audio::platform_macos::MacAudioInputFactory;
-}; // namespace audio::capture_audio
+using AudioInputFactory = MacAudioInputFactory;
 #endif // ifdef MACOS
 
 // cppcheck-suppress-end missingInclude

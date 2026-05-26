@@ -18,9 +18,6 @@
 #include "WasapiAudioClient.h"
 #include "WinHandle.h"
 
-namespace audio::capture_audio::platform_windows
-{
-
 class WasapiAudioInput final: public IAudioInput
 {
 public:
@@ -39,13 +36,13 @@ private:
     auto fillBuffer() -> CaptureResult;
 
 private:
-    pirks::platform_windows::NullWinHandle audioEvent_;
+    NullWinHandle audioEvent_;
 
     AudioDeviceEnumerator deviceEnumerator_ {};
     MmDevice              device_;
 
     WasapiAudioClient                                    audioClient_;
-    pirks::platform_windows::ComPtr<IAudioCaptureClient> audioCapture_;
+    ComPtr<IAudioCaptureClient> audioCapture_;
 
     DWORD defaultLatency_ {}; // in milliseconds;
 
@@ -59,5 +56,3 @@ private:
 
     MmcssTaskHandle mmcssTaskHandle_;
 };
-
-}; // namespace audio::capture_audio::platform_windows

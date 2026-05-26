@@ -3,9 +3,6 @@
 #include "AudioDeviceEnumerator.h"
 #include "WasapiAudioInput.h"
 
-namespace audio::capture_audio::platform_windows
-{
-
 auto WinAudioInputFactory::getAudioSources() -> std::vector<std::string>
 {
     AudioDeviceEnumerator enumerator;
@@ -39,5 +36,3 @@ auto WinAudioInputFactory::create(
         return nullptr;
     }
 }
-
-}; // namespace audio::capture_audio::platform_windows

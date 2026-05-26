@@ -23,10 +23,7 @@
 #include "StrUtils.h"
 #include "deferral.h"
 
-namespace audio::capture_audio::platform_windows
-{
-
-using MmDevice = pirks::platform_windows::ComPtr<IMMDevice>;
+using MmDevice = ComPtr<IMMDevice>;
 
 class AudioDeviceEnumerator final
 {
@@ -79,7 +76,7 @@ public:
 
     auto getDeviceNames() -> std::vector<std::string>
     {
-        pirks::platform_windows::ComPtr<IMMDeviceCollection> collection;
+        ComPtr<IMMDeviceCollection> collection;
         HRESULT status = enumerator_->EnumAudioEndpoints(
                 eCapture,
                 DEVICE_STATE_ACTIVE,
@@ -113,7 +110,7 @@ public:
 
     auto getDeviceByName(const std::string &name) -> MmDevice
     {
-        pirks::platform_windows::ComPtr<IMMDeviceCollection> collection;
+        ComPtr<IMMDeviceCollection> collection;
         HRESULT status = enumerator_->EnumAudioEndpoints(
                 eCapture,
                 DEVICE_STATE_ACTIVE,
@@ -166,7 +163,7 @@ public:
 private:
     static auto getDeviceName(MmDevice &device) -> std::optional<std::string>
     {
-        pirks::platform_windows::ComPtr<IPropertyStore> property_store;
+        ComPtr<IPropertyStore> property_store;
         HRESULT status = device->OpenPropertyStore(STGM_READ, property_store.resetAndGetAddress());
         if (FAILED(status) || !property_store) {
             return std::nullopt;
@@ -189,7 +186,5 @@ private:
     }
 
 private:
-    pirks::platform_windows::ComPtr<IMMDeviceEnumerator> enumerator_;
+    ComPtr<IMMDeviceEnumerator> enumerator_;
 };
-
-}; // namespace audio::capture_audio::platform_windows

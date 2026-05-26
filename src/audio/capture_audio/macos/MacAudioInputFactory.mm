@@ -7,9 +7,6 @@
 #include <optional>
 #include <string>
 
-namespace audio::capture_audio::platform_macos
-{
-
 auto MacAudioInputFactory::getAudioSources() -> std::vector<std::string>
 {
     std::vector<std::string> result;
@@ -58,5 +55,3 @@ auto MacAudioInputFactory::create(
         return nullptr;
     }
 }
-
-}; // namespace audio::capture_audio::platform_macos

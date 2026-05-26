@@ -2,9 +2,6 @@
 
 #include "IAudioInputFactory.h"
 
-namespace audio::capture_audio::platform_macos
-{
-
 /**
  * @brief Class for creating audio input sources in macOS
  *
@@ -38,5 +35,3 @@ public:
             std::uint32_t       frame_size,
             const std::uint8_t *mapping) -> std::unique_ptr<IAudioInput> override;
 };
-
-}; // namespace audio::capture_audio::platform_macos

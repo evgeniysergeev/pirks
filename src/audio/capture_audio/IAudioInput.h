@@ -4,9 +4,6 @@
 
 #include "CaptureResult.h"
 
-namespace audio::capture_audio
-{
-
 /**
  * @brief Interface for capturing audio samples
  *
@@ -25,5 +22,3 @@ public:
      */
     virtual auto sample(std::vector<float> &sample_in) -> CaptureResult = 0;
 };
-
-}; // namespace audio::capture_audio

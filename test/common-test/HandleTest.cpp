@@ -33,7 +33,7 @@ struct CountingCloser
     static inline int lastClosed {};
 };
 
-using TestHandle = pirks::platform_windows::UniqueHandle<int, ZeroInvalidValue, CountingCloser>;
+using TestHandle = UniqueHandle<int, ZeroInvalidValue, CountingCloser>;
 
 class UniqueHandleTest: public testing::Test
 {
@@ -101,7 +101,7 @@ TEST_F(UniqueHandleTest, MoveTransfersOwnership)
 
 TEST(WinHandle, NullWinHandleUsesNullInvalidValue)
 {
-    pirks::platform_windows::NullWinHandle handle;
+    NullWinHandle handle;
 
     EXPECT_FALSE(handle);
     EXPECT_EQ(handle.get(), nullptr);
@@ -109,7 +109,7 @@ TEST(WinHandle, NullWinHandleUsesNullInvalidValue)
 
 TEST(WinHandle, NullWinHandleOwnsCreateEventHandle)
 {
-    pirks::platform_windows::NullWinHandle event = CreateEventA(nullptr, FALSE, FALSE, nullptr);
+    NullWinHandle event = CreateEventA(nullptr, FALSE, FALSE, nullptr);
 
     ASSERT_TRUE(event);
     EXPECT_NE(event.get(), nullptr);

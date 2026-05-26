@@ -2,9 +2,6 @@
 
 #include "IAudioInputFactory.h"
 
-namespace audio::capture_audio::platform_linux
-{
-
 class LinuxAudioInputFactory final: public IAudioInputFactory
 {
 public:
@@ -19,5 +16,3 @@ public:
             std::uint32_t       frame_size,
             const std::uint8_t *mapping) -> std::unique_ptr<IAudioInput> override;
 };
-
-}; // namespace audio::capture_audio::platform_linux

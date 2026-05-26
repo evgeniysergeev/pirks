@@ -6,9 +6,6 @@
 
 #include <windows.h>
 
-namespace pirks::platform_windows
-{
-
 /**
  * @brief RAII pointer for COM interfaces with proper AddRef/Release semantics
  *
@@ -113,5 +110,3 @@ private:
 
     T *pointer_ { nullptr };
 };
-
-}; // namespace pirks::platform_windows

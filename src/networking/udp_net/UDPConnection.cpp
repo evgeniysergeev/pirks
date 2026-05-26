@@ -7,9 +7,6 @@
 
 using namespace std::chrono_literals;
 
-namespace pirks::networking
-{
-
 UDPConnection::UDPConnection() : stop_ { false }
 {
     // This comment needed for clang-format. Without it, this will be in one line
@@ -47,5 +44,3 @@ void UDPConnection::sendThreadFunc(TCPConnection *connection)
     }
 }
 */
-
-}; // namespace pirks::networking

@@ -14,9 +14,6 @@
 
 #include "AppConstants.h"
 
-namespace audio::capture_audio::platform_linux
-{
-
 namespace
 {
 
@@ -203,5 +200,3 @@ auto PulseAudioInput::sample(std::vector<float> &sample_out) -> CaptureResult
 
     return CaptureResult::Error;
 }
-
-}; // namespace audio::capture_audio::platform_linux

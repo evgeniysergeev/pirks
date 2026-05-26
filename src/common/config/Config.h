@@ -2,9 +2,6 @@
 
 #include <CLI/CLI.hpp>
 
-namespace pirks::config
-{
-
 /**
  * @brief Class for read options from configuration file and program arguments
  *
@@ -50,5 +47,3 @@ private:
     bool     shouldExit_ { false };
     uint16_t port_ { 5101 }; // Some random unused port
 };
-
-}; // namespace pirks::config

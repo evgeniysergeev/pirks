@@ -11,14 +11,11 @@
 #include "ComInitializer.h"
 
 // Global COM initializer for the main server process on Windows
-static ::pirks::platform_windows::ComInitializer g_com_initializer;
+static ComInitializer g_com_initializer;
 #endif
 
 int main(int argc, char **argv)
 {
-    using namespace ::pirks;
-    using namespace ::pirks::config;
-
     try {
         ServerConfig config;
 
