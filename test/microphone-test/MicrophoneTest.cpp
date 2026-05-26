@@ -1,12 +1,19 @@
 #include <gtest/gtest.h>
 
+#include <iostream>
+
 #include "AudioInputFactory.h"
 
 #ifdef WINDOWS
 #include "ComInitializer.h"
 #endif
 
+namespace
+{
+
 constexpr auto kSamplesCount = 8;
+
+} // namespace
 
 TEST(AudioInput, CaptureDevice)
 {

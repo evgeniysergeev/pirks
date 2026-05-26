@@ -11,28 +11,30 @@ set(SOURCES
 
 add_executable(${TARGET_NAME} ${SOURCES})
 
-# To Access Microphone in this test, Applicaiton need info.plist with 
-# NSMicrophoneUsageDescription key set. 
-# To be able to use info.plist in test, bundle is used instead of just
-# simple console application.
+# To access the microphone in this test, the application needs an info.plist
+# with NSMicrophoneUsageDescription set. To make macOS privacy permissions
+# stable across runs, give the test bundle a bundle identifier and ad-hoc sign
+# it after each build.
 if(PLATFORM STREQUAL "MACOS")
     set(PLIST_FILE "${CMAKE_CURRENT_SOURCE_DIR}/res/macos/info.plist")
 
     set_target_properties(${TARGET_NAME} PROPERTIES
         MACOSX_BUNDLE_BUNDLE_NAME ${TARGET_NAME}
+        MACOSX_BUNDLE_GUI_IDENTIFIER org.pirks.microphone-test
         MACOSX_BUNDLE_INFO_PLIST ${PLIST_FILE} # Use own plist template
         MACOSX_BUNDLE TRUE
     )
-endif()
 
-# Codesign not used for now
-# TODO: Is it really need?
-# codesign --verbose=3 --force --deep --sign - ${TARGET_NAME}
-#add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
-#    COMMAND codesign
-#    ARGS --verbose=3 --force --deep --sign - ${TARGET_NAME}.app
-#    COMMENT "Execute codesign to sign ${TARGET_NAME}"
-# )
+    find_program(CODESIGN_EXECUTABLE codesign)
+    if(CODESIGN_EXECUTABLE)
+        add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
+            COMMAND ${CODESIGN_EXECUTABLE} --force --deep --sign -
+                    "$<TARGET_BUNDLE_DIR:${TARGET_NAME}>"
+            COMMENT "Ad-hoc signing ${TARGET_NAME}.app for macOS microphone privacy"
+            VERBATIM
+        )
+    endif()
+endif()
 
 target_link_libraries(${TARGET_NAME}
     capture_audio
