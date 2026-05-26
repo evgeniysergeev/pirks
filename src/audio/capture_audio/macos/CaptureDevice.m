@@ -119,7 +119,10 @@
         (NSString *) AVLinearPCMIsNonInterleaved: @NO
     }];
 
-    dispatch_queue_attr_t qos = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_CONCURRENT, QOS_CLASS_USER_INITIATED, DISPATCH_QUEUE_PRIORITY_HIGH);
+    // TPCircularBuffer is used as a single-producer/single-consumer buffer here.
+    // Keep sample callbacks serialized so only one producer writes to it at a time.
+    dispatch_queue_attr_t qos =
+        dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_USER_INITIATED, 0);
     dispatch_queue_t recordingQueue = dispatch_queue_create("audioSamplingQueue", qos);
 
     [audioOutput setSampleBufferDelegate:self queue:recordingQueue];
