@@ -1,5 +1,7 @@
 #include "MacAudioInput.h"
 
+#include <algorithm>
+#include <cassert>
 #include <stdexcept>
 
 namespace audio::capture_audio::platform_macos
@@ -45,10 +47,8 @@ auto MacAudioInput::sample(std::vector<float> &sample_out) -> CaptureResult
     }
     [samplesArrivedSignal unlock];
 
-    const float *sampleBuffer = reinterpret_cast<float *>(byteSampleBuffer);
-    std::vector<float> vectorBuffer(sampleBuffer, sampleBuffer + sample_size);
-
-    std::copy_n(std::begin(vectorBuffer), sample_size, std::begin(sample_out));
+    const float *sampleBuffer = reinterpret_cast<const float *>(byteSampleBuffer);
+    std::copy_n(sampleBuffer, sample_size, std::begin(sample_out));
 
     TPCircularBufferConsume(&captureDevice_->audioSampleBuffer, sample_size * sizeof(float));
 

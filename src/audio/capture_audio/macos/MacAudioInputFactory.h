@@ -8,7 +8,7 @@ namespace audio::capture_audio::platform_macos
 /**
  * @brief Class for creating audio input sources in macOS
  *
- * Die to system limitations on a macOS, it is not possible to get system sounds
+ * Due to system limitations on a macOS, it is not possible to get system sounds
  * from a desktop. But, you can install third-party software for this.
  * For example "BlackHole": https://github.com/ExistentialAudio/BlackHole
  * or "SoundFlower": https://github.com/mattingalls/Soundflower/releases/
