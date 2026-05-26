@@ -1,5 +1,4 @@
 set(SOURCES
-    AudioInputConstants.h
     AudioInputFactory.h
     CaptureResult.h
     IAudioInput.h

@@ -54,13 +54,8 @@
 {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio];
+    return [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio];
 #pragma clang diagnostic pop
-    if (device != nil) {
-        return device;
-    }
-
-    return [[CaptureDevice captureDevices] firstObject];
 }
 
 + (AVCaptureDevice *)findCaptureDevice:(NSString *)name

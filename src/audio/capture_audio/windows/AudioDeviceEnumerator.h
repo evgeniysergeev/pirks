@@ -13,6 +13,7 @@
 // clang-format on
 
 #include <format>
+#include <optional>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -66,6 +67,16 @@ public:
         return device;
     }
 
+    auto getDefaultDeviceName() -> std::optional<std::string>
+    {
+        MmDevice device = getDefaultDevice();
+        if (!device) {
+            return std::nullopt;
+        }
+
+        return getDeviceName(device);
+    }
+
     auto getDeviceNames() -> std::vector<std::string>
     {
         pirks::platform_windows::ComPtr<IMMDeviceCollection> collection;
@@ -91,23 +102,9 @@ public:
                 continue;
             }
 
-            pirks::platform_windows::ComPtr<IPropertyStore> property_store;
-            status = device->OpenPropertyStore(STGM_READ, property_store.resetAndGetAddress());
-            if (FAILED(status) || !property_store) {
-                continue;
-            }
-
-            PROPVARIANT friendly_name;
-            PropVariantInit(&friendly_name);
-            defer
-            {
-                PropVariantClear(&friendly_name);
-            };
-
-            status = property_store->GetValue(PKEY_Device_FriendlyName, &friendly_name);
-            if (SUCCEEDED(status) && friendly_name.vt == VT_LPWSTR && friendly_name.pwszVal) {
-                const std::wstring wname { friendly_name.pwszVal };
-                result.push_back(wideToUtf8(wname));
+            auto current_name = getDeviceName(device);
+            if (current_name) {
+                result.push_back(*current_name);
             }
         }
 
@@ -138,25 +135,9 @@ public:
                 continue;
             }
 
-            pirks::platform_windows::ComPtr<IPropertyStore> property_store;
-            status = device->OpenPropertyStore(STGM_READ, property_store.resetAndGetAddress());
-            if (FAILED(status) || !property_store) {
-                continue;
-            }
-
-            PROPVARIANT friendly_name;
-            PropVariantInit(&friendly_name);
-            defer
-            {
-                PropVariantClear(&friendly_name);
-            };
-
-            status = property_store->GetValue(PKEY_Device_FriendlyName, &friendly_name);
-            if (SUCCEEDED(status) && friendly_name.vt == VT_LPWSTR && friendly_name.pwszVal) {
-                const std::wstring wname { friendly_name.pwszVal };
-                const std::string  current_name = wideToUtf8(wname);
-
-                if (current_name == name) {
+            auto current_name = getDeviceName(device);
+            if (current_name) {
+                if (*current_name == name) {
                     return device;
                 }
             }
@@ -180,6 +161,31 @@ public:
     void unregisterEndpointNotificationCallback(IMMNotificationClient *notification_client) noexcept
     {
         enumerator_->UnregisterEndpointNotificationCallback(notification_client);
+    }
+
+private:
+    static auto getDeviceName(MmDevice &device) -> std::optional<std::string>
+    {
+        pirks::platform_windows::ComPtr<IPropertyStore> property_store;
+        HRESULT status = device->OpenPropertyStore(STGM_READ, property_store.resetAndGetAddress());
+        if (FAILED(status) || !property_store) {
+            return std::nullopt;
+        }
+
+        PROPVARIANT friendly_name;
+        PropVariantInit(&friendly_name);
+        defer
+        {
+            PropVariantClear(&friendly_name);
+        };
+
+        status = property_store->GetValue(PKEY_Device_FriendlyName, &friendly_name);
+        if (FAILED(status) || friendly_name.vt != VT_LPWSTR || friendly_name.pwszVal == nullptr) {
+            return std::nullopt;
+        }
+
+        const std::wstring wname { friendly_name.pwszVal };
+        return wideToUtf8(wname);
     }
 
 private:

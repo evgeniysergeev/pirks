@@ -1,7 +1,6 @@
 #include "WinAudioInputFactory.h"
 
 #include "AudioDeviceEnumerator.h"
-#include "AudioInputConstants.h"
 #include "WasapiAudioInput.h"
 
 namespace audio::capture_audio::platform_windows
@@ -10,11 +9,13 @@ namespace audio::capture_audio::platform_windows
 auto WinAudioInputFactory::getAudioSources() -> std::vector<std::string>
 {
     AudioDeviceEnumerator enumerator;
-    auto                  names = enumerator.getDeviceNames();
+    return enumerator.getDeviceNames();
+}
 
-    // Always put the default audio source as the first entry.
-    names.insert(names.begin(), kDefaultAudioSource);
-    return names;
+auto WinAudioInputFactory::getDefaultAudioSourceName() -> std::optional<std::string>
+{
+    AudioDeviceEnumerator enumerator;
+    return enumerator.getDefaultDeviceName();
 }
 
 auto WinAudioInputFactory::create(
@@ -25,11 +26,8 @@ auto WinAudioInputFactory::create(
         const std::uint8_t * /* mapping */) -> std::unique_ptr<IAudioInput>
 {
     try {
-        if (audio_source.empty() || audio_source == kDefaultAudioSource) {
-            return std::make_unique<WasapiAudioInput>(
-                    static_cast<std::uint8_t>(channels),
-                    sample_rate,
-                    frame_size);
+        if (audio_source.empty()) {
+            return nullptr;
         }
 
         return std::make_unique<WasapiAudioInput>(

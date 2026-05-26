@@ -34,8 +34,10 @@ accessible capture device can be opened.
 
 ## Sources
 
-`AudioInputFactory::getAudioSources()` returns `Default` first, then all
-PulseAudio sources reported by the server.
+Call `AudioInputFactory::getDefaultAudioSourceName()` to get the current
+default source name, then pass that name to `AudioInputFactory::create()`.
+`AudioInputFactory::getAudioSources()` returns all explicit PulseAudio sources
+reported by the server.
 
 Regular microphone sources usually look like:
 

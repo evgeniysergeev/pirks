@@ -24,8 +24,6 @@ namespace audio::capture_audio::platform_windows
 class WasapiAudioInput final: public IAudioInput
 {
 public:
-    WasapiAudioInput(uint8_t channels, uint32_t sample_rate, uint32_t frame_size);
-
     WasapiAudioInput(
             uint8_t            channels,
             uint32_t           sample_rate,

@@ -20,7 +20,6 @@
 #include <stdexcept>
 
 #include "AudioFormats.h"
-#include "AudioInputConstants.h"
 #include "deferral.h"
 
 namespace audio::capture_audio::platform_windows
@@ -43,10 +42,6 @@ auto createAudioEvent() -> pirks::platform_windows::NullWinHandle
 auto selectDeviceByName(AudioDeviceEnumerator &enumerator, const std::string &audio_source)
         -> MmDevice
 {
-    if (audio_source.empty() || audio_source == kDefaultAudioSource) {
-        return enumerator.getDefaultDevice();
-    }
-
     return enumerator.getDeviceByName(audio_source);
 }
 
@@ -55,10 +50,6 @@ auto selectRequiredDeviceByName(AudioDeviceEnumerator &enumerator, const std::st
 {
     MmDevice device = selectDeviceByName(enumerator, audio_source);
     if (!device) {
-        if (audio_source.empty() || audio_source == kDefaultAudioSource) {
-            throw std::runtime_error("Can't find default device");
-        }
-
         throw std::runtime_error("Can't find audio device: " + audio_source);
     }
 
@@ -106,11 +97,6 @@ auto createMmcssTaskHandle() -> MmcssTaskHandle
 }
 
 } // namespace
-
-WasapiAudioInput::WasapiAudioInput(uint8_t channels, uint32_t sample_rate, uint32_t frame_size)
-        : WasapiAudioInput(channels, sample_rate, frame_size, kDefaultAudioSource)
-{
-}
 
 WasapiAudioInput::WasapiAudioInput(
         uint8_t                   channels,

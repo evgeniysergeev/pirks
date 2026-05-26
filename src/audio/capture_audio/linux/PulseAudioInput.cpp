@@ -13,7 +13,6 @@
 #include <stdexcept>
 
 #include "AppConstants.h"
-#include "AudioInputConstants.h"
 
 namespace audio::capture_audio::platform_linux
 {
@@ -151,21 +150,21 @@ PulseAudioInput::PulseAudioInput(
         std::uint32_t       frame_size,
         const std::uint8_t *mapping)
 {
+    if (source_name.empty()) {
+        throw std::runtime_error("PulseAudio source name is empty");
+    }
+
     const std::uint8_t   channel_count = checkedChannelCount(channels);
     const pa_sample_spec sample_spec   = createSampleSpec(channel_count, sample_rate);
     const pa_channel_map channel_map   = createChannelMap(channel_count, mapping);
     const pa_buffer_attr buffer_attr   = createBufferAttributes(frame_size, channel_count);
-
-    const char *source = source_name.empty() || source_name == kDefaultAudioSource
-                                 ? nullptr
-                                 : source_name.c_str();
 
     int status = 0;
     stream_.reset(pa_simple_new(
             nullptr,
             pirks::kApplicationId,
             PA_STREAM_RECORD,
-            source,
+            source_name.c_str(),
             kPulseAudioRecordStreamName,
             &sample_spec,
             &channel_map,

@@ -1,10 +1,10 @@
 #include "MacAudioInputFactory.h"
 
-#include "AudioInputConstants.h"
 #include "MacAudioInput.h"
 
 #include <algorithm>
 #include <exception>
+#include <optional>
 #include <string>
 
 namespace audio::capture_audio::platform_macos
@@ -12,7 +12,7 @@ namespace audio::capture_audio::platform_macos
 
 auto MacAudioInputFactory::getAudioSources() -> std::vector<std::string>
 {
-    std::vector<std::string> result { kDefaultAudioSource };
+    std::vector<std::string> result;
 
     for (NSString *deviceName in [CaptureDevice captureDeviceNames]) {
         const std::string current_name = [deviceName UTF8String];
@@ -24,6 +24,16 @@ auto MacAudioInputFactory::getAudioSources() -> std::vector<std::string>
     return result;
 }
 
+auto MacAudioInputFactory::getDefaultAudioSourceName() -> std::optional<std::string>
+{
+    AVCaptureDevice *captureDevice = [CaptureDevice defaultCaptureDevice];
+    if (captureDevice == nullptr) {
+        return std::nullopt;
+    }
+
+    return [[captureDevice localizedName] UTF8String];
+}
+
 auto MacAudioInputFactory::create(
         const std::string  &audio_source,
         int                 channels,
@@ -31,9 +41,12 @@ auto MacAudioInputFactory::create(
         std::uint32_t       frame_size,
         const std::uint8_t * /* mapping */) -> std::unique_ptr<IAudioInput>
 {
-    AVCaptureDevice *captureDevice = audio_source.empty() || audio_source == kDefaultAudioSource
-            ? [CaptureDevice defaultCaptureDevice]
-            : [CaptureDevice findCaptureDevice:[NSString stringWithUTF8String:audio_source.c_str()]];
+    if (audio_source.empty()) {
+        return nullptr;
+    }
+
+    AVCaptureDevice *captureDevice =
+            [CaptureDevice findCaptureDevice:[NSString stringWithUTF8String:audio_source.c_str()]];
 
     if (captureDevice == nullptr) {
         return nullptr;

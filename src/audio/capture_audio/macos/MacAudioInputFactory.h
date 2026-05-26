@@ -29,6 +29,8 @@ class MacAudioInputFactory final: public IAudioInputFactory
 public:
     auto getAudioSources() -> std::vector<std::string> override;
 
+    auto getDefaultAudioSourceName() -> std::optional<std::string> override;
+
     auto create(
             const std::string  &audio_source,
             int                 channels,

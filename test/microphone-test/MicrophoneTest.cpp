@@ -13,20 +13,19 @@ namespace
 
 constexpr auto kSamplesCount = 8;
 
+#ifdef WINDOWS
+// Ensure COM is initialized for Windows microphone tests.
+static ::pirks::platform_windows::ComInitializer g_com_initializer;
+#endif
+
 } // namespace
 
 TEST(AudioInput, CaptureDevice)
 {
-#ifdef WINDOWS
-    // Ensure COM is initialized for Windows microphone tests
-    static ::pirks::platform_windows::ComInitializer g_com_initializer;
-#endif
-
     using namespace audio::capture_audio;
 
     AudioInputFactory audio_input_factory;
-
-    const auto names = audio_input_factory.getAudioSources();
+    const auto        names = audio_input_factory.getAudioSources();
     ASSERT_GE(names.size(), 1u);
 
     auto device = audio_input_factory.create(names.at(0), 2, 48000, 288000, nullptr);
@@ -35,13 +34,22 @@ TEST(AudioInput, CaptureDevice)
     }
 }
 
+TEST(AudioInput, DefaultAudioSourceName)
+{
+    using namespace audio::capture_audio;
+
+    AudioInputFactory audio_input_factory;
+    auto              default_name = audio_input_factory.getDefaultAudioSourceName();
+    if (!default_name) {
+        GTEST_SKIP() << "No default audio capture device found";
+    }
+
+    std::cout << "Default audio source: " << *default_name << '\n';
+    ASSERT_FALSE(default_name->empty());
+}
+
 TEST(AudioInput, GetSamples)
 {
-#ifdef WINDOWS
-    // Ensure COM is initialized for Windows microphone tests
-    static ::pirks::platform_windows::ComInitializer g_com_initializer;
-#endif
-
     using namespace audio;
     using namespace audio::capture_audio;
 
