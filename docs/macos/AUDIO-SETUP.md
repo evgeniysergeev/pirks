@@ -36,6 +36,10 @@ To reset the permission decision for the test bundle:
 tccutil reset Microphone org.pirks.microphone-test
 ```
 
+`AudioInputFactory::getAudioSources()` returns `Default` first. Use `Default`
+or an empty source name to open the current system default audio capture device,
+or pass one of the listed device names to select a specific device.
+
 The macOS log line below can appear while CoreAudio scans system plugins and is
 not usually the reason the test skips:
 

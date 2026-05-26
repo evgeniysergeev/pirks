@@ -4,6 +4,7 @@ set(SOURCES
     debug/CircularBufferToStr.h
     debug/memory_utils.h
     debug/memory_utils.cpp
+    AppConstants.h
     CircularBuffer.h
     StrUtils.h
     StrUtils.cpp

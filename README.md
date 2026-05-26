@@ -13,6 +13,7 @@ Pirks is based on this open source projects licensed under GPL-3.0 license:
 - [Third party libraries](docs/THIRD-PARTY.md)
 - [Commit tags howto](docs/COMMIT-TAGS.md)
 - [Setup audio sources in Windows](docs/windows/AUDIO-SETUP.md)
+- [Setup audio sources in Linux](docs/linux/AUDIO-SETUP.md)
 - [Setup audio sources in macOS](docs/macos/AUDIO-SETUP.md)
 
 ## License

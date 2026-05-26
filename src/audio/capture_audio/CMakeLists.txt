@@ -1,4 +1,5 @@
 set(SOURCES
+    AudioInputConstants.h
     AudioInputFactory.h
     CaptureResult.h
     IAudioInput.h
@@ -6,9 +7,14 @@ set(SOURCES
 )
 
 if(PLATFORM STREQUAL "LINUX")
+    find_package(PkgConfig REQUIRED)
+    pkg_check_modules(PULSEAUDIO REQUIRED IMPORTED_TARGET libpulse libpulse-simple)
+
     set(PLATFORM_SOURCES
         linux/LinuxAudioInputFactory.h
         linux/LinuxAudioInputFactory.cpp
+        linux/PulseAudioInput.h
+        linux/PulseAudioInput.cpp
     )
 endif()
 
@@ -98,4 +104,8 @@ if(PLATFORM STREQUAL "WINDOWS")
     #  - uuid      for GUID/CLSID definitions
     #  - ksguid    for KS data format GUIDs (e.g. KSDATAFORMAT_SUBTYPE_PCM)
     target_link_libraries(capture_audio PUBLIC avrt mmdevapi uuid ksguid)
+endif()
+
+if(PLATFORM STREQUAL "LINUX")
+    target_link_libraries(capture_audio PUBLIC PkgConfig::PULSEAUDIO)
 endif()

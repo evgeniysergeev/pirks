@@ -23,6 +23,7 @@
 @property (nonatomic, assign) AVCaptureConnection *audioConnection;
 
 + (NSArray<NSString *> *)captureDeviceNames;
++ (AVCaptureDevice *)defaultCaptureDevice;
 + (AVCaptureDevice *)findCaptureDevice:(NSString *)name;
 
 - (int)setupCaptureDevice:(AVCaptureDevice *)device
