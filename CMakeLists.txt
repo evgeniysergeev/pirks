@@ -15,6 +15,7 @@ include(cmake/default_compiler_flags.cmake)
 include(cmake/platform_definitions.cmake)
 include(cmake/build_type.cmake)
 include(cmake/spdlog_setup.cmake)
+include(cmake/beast_setup.cmake)
 include(cmake/cli11_setup.cmake)
 include(cmake/deferral_setup.cmake)
 

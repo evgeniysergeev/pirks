@@ -19,4 +19,5 @@ target_include_directories(tcp_net INTERFACE
 target_link_libraries(tcp_net PUBLIC 
     common
     default_compiler_flags
+    boost::beast
 )
