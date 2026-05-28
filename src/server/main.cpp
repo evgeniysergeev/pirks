@@ -59,7 +59,12 @@ int main(int argc, char **argv)
             return ExitCode::ConfigurationError;
         }
 
-        Server server { config.connectionType() };
+        spdlog::info(
+                "Control plane: WSS, address: {}, port: {}",
+                config.controlPlaneConfig().bindAddress,
+                config.controlPlaneConfig().port);
+        const ServerConfig::ConnectionType connectionType = config.connectionType();
+        Server                             server { connectionType, config.controlPlaneConfig() };
         server.run();
 
     } catch (std::exception &e) {

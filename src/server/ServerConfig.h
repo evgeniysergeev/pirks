@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Config.h"
+#include "ControlPlaneConfig.h"
 
 class ServerConfig final: public Config
 {
@@ -21,12 +22,18 @@ public:
         return connectionType_;
     }
 
+    auto controlPlaneConfig() const -> const ControlPlaneConfig &
+    {
+        return controlPlaneConfig_;
+    }
+
 protected:
     void addOptions(CLI::App &args) override;
     bool parseOptions(CLI::App &args) override;
 
 private:
-    ConnectionType connectionType_ { ConnectionType::Default };
+    ConnectionType     connectionType_ { ConnectionType::Default };
+    ControlPlaneConfig controlPlaneConfig_;
 
     // this members needed only to read config options from command line
     bool isTCP_ { false };

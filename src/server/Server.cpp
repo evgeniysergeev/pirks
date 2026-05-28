@@ -2,11 +2,17 @@
 
 #include <spdlog/spdlog.h>
 
+#include <utility>
+
+#include "ControlPlaneServer.h"
 #include "TCPConnection.h"
 #include "UDPConnection.h"
 
-Server::Server(ServerConfig::ConnectionType connectionType)
+Server::Server(
+        ServerConfig::ConnectionType connectionType,
+        ControlPlaneConfig           controlPlaneConfig)
         : connectionType_ { connectionType }
+        , controlPlaneConfig_ { std::move(controlPlaneConfig) }
         , connection_ { nullptr }
 {
     //
@@ -40,11 +46,20 @@ void Server::run()
     assert(connection_ && "Connection is NULL, but should be already created");
 
     connection_->create(inPackets_, outPackets_);
+
+    controlPlaneServer_.reset(new ControlPlaneServer(controlPlaneConfig_));
+    controlPlaneServer_->start();
+    controlPlaneServer_->wait();
 }
 
 void Server::stop()
 {
     spdlog::info("Stop server");
+
+    if (controlPlaneServer_) {
+        controlPlaneServer_->stop();
+        controlPlaneServer_.reset();
+    }
 
     connection_.reset();
     inPackets_.reset();

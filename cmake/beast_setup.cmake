@@ -19,12 +19,28 @@ else()
     # Beast v2 is header-only; use MakeAvailable but override the target creation
     FetchContent_MakeAvailable(beast_v2)
 
+    set(BOOST_HEADERS_SOURCE_DIR "${beast_v2_SOURCE_DIR}/../boost_headers-src")
+    if(EXISTS "${BOOST_HEADERS_SOURCE_DIR}/libs")
+        file(GLOB BOOST_LIBRARY_INCLUDE_DIRS CONFIGURE_DEPENDS
+            "${BOOST_HEADERS_SOURCE_DIR}/libs/*/include"
+            "${BOOST_HEADERS_SOURCE_DIR}/libs/*/*/include"
+        )
+    endif()
+
+    if(NOT TARGET Boost::asio)
+        add_library(Boost::asio INTERFACE IMPORTED)
+        target_include_directories(Boost::asio SYSTEM INTERFACE
+            ${BOOST_LIBRARY_INCLUDE_DIRS}
+        )
+    endif()
+
     # The boost::beast target may not be created by Boost.Build for develop branch.
     # Ensure it exists as an INTERFACE IMPORTED library with correct include path.
     if(NOT TARGET boost::beast)
         add_library(boost::beast INTERFACE IMPORTED)
         target_include_directories(boost::beast SYSTEM INTERFACE
             ${beast_v2_SOURCE_DIR}/include
+            ${BOOST_LIBRARY_INCLUDE_DIRS}
         )
     endif()
 endif()

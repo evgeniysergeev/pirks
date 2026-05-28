@@ -2,13 +2,16 @@
 
 #include <memory>
 
+#include "ControlPlaneConfig.h"
 #include "IConnection.h"
 #include "ServerConfig.h"
+
+class ControlPlaneServer;
 
 class Server final
 {
 public:
-    explicit Server(ServerConfig::ConnectionType connectionType);
+    Server(ServerConfig::ConnectionType connectionType, ControlPlaneConfig controlPlaneConfig);
     ~Server();
 
 public:
@@ -16,8 +19,10 @@ public:
     void stop();
 
 private:
-    ServerConfig::ConnectionType              connectionType_;
-    std::unique_ptr<IConnection>          connection_;
-    std::shared_ptr<PacketsQueue>         inPackets_;
-    std::shared_ptr<PacketsQueue>         outPackets_;
+    ServerConfig::ConnectionType        connectionType_;
+    ControlPlaneConfig                  controlPlaneConfig_;
+    std::unique_ptr<IConnection>        connection_;
+    std::unique_ptr<ControlPlaneServer> controlPlaneServer_;
+    std::shared_ptr<PacketsQueue>       inPackets_;
+    std::shared_ptr<PacketsQueue>       outPackets_;
 };
