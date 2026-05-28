@@ -7,6 +7,7 @@
 #include <openssl/x509.h>
 #include <spdlog/spdlog.h>
 
+#include <boost/asio/buffer.hpp>
 #include <boost/asio/dispatch.hpp>
 #include <boost/asio/ssl/stream.hpp>
 #include <boost/beast/core.hpp>
@@ -20,6 +21,8 @@
 #include <string>
 #include <string_view>
 #include <utility>
+
+#include "ControlPlaneMessage.h"
 
 namespace
 {
@@ -151,6 +154,22 @@ void logError(beast::error_code error, std::string_view operation)
     }
 }
 
+auto copyBufferBytes(const beast::flat_buffer &buffer) -> std::vector<uint8_t>
+{
+    std::vector<uint8_t> bytes;
+    bytes.reserve(buffer.size());
+
+    const auto buffers = buffer.data();
+    for (auto it = net::buffer_sequence_begin(buffers); it != net::buffer_sequence_end(buffers);
+         ++it)
+    {
+        const auto *data = static_cast<const uint8_t *>(it->data());
+        bytes.insert(bytes.end(), data, data + it->size());
+    }
+
+    return bytes;
+}
+
 class ControlPlaneSession final: public std::enable_shared_from_this<ControlPlaneSession>
 {
 public:
@@ -230,13 +249,45 @@ private:
             return;
         }
 
-        spdlog::debug(
-                "Control plane received {} {} bytes from {}",
-                stream_.got_text() ? "text" : "binary",
-                bytesTransferred,
-                remoteEndpoint_);
+        try {
+            const ControlPlaneMessage message = readMessage();
+            handleMessage(message, bytesTransferred);
+        } catch (const ControlPlaneParseError &parseError) {
+            spdlog::warn(
+                    "Control plane rejected message from {}: {}",
+                    remoteEndpoint_,
+                    parseError.what());
+        }
+
         buffer_.consume(buffer_.size());
         doRead();
+    }
+
+    auto readMessage() const -> ControlPlaneMessage
+    {
+        if (stream_.got_text()) {
+            return parseControlPlaneText(beast::buffers_to_string(buffer_.data()));
+        }
+
+        return parseControlPlaneBinary(copyBufferBytes(buffer_));
+    }
+
+    void handleMessage(const ControlPlaneMessage &message, std::size_t bytesTransferred) const
+    {
+        if (message.frameType == ControlPlaneFrameType::Binary) {
+            spdlog::debug(
+                    "Control plane received binary message: {} bytes from {}",
+                    message.binaryPayload.size(),
+                    remoteEndpoint_);
+            return;
+        }
+
+        spdlog::debug(
+                "Control plane received message '{}' id='{}': {} bytes from {}",
+                message.type,
+                message.requestId,
+                bytesTransferred,
+                remoteEndpoint_);
     }
 
 private:

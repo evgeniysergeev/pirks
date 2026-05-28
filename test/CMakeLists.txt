@@ -5,6 +5,7 @@ enable_testing()
 
 add_subdirectory(common-test)
 add_subdirectory(common-debug-test)
+add_subdirectory(control-plane-test)
 
 if(TEST_MICROPHONE)
     add_subdirectory(microphone-test)
