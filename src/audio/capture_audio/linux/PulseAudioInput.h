@@ -26,7 +26,10 @@ public:
 private:
     struct PulseAudioSimpleDeleter final
     {
-        void operator()(pa_simple *stream) const noexcept;
+        void operator()(pa_simple *stream) const noexcept
+        {
+            pa_simple_free(stream);
+        }
     };
 
     std::unique_ptr<pa_simple, PulseAudioSimpleDeleter> stream_;

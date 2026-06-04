@@ -135,11 +135,6 @@ auto isReinitError(int status) -> bool
 
 } // namespace
 
-void PulseAudioSimpleDeleter::operator()(pa_simple *stream) const noexcept
-{
-    pa_simple_free(stream);
-}
-
 PulseAudioInput::PulseAudioInput(
         const std::string  &source_name,
         int                 channels,
