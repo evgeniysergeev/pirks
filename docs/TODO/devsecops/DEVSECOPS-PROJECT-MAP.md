@@ -282,6 +282,8 @@ FetchContent/network dependencies:
 
 - GoogleTest: `https://github.com/google/googletest/archive/v1.17.x.zip`.
 - Boost Beast v2: `https://github.com/boostorg/beast/archive/refs/heads/develop.zip`.
+- Если будет принят текущий boost-beast setup, отдельным FetchContent появятся
+  Boost headers из `https://github.com/boostorg/boost/releases/download/boost-1.84.0/boost-1.84.0.zip`.
 
 System/package dependencies:
 
@@ -296,6 +298,8 @@ DevSecOps-выводы:
 - FetchContent URLs should be pinned by immutable version and `URL_HASH`, or
   replaced with controlled dependency provisioning in CI.
 - Beast uses the `develop` branch archive, which is risky for reproducibility.
+- If explicit Boost headers FetchContent is accepted, it should be treated as a
+  separate dependency in SBOM, license review and reproducibility checks.
 - SBOM tooling must scan both repository contents and generated dependency
   metadata.
 - Dependency review should flag changes in `.gitmodules`, submodule SHAs and
@@ -410,7 +414,8 @@ Cppcheck nightly baseline:
 3. Pin FetchContent dependencies by immutable version and checksum.
 4. Expand `docs/THIRD-PARTY.md` with dependency versions, SHAs and licenses.
 5. Split cppcheck into fast PR profile and exhaustive scheduled profile.
-6. Add `scripts/ci/*` wrappers so local and CI commands stay aligned.
+6. Design `scripts/ci/*` wrappers as future shared local and CI entry points;
+   do not add them until the CI approach is approved.
 7. Add recursive submodule checkout to CI.
 8. Decide Windows CI compiler: MSVC for production parity, MinGW for current
    local parity, or both.

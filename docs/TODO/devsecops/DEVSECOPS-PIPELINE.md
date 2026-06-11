@@ -48,7 +48,11 @@ Snapshot текущей карты проекта сохранен в
 нужно добавить локальные команды или скрипты, которые разработчик может запустить
 до push.
 
-Предлагаемые файлы:
+Статус: это future plan, не часть текущего набора применяемых изменений. Сами
+wrapper-скрипты `scripts/ci/*` нужно добавлять отдельным изменением после
+согласования CI-подхода.
+
+Планируемые entry points:
 
 ```text
 scripts/ci/configure.ps1
@@ -65,33 +69,42 @@ scripts/ci/static-analysis.sh
 scripts/ci/security-scan.sh
 ```
 
-Команда создания директорий:
+Планируемый Windows PowerShell baseline:
 
 ```powershell
-New-Item -ItemType Directory -Force scripts\ci
-New-Item -ItemType Directory -Force build\reports
+.\scripts\ci\configure.ps1 -BuildDir build/ci-windows -BuildType Debug -TestMicrophone OFF
+.\scripts\ci\build.ps1 -BuildDir build/ci-windows -BuildType Debug
+.\scripts\ci\test.ps1 -BuildDir build/ci-windows -BuildType Debug
+.\scripts\ci\format-check.ps1
 ```
 
-Минимальный baseline для Windows PowerShell:
-
-```powershell
-cmake -S . -B build\ci-windows -DBUILD_TESTS=ON -DTEST_MICROPHONE=OFF -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
-cmake --build build\ci-windows --config Debug --parallel
-ctest --test-dir build\ci-windows -C Debug --output-on-failure --parallel 4
-```
-
-Минимальный baseline для Linux/macOS shell:
+Планируемый Linux/macOS shell baseline:
 
 ```bash
-cmake -S . -B build/ci -G Ninja -DBUILD_TESTS=ON -DTEST_MICROPHONE=OFF -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
-cmake --build build/ci --parallel
-ctest --test-dir build/ci --output-on-failure --parallel 4
+BUILD_DIR=build/ci bash scripts/ci/configure.sh
+BUILD_DIR=build/ci bash scripts/ci/build.sh
+BUILD_DIR=build/ci bash scripts/ci/test.sh
+bash scripts/ci/format-check.sh
+```
+
+Планируемые static analysis и security scan:
+
+```bash
+BUILD_DIR=build/analysis bash scripts/ci/static-analysis.sh
+BASE_REF=origin/main bash scripts/ci/security-scan.sh
+```
+
+```powershell
+.\scripts\ci\static-analysis.ps1 -BuildDir build/analysis
+.\scripts\ci\security-scan.ps1 -BaseRef origin/main
 ```
 
 Definition of done:
 
-- команды проходят локально хотя бы на Windows и WSL/Linux;
+- PowerShell и shell wrappers добавлены после отдельного согласования;
 - `TEST_MICROPHONE=OFF` исключает аппаратно-зависимые тесты из обычного CI;
+- CTest запускается из `build/<ci-dir>/test`, что соответствует текущей
+  структуре проекта;
 - отчеты складываются в `build/reports`;
 - временные директории не попадают в git.
 
