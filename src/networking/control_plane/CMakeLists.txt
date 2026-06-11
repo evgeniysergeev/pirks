@@ -1,5 +1,7 @@
 set(SOURCES
     ControlPlaneConfig.h
+    ControlPlaneClient.h
+    ControlPlaneClient.cpp
     ControlPlaneMessage.h
     ControlPlaneMessage.cpp
     ControlPlaneServer.h

@@ -77,6 +77,7 @@ public:
     auto getDeviceNames() -> std::vector<std::string>
     {
         ComPtr<IMMDeviceCollection> collection;
+
         HRESULT status = enumerator_->EnumAudioEndpoints(
                 eCapture,
                 DEVICE_STATE_ACTIVE,
@@ -111,6 +112,7 @@ public:
     auto getDeviceByName(const std::string &name) -> MmDevice
     {
         ComPtr<IMMDeviceCollection> collection;
+
         HRESULT status = enumerator_->EnumAudioEndpoints(
                 eCapture,
                 DEVICE_STATE_ACTIVE,

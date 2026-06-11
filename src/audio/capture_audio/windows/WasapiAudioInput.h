@@ -41,7 +41,7 @@ private:
     AudioDeviceEnumerator deviceEnumerator_ {};
     MmDevice              device_;
 
-    WasapiAudioClient                                    audioClient_;
+    WasapiAudioClient           audioClient_;
     ComPtr<IAudioCaptureClient> audioCapture_;
 
     DWORD defaultLatency_ {}; // in milliseconds;

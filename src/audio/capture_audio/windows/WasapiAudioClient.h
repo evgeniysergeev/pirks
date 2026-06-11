@@ -141,7 +141,8 @@ public:
     auto createCaptureClient() const -> ComPtr<IAudioCaptureClient>
     {
         ComPtr<IAudioCaptureClient> audio_capture;
-        const HRESULT                                        status = client_->GetService(
+
+        const HRESULT status = client_->GetService(
                 IID_IAudioCaptureClient,
                 reinterpret_cast<void **>(audio_capture.resetAndGetAddress()));
         if (FAILED(status)) {

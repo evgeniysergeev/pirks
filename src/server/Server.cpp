@@ -8,9 +8,7 @@
 #include "TCPConnection.h"
 #include "UDPConnection.h"
 
-Server::Server(
-        ServerConfig::ConnectionType connectionType,
-        ControlPlaneConfig           controlPlaneConfig)
+Server::Server(ServerConfig::ConnectionType connectionType, ControlPlaneConfig controlPlaneConfig)
         : connectionType_ { connectionType }
         , controlPlaneConfig_ { std::move(controlPlaneConfig) }
         , connection_ { nullptr }

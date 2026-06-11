@@ -38,6 +38,9 @@ add_subdirectory(src/networking)
 # add server subdirectory
 add_subdirectory(src/server)
 
+# add client subdirectory
+add_subdirectory(src/client)
+
 # Tests
 if(BUILD_TESTS)
     # Fine tune tests options

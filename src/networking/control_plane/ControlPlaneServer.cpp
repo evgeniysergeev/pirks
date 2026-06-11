@@ -15,6 +15,7 @@
 #include <boost/beast/version.hpp>
 #include <boost/beast/websocket.hpp>
 #include <boost/beast/websocket/ssl.hpp>
+#include <boost/json.hpp>
 #include <chrono>
 #include <memory>
 #include <stdexcept>
@@ -170,6 +171,34 @@ auto copyBufferBytes(const beast::flat_buffer &buffer) -> std::vector<uint8_t>
     return bytes;
 }
 
+auto makeOkResponse(const ControlPlaneMessage &message) -> std::string
+{
+    boost::json::object payload;
+    payload["receivedType"] = message.type;
+
+    boost::json::object response;
+    response["type"] = "ok";
+    if (!message.requestId.empty()) {
+        response["id"] = message.requestId;
+    }
+    response["payload"] = std::move(payload);
+
+    return boost::json::serialize(response);
+}
+
+auto makeErrorResponse(std::string_view errorMessage) -> std::string
+{
+    boost::json::object payload;
+    payload["code"]    = "bad_request";
+    payload["message"] = std::string { errorMessage };
+
+    boost::json::object response;
+    response["type"]    = "error";
+    response["payload"] = std::move(payload);
+
+    return boost::json::serialize(response);
+}
+
 class ControlPlaneSession final: public std::enable_shared_from_this<ControlPlaneSession>
 {
 public:
@@ -252,11 +281,19 @@ private:
         try {
             const ControlPlaneMessage message = readMessage();
             handleMessage(message, bytesTransferred);
+            buffer_.consume(buffer_.size());
+            if (message.frameType == ControlPlaneFrameType::Text) {
+                sendTextResponse(makeOkResponse(message));
+                return;
+            }
         } catch (const ControlPlaneParseError &parseError) {
             spdlog::warn(
                     "Control plane rejected message from {}: {}",
                     remoteEndpoint_,
                     parseError.what());
+            buffer_.consume(buffer_.size());
+            sendTextResponse(makeErrorResponse(parseError.what()));
+            return;
         }
 
         buffer_.consume(buffer_.size());
@@ -290,9 +327,30 @@ private:
                 remoteEndpoint_);
     }
 
+    void sendTextResponse(std::string response)
+    {
+        pendingResponse_ = std::move(response);
+        stream_.text(true);
+        stream_.async_write(
+                net::buffer(pendingResponse_),
+                beast::bind_front_handler(&ControlPlaneSession::onWrite, shared_from_this()));
+    }
+
+    void onWrite(beast::error_code error, std::size_t /*bytesTransferred*/)
+    {
+        if (error) {
+            logError(error, "write");
+            return;
+        }
+
+        pendingResponse_.clear();
+        doRead();
+    }
+
 private:
     websocket::stream<beast::ssl_stream<beast::tcp_stream>> stream_;
     beast::flat_buffer                                      buffer_;
+    std::string                                             pendingResponse_;
     std::string                                             remoteEndpoint_;
 };
 

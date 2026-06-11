@@ -27,8 +27,7 @@ namespace
 
 auto createAudioEvent() -> NullWinHandle
 {
-    NullWinHandle audio_event =
-            CreateEventA(nullptr, FALSE, FALSE, nullptr);
+    NullWinHandle audio_event = CreateEventA(nullptr, FALSE, FALSE, nullptr);
     if (!audio_event) {
         throw std::runtime_error("Unable to create Event handle");
     }
